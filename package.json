@@ -2,8 +2,9 @@
   "name": "angcyo",
   "displayName": "angcyo",
   "description": "angcyo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
+  "publisher": "angcyo",
   "repository": {
     "type": "git",
     "url": "https://github.com/angcyo/VSCode-angcyo"
@@ -11,12 +12,15 @@
   "engines": {
     "vscode": "^1.71.0"
   },
+  "icon": "res/angcyo.png",
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:angcyo.helloWorld",
-    "onView:angcyoViews"
+    "onView:welcomeViews",
+    "onView:angcyoViews",
+    "onView:httpViews",
+    "onView:laserPeckerViews"
   ],
   "main": "./extension.js",
   "contributes": {
