@@ -39,16 +39,6 @@ class LaserPeckerParsePanel {
   }
 
   getHtmlBody() {
-    const imgPath = vscode.Uri.joinPath(
-      this._extensionUri,
-      "res",
-      "angcyo.png"
-    );
-    console.log(imgPath);
-
-    const path2 = `https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif`;
-    //`https://gitee.com/angcyo/res/raw/master/image/qq/qq_group_132.png`;
-
     const webview = laserPeckerParsePanel.webview;
 
     // // Local path to main script run in the webview
@@ -57,14 +47,36 @@ class LaserPeckerParsePanel {
     //   "res",
     //   "laserPeckerParsePanel.js"
     // );
-
-    // // And the uri we use to load this script in the webview
     // const scriptUri = webview.asWebviewUri(scriptPathOnDisk);
 
-    // Uri to load styles into webview
+    const imgPath = vscode.Uri.joinPath(
+      this._extensionUri,
+      "res",
+      "angcyo.png"
+    );
     const imgPathUri = webview.asWebviewUri(imgPath);
 
-    console.log(imgPathUri);
+    // Local path to css styles
+    const styleResetPath = vscode.Uri.joinPath(
+      this._extensionUri,
+      "res",
+      "reset.css"
+    );
+    const styleMainPath = vscode.Uri.joinPath(
+      this._extensionUri,
+      "res",
+      "main.css"
+    );
+    const stylesVSCodePath = vscode.Uri.joinPath(
+      this._extensionUri,
+      "res",
+      "vscode.css"
+    );
+
+    // Uri to load styles into webview
+    const stylesResetUri = webview.asWebviewUri(styleResetPath);
+    const stylesMainUri = webview.asWebviewUri(styleMainPath);
+    const stylesVSCodeUri = webview.asWebviewUri(stylesVSCodePath);
 
     return `<!DOCTYPE html>
     <html lang="zh">
@@ -74,6 +86,11 @@ class LaserPeckerParsePanel {
         <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource}; https:;">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="${stylesResetUri}" rel="stylesheet">
+				<link href="${stylesMainUri}" rel="stylesheet">
+				<link href="${stylesVSCodeUri}" rel="stylesheet">
+
         <title>LaserPecker数据解析</title>
     </head>
     <body>
