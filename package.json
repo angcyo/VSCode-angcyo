@@ -1,0 +1,77 @@
+{
+  "name": "angcyo",
+  "displayName": "angcyo",
+  "description": "angcyo",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.71.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:angcyo.helloWorld",
+    "onView:angcyoViews"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "angcyo.helloWorld",
+        "title": "Hello World"
+      }
+    ],
+    "viewsWelcome": [
+      {
+        "view": "welcomeViews",
+        "contents": "欢迎使用! by angcyo.\n[关于我](https://github.com/angcyo)",
+        "when": "angcyo.showWelcome"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "angcyo-bar",
+          "title": "Angcyo Views",
+          "icon": "res/angcyo.svg"
+        }
+      ]
+    },
+    "views": {
+      "angcyo-bar": [
+        {
+          "id": "welcomeViews",
+          "name": "welcome"
+        },
+        {
+          "id": "angcyoViews",
+          "name": "angcyo"
+        },
+        {
+          "id": "httpViews",
+          "name": "Http"
+        },
+        {
+          "id": "laserPeckerViews",
+          "name": "LaserPecker"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.71.0",
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "eslint": "^8.20.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "typescript": "^4.7.4",
+    "@vscode/test-electron": "^2.1.5"
+  }
+}
