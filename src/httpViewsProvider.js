@@ -1,6 +1,5 @@
 const vscode = require("vscode");
-const path = require("path");
-
+const { Api } = require("./api");
 class HttpViewsProvider {
   constructor() {
     this._onDidChangeTreeData = new vscode.EventEmitter();
@@ -11,21 +10,15 @@ class HttpViewsProvider {
     this._onDidChangeTreeData.fire();
   }
 
-  getChildren(element) {
-    console.log("加载http children↓");
-    console.log(element);
-    //vscode.window.showInformationMessage("No dependency in empty workspace");
-    return Promise.resolve([
-      {
-        label: "xxx",
-        iconPath: path.join(__filename, "..", "..", "res", "web.svg"),
-      },
-    ]);
+  async getChildren(element) {
+    return Promise.resolve(
+      Api.fetchUrlChildrenList(
+        `https://gitcode.net/angcyo/json/-/raw/master/recommendUrl.json`
+      )
+    );
   }
 
   getTreeItem(element) {
-    console.log("加载http tree item↓");
-    console.log(element);
     return element;
   }
 }

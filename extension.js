@@ -35,20 +35,11 @@ function activate(context) {
     new LaserPeckerViewsProvider()
   );
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with  registerCommand
-  // The commandId parameter must match the command field in package.json
-  let disposable = vscode.commands.registerCommand(
-    "angcyo.helloWorld",
-    function () {
-      // The code you place here will be executed every time your command is executed
-
-      // Display a message box to the user
-      vscode.window.showInformationMessage("Hello World from angcyo!");
-    }
-  );
-
-  context.subscriptions.push(disposable);
+  //打开网页
+  vscode.commands.registerCommand("angcyo.openUrl", async (url) => {
+    console.log(`命令打开url:${url}`);
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`${url}`));
+  });
 }
 
 // this method is called when your extension is deactivated

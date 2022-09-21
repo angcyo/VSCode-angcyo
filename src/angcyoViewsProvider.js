@@ -1,4 +1,5 @@
 const vscode = require("vscode");
+const { Api } = require("./api");
 
 class AngcyoViewsProvider {
   constructor() {
@@ -10,10 +11,12 @@ class AngcyoViewsProvider {
     this._onDidChangeTreeData.fire();
   }
 
-  getChildren(element) {
-    //vscode.window.showInformationMessage("No dependency in empty workspace");
-    //return Promise.resolve([{ label: "xxx", iconPath: "./res/angcyo.svg" }]);
-    return element;
+  async getChildren(element) {
+    return Promise.resolve(
+      Api.fetchUrlChildrenList(
+        `https://gitcode.net/angcyo/json/-/raw/master/angcyoUrl.json`
+      )
+    );
   }
 
   getTreeItem(element) {
