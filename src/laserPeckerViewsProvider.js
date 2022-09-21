@@ -1,3 +1,4 @@
+const path = require("path");
 const vscode = require("vscode");
 
 class LaserPeckerViewsProvider {
@@ -11,7 +12,17 @@ class LaserPeckerViewsProvider {
   }
 
   getChildren(element) {
-    return Promise.resolve([]);
+    return Promise.resolve([
+      {
+        label: "LP文件解析",
+        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        command: {
+          command: "angcyo.laserPeckerParse",
+        },
+        tooltip: "LaserPecker文件格式数据解析",
+        //description: item.url,
+      },
+    ]);
   }
 
   getTreeItem(element) {
