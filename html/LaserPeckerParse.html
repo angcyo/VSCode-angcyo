@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8">
+
+    <!--<meta http-equiv="Content-Security-Policy"
+          content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource}; https:;">-->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--<link href="${stylesResetUri}" rel="stylesheet">
+    <link href="${stylesMainUri}" rel="stylesheet">
+    <link href="${stylesVSCodeUri}" rel="stylesheet">-->
+
+    <link href="../res/main.css" rel="stylesheet">
+    <link href="../res/reset.css" rel="stylesheet">
+    <link href="../res/vscode.css" rel="stylesheet">
+
+    <title>LaserPecker数据解析</title>
+  </head>
+  <body style="background-color: antiquewhite">
+    <p><h1 style="display: inline">LaserPecker数据解析</h1><img src="${imgPathUri}" width="40" style="display: inline"/></p>
+    <label for="data">原始数据:</label>
+    <textarea id="data" name="data" style="width:100%" placeholder="请输入原始数据..." autofocus rows="20"></textarea>
+    <div class="button-wrap" style="display: flex; margin-top: 1rem; margin-bottom: 1rem">
+      <button id="format">格式化</button>
+      <button id="formatData">格式化(仅内部data)</button>
+      <button id="removeImage">格式化(去除图片字段)</button>
+      <button id="extractImage">提取所有图片</button>
+    </div>
+    <label for="result">格式化数据:</label>
+    <textarea id="result" name="result" style="width:100%" placeholder="格式化后的数据..." rows="50" disabled></textarea>
+    <div id="imageWrap" class="image-wrap" style="margin-top: 1rem; margin-bottom: 1rem"></div>
+    <script src="../res/laserPeckerParsePanel.js"></script>
+  </body>
+</html>

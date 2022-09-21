@@ -1,40 +1,42 @@
+html {
+  width: 100%;
+}
+
 body {
-	background-color: transparent;
+  background-color: transparent;
+  width: 100%;
 }
 
-.color-list {
-	list-style: none;
-	padding: 0;
+.button-wrap {
+  display: flex;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-.color-entry {
-	width: 100%;
-	display: flex;
-	margin-bottom: 0.4em;
-	border: 1px solid var(--vscode-input-border);
+.button-wrap button {
+  margin-right: 1rem;
 }
 
-.color-preview {
-	width: 2em;
-	height: 2em;
+.image-wrap {
+  display: flex;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-.color-preview:hover {
-	outline: inset white;
+.image-wrap img {
+  width: 33.3%;
+  display: inline;
 }
 
-.color-input {
-	display: block;
-	flex: 1;
-	width: 100%;
-	color: var(--vscode-input-foreground);
-	background-color: var(--vscode-input-background);
-	border: none;
-	padding: 0 0.6em;
+.title-wrap{
+    vertical-align: middle;
 }
 
-.add-color-button {
-	display: block;
-	border: none;
-	margin: 0 auto;
+.title-wrap * {
+  display: inline-block;
+}
+
+textarea {
+  width: 100%;
+  max-width: 100%;
 }

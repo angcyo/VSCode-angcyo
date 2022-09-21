@@ -2,44 +2,88 @@
 // It cannot access the main VS Code APIs directly.
 
 (function () {
-  const vscode = acquireVsCodeApi();
+  console.log("初始化laserPeckerParsePanel.js", window)
 
-  const oldState = /** @type {{ count: number} | undefined} */ (
-    vscode.getState()
-  );
+  const dataText = document.getElementById("data")
+  const resultText = document.getElementById("result")
+  const formatButton = document.getElementById("format")
+  const formatDataButton = document.getElementById("formatData")
+  const removeImageButton = document.getElementById("removeImage")
+  const extractImageButton = document.getElementById("extractImage")
+  const imageWrap = document.getElementById("imageWrap")
 
-  const counter = /** @type {HTMLElement} */ (
-    document.getElementById("lines-of-code-counter")
-  );
-  console.log("Initial state", oldState);
+  //
+  formatButton.addEventListener("click", (event) => {
+    resultText.value = JSON.stringify(JSON.parse(dataText.value), null, 4)
+  })
+  formatDataButton.addEventListener("click", (event) => {
+    const dataString = JSON.parse(dataText.value).data
+    const data = JSON.parse(dataString)
+    resultText.value = JSON.stringify(data, null, 4)
+  })
+  removeImageButton.addEventListener("click", (event) => {
+    const data = JSON.parse(dataText.value)
+    delete data.preview_img
+    const dataString = data.data
+    const array = JSON.parse(dataString)
+    array.forEach((item) => {
+      delete item.imageOriginal
+      delete item.src
+    })
 
-  let currentCount = (oldState && oldState.count) || 0;
-  counter.textContent = `${currentCount}`;
-
-  setInterval(() => {
-    counter.textContent = `${currentCount++} `;
-
-    // Update state
-    vscode.setState({ count: currentCount });
-
-    // Alert the extension when the cat introduces a bug
-    if (Math.random() < Math.min(0.001 * currentCount, 0.05)) {
-      // Send a message back to the extension
-      vscode.postMessage({
-        command: "alert",
-        text: "🐛  on line " + currentCount,
-      });
+    delete data.data
+    const newData = {
+      ...data,
+      data: array
     }
-  }, 100);
+    resultText.value = JSON.stringify(newData, null, 4)
+  })
+  extractImageButton.addEventListener("click", (event) => {
+    clearAllImage()
+    const data = JSON.parse(dataText.value)
+    appendImage(data.preview_img)
+    delete data.preview_img
 
-  // Handle messages sent from the extension to the webview
+    const dataString = data.data
+    const array = JSON.parse(dataString)
+    array.forEach((item) => {
+      const imageOriginal = item.imageOriginal
+      const src = item.src
+
+      delete item.imageOriginal
+      delete item.src
+
+      appendImage(imageOriginal, item)
+      appendImage(src, item)
+    })
+  })
+
+  //
   window.addEventListener("message", (event) => {
-    const message = event.data; // The json data that the extension sent
-    switch (message.command) {
-      case "refactor":
-        currentCount = Math.ceil(currentCount * 0.5);
-        counter.textContent = `${currentCount}`;
-        break;
+    const message = event.data // The json data that the extension sent
+    console.log("message->", message)
+  })
+
+  //清空所有图片
+  function clearAllImage() {
+    while (imageWrap.hasChildNodes()) {
+      imageWrap.removeChild(imageWrap.firstChild)
     }
-  });
-})();
+  }
+
+  //添加一个base64图片展示
+  function appendImage(base64, des) {
+    if (base64) {
+      //创建img容器
+      const img = new Image()
+      //给img容器引入base64的图片
+      img.src = base64
+      img.alt = JSON.stringify(des, null, 4)
+      img.title = img.alt
+
+      //将img容器添加到html的节点中。
+      imageWrap.appendChild(img)
+    }
+  }
+
+})()

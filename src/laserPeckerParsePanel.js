@@ -41,13 +41,13 @@ class LaserPeckerParsePanel {
   getHtmlBody() {
     const webview = laserPeckerParsePanel.webview;
 
-    // // Local path to main script run in the webview
-    // const scriptPathOnDisk = vscode.Uri.joinPath(
-    //   this._extensionUri,
-    //   "res",
-    //   "laserPeckerParsePanel.js"
-    // );
-    // const scriptUri = webview.asWebviewUri(scriptPathOnDisk);
+    // Local path to main script run in the webview
+    const scriptPath = vscode.Uri.joinPath(
+      this._extensionUri,
+      "res",
+      "laserPeckerParsePanel.js"
+    );
+    const scriptUri = webview.asWebviewUri(scriptPath);
 
     const imgPath = vscode.Uri.joinPath(
       this._extensionUri,
@@ -78,28 +78,48 @@ class LaserPeckerParsePanel {
     const stylesMainUri = webview.asWebviewUri(styleMainPath);
     const stylesVSCodeUri = webview.asWebviewUri(stylesVSCodePath);
 
+    // Use a nonce to only allow specific scripts to be run
+		const nonce = this.getNonce();
+
     return `<!DOCTYPE html>
     <html lang="zh">
     <head>
         <meta charset="UTF-8">
 
-        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource}; https:;">
-
+        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-eval' ${webview.cspSource}; img-src 'self' https: http: data: ${webview.cspSource}; script-src 'nonce-${nonce}';">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link href="${stylesResetUri}" rel="stylesheet">
-				<link href="${stylesMainUri}" rel="stylesheet">
 				<link href="${stylesVSCodeUri}" rel="stylesheet">
+        <link href="${stylesMainUri}" rel="stylesheet">
 
         <title>LaserPecker数据解析</title>
     </head>
     <body>
-      <p><h1>LaserPecker数据解析</h1><img src="${imgPathUri}" width="40"/></p>
-        <textarea id="data" name="data" style="width:100%">
-          It was a dark and stormy night...
-        </textarea>
+      <div class="title-wrap"><img src="${imgPathUri}" width="25""/><h1>LaserPecker数据解析</h1></div>
+      <label for="data">原始数据:</label>
+      <textarea id="data" name="data" placeholder="请输入原始数据..." autofocus rows="20"></textarea>
+      <div class="button-wrap">
+        <button id="format">格式化</button>
+        <button id="formatData">格式化(仅内部data)</button>
+        <button id="removeImage">格式化(去除图片字段)</button>
+        <button id="extractImage">提取所有图片</button>
+      </div>
+      <label for="result">格式化数据:</label>
+      <textarea id="result" name="result" placeholder="格式化后的数据..." rows="50" disabled></textarea>
+      <div id="imageWrap" class="image-wrap"></div>
+      <script nonce="${nonce}" src="${scriptUri}"></script>
     </body>
     </html>`;
+  }
+
+   getNonce() {
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < 32; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
   }
 }
 
