@@ -77,9 +77,10 @@ class LaserPeckerParsePanel {
         <title>LaserPecker数据解析</title>
     </head>
     <body>
-        <h1 id="lines-of-code-counter">angcyo test</h1>
-        <img src="${imgPathUri}" width="300" />
-        <img src="${path2}" width="300" />
+      <p><h1>LaserPecker数据解析</h1><img src="${imgPathUri}" width="40"/></p>
+        <textarea id="data" name="data" style="width:100%">
+          It was a dark and stormy night...
+        </textarea>
     </body>
     </html>`;
   }
