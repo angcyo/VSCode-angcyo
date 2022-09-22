@@ -116,6 +116,7 @@ class LaserPeckerParsePanel {
         <button id="removeImage">格式化(去除图片字段)</button>
         <button id="extractImage">提取所有图片</button>
         <button id="base64Image">解析base64图片</button>
+        <button id="clear">清空结果</button>
       </div>
       <label for="result">格式化数据:</label>
       <textarea id="result" name="result" placeholder="格式化后的数据..." rows="50" disabled></textarea>

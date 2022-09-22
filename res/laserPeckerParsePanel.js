@@ -12,11 +12,17 @@
   const removeImageButton = document.getElementById("removeImage");
   const extractImageButton = document.getElementById("extractImage");
   const base64ImageButton = document.getElementById("base64Image");
+  const clearButton = document.getElementById("clear");
+
   const imageWrap = document.getElementById("imageWrap");
 
   //
   formatButton.addEventListener("click", (event) => {
     resultText.value = JSON.stringify(JSON.parse(dataText.value), null, 4);
+  });
+  clearButton.addEventListener("click", (event) => {
+    resultText.value = "";
+    clearAllImage();
   });
   formatDataButton.addEventListener("click", (event) => {
     const dataString = JSON.parse(dataText.value).data;
