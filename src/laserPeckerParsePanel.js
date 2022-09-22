@@ -27,6 +27,17 @@ class LaserPeckerParsePanel {
       this._extensionUri = context.extensionUri;
 
       laserPeckerParsePanel.onDidDispose(() => this.dispose(), null, null);
+      laserPeckerParsePanel.webview.onDidReceiveMessage(
+        (message) => {
+          switch (message.command) {
+            default:
+              vscode.window.showInformationMessage(`${message.text}`);
+              break;
+          }
+        },
+        null,
+        null
+      );
     }
 
     laserPeckerParsePanel.webview.html = this.getHtmlBody();
@@ -79,7 +90,7 @@ class LaserPeckerParsePanel {
     const stylesVSCodeUri = webview.asWebviewUri(stylesVSCodePath);
 
     // Use a nonce to only allow specific scripts to be run
-		const nonce = this.getNonce();
+    const nonce = this.getNonce();
 
     return `<!DOCTYPE html>
     <html lang="zh">
@@ -104,6 +115,7 @@ class LaserPeckerParsePanel {
         <button id="formatData">格式化(仅内部data)</button>
         <button id="removeImage">格式化(去除图片字段)</button>
         <button id="extractImage">提取所有图片</button>
+        <button id="base64Image">解析base64图片</button>
       </div>
       <label for="result">格式化数据:</label>
       <textarea id="result" name="result" placeholder="格式化后的数据..." rows="50" disabled></textarea>
@@ -113,9 +125,10 @@ class LaserPeckerParsePanel {
     </html>`;
   }
 
-   getNonce() {
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  getNonce() {
+    let text = "";
+    const possible =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for (let i = 0; i < 32; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }

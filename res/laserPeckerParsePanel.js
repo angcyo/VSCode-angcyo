@@ -2,72 +2,114 @@
 // It cannot access the main VS Code APIs directly.
 
 (function () {
-  console.log("初始化laserPeckerParsePanel.js", window)
+  const vscode = acquireVsCodeApi();
+  console.log("初始化laserPeckerParsePanel.js", vscode, window);
 
-  const dataText = document.getElementById("data")
-  const resultText = document.getElementById("result")
-  const formatButton = document.getElementById("format")
-  const formatDataButton = document.getElementById("formatData")
-  const removeImageButton = document.getElementById("removeImage")
-  const extractImageButton = document.getElementById("extractImage")
-  const imageWrap = document.getElementById("imageWrap")
+  const dataText = document.getElementById("data");
+  const resultText = document.getElementById("result");
+  const formatButton = document.getElementById("format");
+  const formatDataButton = document.getElementById("formatData");
+  const removeImageButton = document.getElementById("removeImage");
+  const extractImageButton = document.getElementById("extractImage");
+  const base64ImageButton = document.getElementById("base64Image");
+  const imageWrap = document.getElementById("imageWrap");
 
   //
   formatButton.addEventListener("click", (event) => {
-    resultText.value = JSON.stringify(JSON.parse(dataText.value), null, 4)
-  })
+    resultText.value = JSON.stringify(JSON.parse(dataText.value), null, 4);
+  });
   formatDataButton.addEventListener("click", (event) => {
-    const dataString = JSON.parse(dataText.value).data
-    const data = JSON.parse(dataString)
-    resultText.value = JSON.stringify(data, null, 4)
-  })
+    const dataString = JSON.parse(dataText.value).data;
+    const data = JSON.parse(dataString);
+    resultText.value = JSON.stringify(data, null, 4);
+  });
   removeImageButton.addEventListener("click", (event) => {
-    const data = JSON.parse(dataText.value)
-    delete data.preview_img
-    const dataString = data.data
-    const array = JSON.parse(dataString)
+    const data = JSON.parse(dataText.value);
+    delete data.preview_img;
+    const dataString = data.data;
+    const array = JSON.parse(dataString);
     array.forEach((item) => {
-      delete item.imageOriginal
-      delete item.src
-    })
+      delete item.imageOriginal;
+      delete item.src;
+    });
 
-    delete data.data
+    delete data.data;
     const newData = {
       ...data,
-      data: array
-    }
-    resultText.value = JSON.stringify(newData, null, 4)
-  })
+      data: array,
+    };
+    resultText.value = JSON.stringify(newData, null, 4);
+  });
   extractImageButton.addEventListener("click", (event) => {
-    clearAllImage()
-    const data = JSON.parse(dataText.value)
-    appendImage(data.preview_img)
-    delete data.preview_img
+    clearAllImage();
+    resultText.value = "";
+    const data = JSON.parse(dataText.value);
+    var count = 0;
+    if (data.preview_img) {
+      appendImage(data.preview_img);
+      count++;
+      resultText.value = `${resultText.value}\n\n${data.preview_img}`;
+    }
+    delete data.preview_img;
 
-    const dataString = data.data
-    const array = JSON.parse(dataString)
-    array.forEach((item) => {
-      const imageOriginal = item.imageOriginal
-      const src = item.src
+    const dataString = data.data;
+    if (dataString) {
+      const array = JSON.parse(dataString);
+      array.forEach((item) => {
+        const imageOriginal = item.imageOriginal;
+        const src = item.src;
 
-      delete item.imageOriginal
-      delete item.src
+        delete item.imageOriginal;
+        delete item.src;
 
-      appendImage(imageOriginal, item)
-      appendImage(src, item)
-    })
-  })
+        if (imageOriginal) {
+          appendImage(imageOriginal, item);
+          count++;
+          resultText.value = `${resultText.value}\n\n${imageOriginal}`;
+        }
+        if (src) {
+          appendImage(src, item);
+          count++;
+          resultText.value = `${resultText.value}\n\n${src}`;
+        }
+      });
+      vscode.postMessage({
+        text: `提取到${count}张图片`,
+      });
+    } else {
+      vscode.postMessage({
+        text: "未识别到[data]字段",
+      });
+    }
+  });
+  base64ImageButton.addEventListener("click", (event) => {
+    if (dataText.value && dataText.value.trim().startsWith("data:")) {
+      clearAllImage();
+      appendImage(dataText.value.trim());
+    } else {
+      vscode.postMessage({
+        text: "无效的图片数据",
+      });
+    }
+  });
 
   //
   window.addEventListener("message", (event) => {
-    const message = event.data // The json data that the extension sent
-    console.log("message->", message)
-  })
+    const message = event.data; // The json data that the extension sent
+    console.log("message->", message);
+  });
+
+  //
+  window.addEventListener("error", (event) => {
+    vscode.postMessage({
+      text: event.message,
+    });
+  });
 
   //清空所有图片
   function clearAllImage() {
     while (imageWrap.hasChildNodes()) {
-      imageWrap.removeChild(imageWrap.firstChild)
+      imageWrap.removeChild(imageWrap.firstChild);
     }
   }
 
@@ -75,15 +117,23 @@
   function appendImage(base64, des) {
     if (base64) {
       //创建img容器
-      const img = new Image()
+      const img = new Image();
       //给img容器引入base64的图片
-      img.src = base64
-      img.alt = JSON.stringify(des, null, 4)
-      img.title = img.alt
+      img.src = base64;
+      img.alt = JSON.stringify(des, null, 4);
+      img.title = img.alt;
 
       //将img容器添加到html的节点中。
-      imageWrap.appendChild(img)
+      imageWrap.appendChild(img);
+
+      scrollToBottom();
     }
   }
 
-})()
+  //滚动到底部
+  function scrollToBottom() {
+    setTimeout(() => {
+      window.scrollTo(0, document.documentElement.clientHeight);
+    }, 300);
+  }
+})();
