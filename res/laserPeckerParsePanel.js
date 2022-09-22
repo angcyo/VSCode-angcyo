@@ -120,8 +120,8 @@
       const img = new Image();
       //给img容器引入base64的图片
       img.src = base64;
-      img.alt = JSON.stringify(des, null, 4);
-      img.title = img.alt;
+      //img.alt = JSON.stringify(des, null, 4);
+      img.title = JSON.stringify(des, null, 4);
 
       //将img容器添加到html的节点中。
       imageWrap.appendChild(img);
