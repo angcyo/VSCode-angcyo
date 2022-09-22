@@ -45,7 +45,7 @@
     resultText.value = "";
     const data = JSON.parse(dataText.value);
     var count = 0;
-    if (data.preview_img) {
+    if (data.preview_img && data.preview_img.trim().startsWith("data:")) {
       appendImage(data.preview_img);
       count++;
       resultText.value = `${resultText.value}\n\n${data.preview_img}`;
@@ -62,12 +62,12 @@
         delete item.imageOriginal;
         delete item.src;
 
-        if (imageOriginal) {
+        if (imageOriginal && imageOriginal.trim().startsWith("data:")) {
           appendImage(imageOriginal, item);
           count++;
           resultText.value = `${resultText.value}\n\n${imageOriginal}`;
         }
-        if (src) {
+        if (src && src.trim().startsWith("data:")) {
           appendImage(src, item);
           count++;
           resultText.value = `${resultText.value}\n\n${src}`;
