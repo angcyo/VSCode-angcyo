@@ -32,7 +32,7 @@
   removeImageButton.addEventListener("click", (event) => {
     const data = JSON.parse(dataText.value);
     delete data.preview_img;
-    const dataString = data.data;
+    const dataString = data.data || data.objects;
     const array = JSON.parse(dataString);
     array.forEach((item) => {
       delete item.imageOriginal;
@@ -40,6 +40,7 @@
     });
 
     delete data.data;
+    delete data.objects;
     const newData = {
       ...data,
       data: array,
