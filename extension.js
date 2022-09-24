@@ -3,6 +3,7 @@
 const vscode = require("vscode");
 const { AngcyoViewsProvider } = require("./src/angcyoViewsProvider");
 const { HttpViewsProvider } = require("./src/httpViewsProvider");
+const { laserPeckerParseBlePanel } = require("./src/laserPeckerParseBlePanel");
 const { LaserPeckerParsePanel } = require("./src/laserPeckerParsePanel");
 const { LaserPeckerViewsProvider } = require("./src/laserPeckerViewsProvider");
 const { WelcomViewsProvider } = require("./src/welcomViewsProvider");
@@ -46,6 +47,12 @@ function activate(context) {
   vscode.commands.registerCommand("angcyo.laserPeckerParse", () => {
     console.log(`LaserPecker数据解析`);
     LaserPeckerParsePanel.createOrShow(context);
+  });
+
+  //LaserPecker蓝牙指令解析
+  vscode.commands.registerCommand("angcyo.laserPeckerBleParse", () => {
+    console.log(`LaserPecker蓝牙指令解析`);
+    laserPeckerParseBlePanel.createOrShow(context);
   });
 }
 

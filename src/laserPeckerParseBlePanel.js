@@ -1,18 +1,18 @@
 const path = require("path");
 const vscode = require("vscode");
 
-var laserPeckerParsePanel = undefined;
+var laserPeckerParseBlePanel = undefined;
 
-class LaserPeckerParsePanel {
+class LaserPeckerParseBlePanel {
   // 创建或者显示panel
   createOrShow(context) {
-    if (laserPeckerParsePanel) {
-      laserPeckerParsePanel.reveal(vscode.ViewColumn.One);
+    if (laserPeckerParseBlePanel) {
+      laserPeckerParseBlePanel.reveal(vscode.ViewColumn.One);
     } else {
       // Otherwise, create a new panel.
-      laserPeckerParsePanel = vscode.window.createWebviewPanel(
-        "LaserPeckerParsePanel",
-        "LaserPecker数据解析",
+      laserPeckerParseBlePanel = vscode.window.createWebviewPanel(
+        "LaserPeckerBleParsePanel",
+        "LaserPecker指令解析",
         vscode.ViewColumn.One, //vscode.window.activeTextEditor
         {
           // Enable javascript in the webview
@@ -26,8 +26,8 @@ class LaserPeckerParsePanel {
       );
       this._extensionUri = context.extensionUri;
 
-      laserPeckerParsePanel.onDidDispose(() => this.dispose(), null, null);
-      laserPeckerParsePanel.webview.onDidReceiveMessage(
+      laserPeckerParseBlePanel.onDidDispose(() => this.dispose(), null, null);
+      laserPeckerParseBlePanel.webview.onDidReceiveMessage(
         (message) => {
           switch (message.command) {
             default:
@@ -40,23 +40,23 @@ class LaserPeckerParsePanel {
       );
     }
 
-    laserPeckerParsePanel.webview.html = this.getHtmlBody();
+    laserPeckerParseBlePanel.webview.html = this.getHtmlBody();
   }
 
   dispose() {
     // Clean up our resources
-    laserPeckerParsePanel.dispose();
-    laserPeckerParsePanel = undefined;
+    laserPeckerParseBlePanel.dispose();
+    laserPeckerParseBlePanel = undefined;
   }
 
   getHtmlBody() {
-    const webview = laserPeckerParsePanel.webview;
+    const webview = laserPeckerParseBlePanel.webview;
 
     // Local path to main script run in the webview
     const scriptPath = vscode.Uri.joinPath(
       this._extensionUri,
       "res",
-      "laserPeckerParse.js"
+      "laserPeckerBleParse.js"
     );
     const scriptUri = webview.asWebviewUri(scriptPath);
 
@@ -104,23 +104,18 @@ class LaserPeckerParsePanel {
 				<link href="${stylesVSCodeUri}" rel="stylesheet">
         <link href="${stylesMainUri}" rel="stylesheet">
 
-        <title>LaserPecker数据解析</title>
+        <title>LaserPecker指令解析</title>
     </head>
     <body>
-      <div class="title-wrap"><img src="${imgPathUri}" width="25"/><h1>LaserPecker数据解析</h1></div>
-      <label for="data">原始数据:</label>
-      <textarea id="data" name="data" placeholder="请输入原始数据..." autofocus rows="20"></textarea>
+      <div class="title-wrap"><img src="${imgPathUri}" width="25"/><h1>LaserPecker指令解析</h1></div>
+      <label for="data">指令数据:</label>
+      <textarea id="data" name="data" placeholder="请输入指令数据..." autofocus rows="5"></textarea>
       <div class="button-wrap">
-        <button id="format">格式化</button>
-        <button id="formatData">格式化(仅内部data)</button>
-        <button id="removeImage">格式化(去除图片字段)</button>
-        <button id="extractImage">提取所有图片</button>
-        <button id="base64Image">解析base64图片</button>
-        <button id="clear">清空结果</button>
+        <button id="parse">解析指令</button>
+        <button id="parseResult">解析返回值</button>
       </div>
-      <label for="result">格式化数据:</label>
-      <textarea id="result" name="result" placeholder="格式化后的数据..." rows="50" disabled></textarea>
-      <div id="imageWrap" class="image-wrap"></div>
+      <label for="result">解析数据:</label>
+      <textarea id="result" name="result" placeholder="解析后的数据..." rows="20" disabled></textarea>
       <script nonce="${nonce}" src="${scriptUri}"></script>
     </body>
     </html>`;
@@ -137,4 +132,4 @@ class LaserPeckerParsePanel {
   }
 }
 
-exports.LaserPeckerParsePanel = new LaserPeckerParsePanel();
+exports.laserPeckerParseBlePanel = new LaserPeckerParseBlePanel();

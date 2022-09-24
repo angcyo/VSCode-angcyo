@@ -22,6 +22,15 @@ class LaserPeckerViewsProvider {
         tooltip: "LaserPecker文件格式数据解析",
         //description: item.url,
       },
+      {
+        label: "LP指令解析",
+        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        command: {
+          command: "angcyo.laserPeckerBleParse",
+        },
+        tooltip: "LaserPecker蓝牙指令数据解析",
+        //description: item.url,
+      },
     ]);
   }
 

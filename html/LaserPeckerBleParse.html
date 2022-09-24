@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="../res/main.css" rel="stylesheet">
+    <link href="../res/reset.css" rel="stylesheet">
+    <link href="../res/vscode.css" rel="stylesheet">
+
+    <title>LaserPecker指令解析</title>
+  </head>
+  <body>
+    <div class="title-wrap"><img src="${imgPathUri}" width="25"/><h1>LaserPecker指令解析</h1></div>
+    <label for="data">指令数据:</label>
+    <textarea id="data" name="data" placeholder="请输入指令数据..." autofocus rows="5"></textarea>
+    <div class="button-wrap">
+      <button id="parse">解析</button>
+    </div>
+    <label for="result">解析数据:</label>
+    <textarea id="result" name="result" placeholder="解析后的数据..." rows="20" disabled></textarea>
+    <script nonce="${nonce}" src="${scriptUri}"></script>
+    <script src="../res/laserPeckerBleParse.js"></script>
+  </body>
+</html>
