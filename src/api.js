@@ -15,7 +15,7 @@ class Api {
   buildTreeItem(beanList) {
     if (beanList) {
       const childrenList = beanList
-        .filter((item) => item.enable)
+        .filter((item) => item.enable == undefined || item.enable)
         .map((item) => {
           const treeItem = {
             label: item.label,
