@@ -1,5 +1,6 @@
 const path = require("path");
 const vscode = require("vscode");
+const { Api } = require("./api");
 
 class LaserPeckerViewsProvider {
   constructor() {
@@ -12,7 +13,21 @@ class LaserPeckerViewsProvider {
   }
 
   getChildren(element) {
-    return Promise.resolve([
+    if (element == undefined) {
+      return Promise.resolve(this.getChildrenList());
+    } else if (element.childList) {
+      return Promise.resolve(Api.buildTreeItem(element.childList));
+    } else {
+      return element;
+    }
+  }
+
+  getTreeItem(element) {
+    return element;
+  }
+
+  async getChildrenList() {
+    const def = [
       {
         label: "LP文件解析",
         iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
@@ -31,11 +46,11 @@ class LaserPeckerViewsProvider {
         tooltip: "LaserPecker蓝牙指令数据解析",
         //description: item.url,
       },
-    ]);
-  }
-
-  getTreeItem(element) {
-    return element;
+    ];
+    const urlItems = await Api.fetchUrlChildrenList(
+      `https://gitcode.net/angcyo/json/-/raw/master/laserPeckerUrl.json`
+    );
+    return [...def, ...urlItems];
   }
 }
 
