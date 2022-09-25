@@ -12,11 +12,15 @@ class AngcyoViewsProvider {
   }
 
   async getChildren(element) {
-    return Promise.resolve(
-      Api.fetchUrlChildrenList(
-        `https://gitcode.net/angcyo/json/-/raw/master/angcyoUrl.json`
-      )
-    );
+    if (element && element.childList) {
+      return Promise.resolve(Api.buildTreeItem(element.childList));
+    } else {
+      return Promise.resolve(
+        Api.fetchUrlChildrenList(
+          `https://gitcode.net/angcyo/json/-/raw/master/angcyoUrl.json`
+        )
+      );
+    }
   }
 
   getTreeItem(element) {

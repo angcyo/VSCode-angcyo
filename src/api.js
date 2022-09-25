@@ -1,27 +1,49 @@
 const path = require("path");
+const vscode = require("vscode");
 require("isomorphic-fetch");
 
 class Api {
+  //获取网址列表
   async fetchUrlChildrenList(api) {
     const req = await fetch(api);
     const josn = await req.json();
 
-    const childrenList = josn.data
-      .filter((item) => item.enable)
-      .map((item) => {
-        return {
-          label: item.label,
-          iconPath: path.join(__filename, "..", "..", "res", "web.svg"),
-          command: {
-            command: "angcyo.openUrl",
-            title: "",
-            arguments: [item.url],
-          },
-          tooltip: item.url,
-          //description: item.url,
-        };
-      });
-    return childrenList;
+    return this.buildTreeItem(josn.data);
+  }
+
+  //构建vs treeItem
+  buildTreeItem(beanList) {
+    if (beanList) {
+      const childrenList = beanList
+        .filter((item) => item.enable)
+        .map((item) => {
+          const treeItem = {
+            label: item.label,
+            iconPath: path.join(__filename, "..", "..", "res", "folder.svg"),
+            tooltip: item.url,
+            description: item.description,
+            childList: item.childList,
+            collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
+          };
+          if (item.url) {
+            treeItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
+            treeItem.iconPath = path.join(
+              __filename,
+              "..",
+              "..",
+              "res",
+              "web.svg"
+            );
+            treeItem.command = {
+              command: "angcyo.openUrl",
+              title: "",
+              arguments: [item.url],
+            };
+          }
+          return treeItem;
+        });
+      return childrenList;
+    }
   }
 }
 
