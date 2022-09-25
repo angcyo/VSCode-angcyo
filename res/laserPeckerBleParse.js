@@ -75,7 +75,7 @@ class HexReader {
         }
         return `${sum.toString(16)} 实际:${this.data.slice(needLength - 4, needLength)}`
       } else {
-        return `字符长度不匹配:请求长度${needLength} 实际长度${this.length}`
+        return `字节长度不匹配:请求长度${needLength / 2} 实际长度${this.length / 2}`
       }
     }
   }
