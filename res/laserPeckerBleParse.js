@@ -72,7 +72,7 @@ class HexReader {
           int = reader.readInt();
           console.log(sum, int);
         }
-        return `${sum.toString(16)} 实际:${this.data.slice(
+        return `${sum.toString(16).toUpperCase()} 实际:${this.data.slice(
           needLength - 4,
           needLength
         )}`;
