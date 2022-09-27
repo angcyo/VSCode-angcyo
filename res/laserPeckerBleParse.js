@@ -77,9 +77,9 @@ class HexReader {
           needLength
         )}`;
       } else {
-        return `字节长度不匹配(包含头字节):请求总长度${needLength / 2} 实际总长度${
-          this.length / 2
-        }`;
+        return `字节长度不匹配(包含头字节):请求总长度${
+          needLength / 2
+        } 实际总长度${this.length / 2}`;
       }
     }
   }
@@ -223,16 +223,18 @@ class HexReader {
             result += `未知:${state} `;
             break;
         }
-        result += `\n D1 激光强度(1~100): ${reader.readInt(1)}`
-        result += `\n D2 打印速度: ${reader.readInt(1)}`
-        result += `\n D3~6 文件索引: ${reader.readInt(4)}`
-        result += `\n D7~8 x: ${reader.readInt(2)}`
-        result += `\n D9~10 y: ${reader.readInt(2)}`
-        result += `\n D11 custom: ${reader.readInt(1)}`
-        result += `\n D12 打印次数: ${reader.readInt(1)}`
-        result += `\n D13 激光类型(1为1064nm激光，0为450nm激光): ${reader.readInt(1)}`
-        result += `\n D14~15 物体直径(mm): ${reader.readInt(2)}`
-        result += `\n D16 雕刻精度(1~5): ${reader.readInt(1)}`
+        result += `\n D1 激光强度(1~100): ${reader.readInt(1)}`;
+        result += `\n D2 打印速度: ${reader.readInt(1)}`;
+        result += `\n D3~6 文件索引: ${reader.readInt(4)}`;
+        result += `\n D7~8 x: ${reader.readInt(2)}`;
+        result += `\n D9~10 y: ${reader.readInt(2)}`;
+        result += `\n D11 custom: ${reader.readInt(1)}`;
+        result += `\n D12 打印次数: ${reader.readInt(1)}`;
+        result += `\n D13 激光类型(1为1064nm激光，0为450nm激光): ${reader.readInt(
+          1
+        )}`;
+        result += `\n D14~15 物体直径(mm): ${reader.readInt(2)}`;
+        result += `\n D16 雕刻精度(1~5): ${reader.readInt(1)}`;
         break;
       case "02":
         result = "打印预览指令 \n";
@@ -240,9 +242,18 @@ class HexReader {
         switch (state) {
           case 1:
             result += "预览flash内存中的图片 ";
+            result += `\n D1~4 文件索引: ${reader.readInt(4)}`;
             break;
           case 2:
             result += "范围预览 ";
+            result += `\n D1~2 宽: ${reader.readInt(2)}`;
+            result += `\n D3~4 高: ${reader.readInt(2)}`;
+            result += `\n D5~6 x: ${reader.readInt(2)}`;
+            result += `\n D7~8 y: ${reader.readInt(2)}`;
+            result += `\n D9 custom: ${reader.readInt(1)}`;
+            result += `\n D10 分辨率: ${reader.readInt(1)}`;
+            result += `\n D11 预览光功率(1~10): ${reader.readInt(1)}`;
+            result += `\n D12~13 物理直径(mm): ${reader.readInt(2)}`;
             break;
           case 3:
             result += "结束预览打印 ";
@@ -255,6 +266,8 @@ class HexReader {
             break;
           case 6:
             result += "电动支架升降控制指令 ";
+            result += `\n D1 支架方向(0:下 1:上): ${reader.readInt(1)}`;
+            result += `\n D2~4 升降步数: ${reader.readInt(3)}`;
             break;
           case 7:
             result += "显示中心点 ";
@@ -291,7 +304,7 @@ class HexReader {
         switch (state) {
           case 1:
             result += "传输文件 ";
-            result += `\n D1~4 数据大小(字节): ${reader.readInt(4)}`
+            result += `\n D1~4 数据大小(字节): ${reader.readInt(4)}`;
             break;
           case 2:
             result += "传输结束 ";
@@ -301,7 +314,7 @@ class HexReader {
             break;
           case 6:
             result += "擦除单个文件 ";
-            result += `\n D1~4 文件索引: ${reader.readInt(4)}`
+            result += `\n D1~4 文件索引: ${reader.readInt(4)}`;
             break;
           default:
             result += `未知:${state} `;
