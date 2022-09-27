@@ -77,7 +77,7 @@ class HexReader {
           needLength
         )}`;
       } else {
-        return `字节长度不匹配:请求长度${needLength / 2} 实际长度${
+        return `字节长度不匹配(包含头字节):请求总长度${needLength / 2} 实际总长度${
           this.length / 2
         }`;
       }
@@ -223,6 +223,16 @@ class HexReader {
             result += `未知:${state} `;
             break;
         }
+        result += `\n D1 激光强度(1~100): ${reader.readInt(1)}`
+        result += `\n D2 打印速度: ${reader.readInt(1)}`
+        result += `\n D3~6 文件索引: ${reader.readInt(4)}`
+        result += `\n D7~8 x: ${reader.readInt(2)}`
+        result += `\n D9~10 y: ${reader.readInt(2)}`
+        result += `\n D11 custom: ${reader.readInt(1)}`
+        result += `\n D12 打印次数: ${reader.readInt(1)}`
+        result += `\n D13 激光类型(1为1064nm激光，0为450nm激光): ${reader.readInt(1)}`
+        result += `\n D14~15 物体直径(mm): ${reader.readInt(2)}`
+        result += `\n D16 雕刻精度(1~5): ${reader.readInt(1)}`
         break;
       case "02":
         result = "打印预览指令 \n";
