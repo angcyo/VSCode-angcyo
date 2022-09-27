@@ -274,6 +274,17 @@ class HexReader {
             break;
           case 8:
             result += "为4角点预览方式 ";
+            result += `\n D1~2 点1的x: ${reader.readInt(2)}`;
+            result += `\n D3~4 点1的y: ${reader.readInt(2)}`;
+            result += `\n D5~6 点2的x: ${reader.readInt(2)}`;
+            result += `\n D7~8 点2的y: ${reader.readInt(2)}`;
+            result += `\n D9 custom: ${reader.readInt(1)}`;
+            result += `\n D10 分辨率: ${reader.readInt(1)}`;
+            result += `\n D11 预览光功率(1~10): ${reader.readInt(1)}`;
+            result += `\n D12~13 点3的x: ${reader.readInt(2)}`;
+            result += `\n D14~15 点3的y: ${reader.readInt(2)}`;
+            result += `\n D16~17 点4的x: ${reader.readInt(2)}`;
+            result += `\n D18~19 点4的y: ${reader.readInt(2)}`;
             break;
           default:
             result += `未知:${state} `;
