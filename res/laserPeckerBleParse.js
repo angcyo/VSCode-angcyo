@@ -155,7 +155,7 @@ class HexReader {
 
     read = reader.readString(2);
     if (read !== undefined) {
-      result += `文件头: ${read} `;
+      result += `数据头: ${read} `;
 
       read = reader.readInt(1);
       if (read !== undefined) {
@@ -163,7 +163,7 @@ class HexReader {
 
         read = reader.readString(1);
         if (read !== undefined) {
-          result += `功能码: ${read}/${parseFuncCode(read, reader)}`;
+          result += `功能码: ${read} ${parseFuncCode(read, reader)}`;
         }
 
         //last
@@ -378,7 +378,7 @@ class HexReader {
 
     read = reader.readString(2);
     if (read !== undefined) {
-      result += `文件头: ${read} `;
+      result += `数据头: ${read} `;
 
       read = reader.readInt(1);
       if (read !== undefined) {
@@ -386,7 +386,7 @@ class HexReader {
 
         read = reader.readString(1);
         if (read !== undefined) {
-          result += `功能码: ${read}/${parseResultFuncCode(read, reader)}`;
+          result += `功能码: ${read} ${parseResultFuncCode(read, reader)}`;
         }
 
         //last

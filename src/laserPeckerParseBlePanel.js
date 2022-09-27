@@ -109,13 +109,13 @@ class LaserPeckerParseBlePanel {
     <body>
       <div class="title-wrap"><img src="${imgPathUri}" width="25"/><h1>LaserPecker指令解析</h1></div>
       <label for="data">指令数据:</label>
-      <textarea id="data" name="data" placeholder="请输入指令数据..." autofocus rows="5"></textarea>
+      <textarea id="data" name="data" placeholder="请输入指令数据..." autofocus rows="3"></textarea>
       <div class="button-wrap">
         <button id="parse">解析指令</button>
         <button id="parseResult">解析返回值</button>
       </div>
       <label for="result">解析数据:</label>
-      <textarea id="result" name="result" placeholder="解析后的数据..." rows="20" disabled></textarea>
+      <textarea id="result" name="result" placeholder="解析后的数据..." rows="28" disabled></textarea>
       <script nonce="${nonce}" src="${scriptUri}"></script>
     </body>
     </html>`;
