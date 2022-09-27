@@ -291,6 +291,7 @@ class HexReader {
         switch (state) {
           case 1:
             result += "传输文件 ";
+            result += `\n D1~4 数据大小(字节): ${reader.readInt(4)}`
             break;
           case 2:
             result += "传输结束 ";
@@ -300,6 +301,7 @@ class HexReader {
             break;
           case 6:
             result += "擦除单个文件 ";
+            result += `\n D1~4 文件索引: ${reader.readInt(4)}`
             break;
           default:
             result += `未知:${state} `;
