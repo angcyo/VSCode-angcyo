@@ -23,19 +23,28 @@ function activate(context) {
   //显示欢迎页
   vscode.commands.executeCommand("setContext", "angcyo.showWelcome", true);
 
-  vscode.window.registerTreeDataProvider(
-    "welcomeViews",
-    new WelcomViewsProvider()
-  );
-  vscode.window.registerTreeDataProvider(
-    "angcyoViews",
-    new AngcyoViewsProvider()
-  );
-  vscode.window.registerTreeDataProvider("httpViews", new HttpViewsProvider());
+  const welcomViewsProvider = new WelcomViewsProvider();
+  vscode.window.registerTreeDataProvider("welcomeViews", welcomViewsProvider);
+
+  const angcyoViewsProvider = new AngcyoViewsProvider();
+  vscode.window.registerTreeDataProvider("angcyoViews", angcyoViewsProvider);
+
+  const httpViewsProvider = new HttpViewsProvider();
+  vscode.window.registerTreeDataProvider("httpViews", httpViewsProvider);
+
+  const laserPeckerViewsProvider = new LaserPeckerViewsProvider();
   vscode.window.registerTreeDataProvider(
     "laserPeckerViews",
-    new LaserPeckerViewsProvider()
+    laserPeckerViewsProvider
   );
+
+  //注册一个刷新数据的指令
+  vscode.commands.registerCommand("angcyo.refresh", () => {
+    welcomViewsProvider.refresh();
+    angcyoViewsProvider.refresh();
+    httpViewsProvider.refresh();
+    laserPeckerViewsProvider.refresh();
+  });
 
   //打开网页
   vscode.commands.registerCommand("angcyo.openUrl", async (url) => {

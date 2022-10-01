@@ -24,6 +24,22 @@
   ],
   "main": "./extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "angcyo.refresh",
+        "title": "Refresh Angcyo",
+        "icon": "res/refresh.svg"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "angcyo.refresh",
+          "when": "view == welcomeViews || view == angcyoViews || view == httpViews || view == laserPeckerViews",
+          "group": "navigation"
+        }
+      ]
+    },
     "viewsWelcome": [
       {
         "view": "welcomeViews",
