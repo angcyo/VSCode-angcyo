@@ -93,27 +93,53 @@ class HexReader {
   const resultText = document.getElementById("result");
   const parseButton = document.getElementById("parse");
   const parseResultButton = document.getElementById("parseResult");
+  const parseWorkStateResultButton = document.getElementById(
+    "parseWorkStateResult"
+  );
+  const parseSettingResultButton =
+    document.getElementById("parseSettingResult");
 
-  //解析发送的指令
-  parseButton.addEventListener("click", (event) => {
+  function formatValue() {
     const data = dataText.value.toUpperCase().replace(/\s/g, "");
     if (data && data.startsWith("AABB")) {
-      resultText.value = formatData(data) + "\n" + parseData(data);
+      return data;
     } else {
       vscode.postMessage({
         text: "无效的指令",
       });
+      return undefined;
+    }
+  }
+
+  //解析发送的指令
+  parseButton.addEventListener("click", (event) => {
+    const data = formatValue();
+    if (data) {
+      resultText.value = formatData(data) + "\n" + parseData(data);
     }
   });
   //解析指令返回的数据
   parseResultButton.addEventListener("click", (event) => {
-    const data = dataText.value.toUpperCase().replace(/\s/g, "");
-    if (data && data.startsWith("AABB")) {
-      resultText.value = formatData(data) + "\n" + parseResultData(data);
-    } else {
-      vscode.postMessage({
-        text: "无效的数据",
-      });
+    const data = formatValue();
+    if (data) {
+      resultText.value =
+        formatData(data) + "\n" + parseResultData(data, false, false);
+    }
+  });
+  //解析工作状态指令返回的数据
+  parseWorkStateResultButton.addEventListener("click", (event) => {
+    const data = formatValue();
+    if (data) {
+      resultText.value =
+        formatData(data) + "\n" + parseResultData(data, true, false);
+    }
+  });
+  //解析设置状态指令返回的数据
+  parseSettingResultButton.addEventListener("click", (event) => {
+    const data = formatValue();
+    if (data) {
+      resultText.value =
+        formatData(data) + "\n" + parseResultData(data, false, true);
     }
   });
 
@@ -223,18 +249,18 @@ class HexReader {
             result += `未知:${state} `;
             break;
         }
-        result += `\n D1 激光强度(1~100): ${reader.readInt(1)}`;
-        result += `\n D2 打印速度: ${reader.readInt(1)}`;
-        result += `\n D3~6 文件索引: ${reader.readInt(4)}`;
-        result += `\n D7~8 x: ${reader.readInt(2)}`;
-        result += `\n D9~10 y: ${reader.readInt(2)}`;
-        result += `\n D11 custom: ${reader.readInt(1)}`;
-        result += `\n D12 打印次数: ${reader.readInt(1)}`;
-        result += `\n D13 激光类型(1为1064nm激光，0为450nm激光): ${reader.readInt(
+        result += `\nD1 激光强度(1~100): ${reader.readInt(1)}`;
+        result += `\nD2 打印速度: ${reader.readInt(1)}`;
+        result += `\nD3~6 文件索引: ${reader.readInt(4)}`;
+        result += `\nD7~8 x: ${reader.readInt(2)}`;
+        result += `\nD9~10 y: ${reader.readInt(2)}`;
+        result += `\nD11 custom: ${reader.readInt(1)}`;
+        result += `\nD12 打印次数: ${reader.readInt(1)}`;
+        result += `\nD13 激光类型(1为1064nm激光，0为450nm激光): ${reader.readInt(
           1
         )}`;
-        result += `\n D14~15 物体直径(mm): ${reader.readInt(2)}`;
-        result += `\n D16 雕刻精度(1~5): ${reader.readInt(1)}`;
+        result += `\nD14~15 物体直径(mm): ${reader.readInt(2)}`;
+        result += `\nD16 雕刻精度(1~5): ${reader.readInt(1)}`;
         break;
       case "02":
         result = "打印预览指令 \n";
@@ -242,18 +268,18 @@ class HexReader {
         switch (state) {
           case 1:
             result += "预览flash内存中的图片 ";
-            result += `\n D1~4 文件索引: ${reader.readInt(4)}`;
+            result += `\nD1~4 文件索引: ${reader.readInt(4)}`;
             break;
           case 2:
             result += "范围预览 ";
-            result += `\n D1~2 宽: ${reader.readInt(2)}`;
-            result += `\n D3~4 高: ${reader.readInt(2)}`;
-            result += `\n D5~6 x: ${reader.readInt(2)}`;
-            result += `\n D7~8 y: ${reader.readInt(2)}`;
-            result += `\n D9 custom: ${reader.readInt(1)}`;
-            result += `\n D10 分辨率: ${reader.readInt(1)}`;
-            result += `\n D11 预览光功率(1~10): ${reader.readInt(1)}`;
-            result += `\n D12~13 物理直径(mm): ${reader.readInt(2)}`;
+            result += `\nD1~2 宽: ${reader.readInt(2)}`;
+            result += `\nD3~4 高: ${reader.readInt(2)}`;
+            result += `\nD5~6 x: ${reader.readInt(2)}`;
+            result += `\nD7~8 y: ${reader.readInt(2)}`;
+            result += `\nD9 custom: ${reader.readInt(1)}`;
+            result += `\nD10 分辨率: ${reader.readInt(1)}`;
+            result += `\nD11 预览光功率(1~10): ${reader.readInt(1)}`;
+            result += `\nD12~13 物理直径(mm): ${reader.readInt(2)}`;
             break;
           case 3:
             result += "结束预览打印 ";
@@ -266,25 +292,25 @@ class HexReader {
             break;
           case 6:
             result += "电动支架升降控制指令 ";
-            result += `\n D1 支架方向(0:下 1:上): ${reader.readInt(1)}`;
-            result += `\n D2~4 升降步数: ${reader.readInt(3)}`;
+            result += `\nD1 支架方向(0:下 1:上): ${reader.readInt(1)}`;
+            result += `\nD2~4 升降步数: ${reader.readInt(3)}`;
             break;
           case 7:
             result += "显示中心点 ";
             break;
           case 8:
             result += "为4角点预览方式 ";
-            result += `\n D1~2 点1的x: ${reader.readInt(2)}`;
-            result += `\n D3~4 点1的y: ${reader.readInt(2)}`;
-            result += `\n D5~6 点2的x: ${reader.readInt(2)}`;
-            result += `\n D7~8 点2的y: ${reader.readInt(2)}`;
-            result += `\n D9 custom: ${reader.readInt(1)}`;
-            result += `\n D10 分辨率: ${reader.readInt(1)}`;
-            result += `\n D11 预览光功率(1~10): ${reader.readInt(1)}`;
-            result += `\n D12~13 点3的x: ${reader.readInt(2)}`;
-            result += `\n D14~15 点3的y: ${reader.readInt(2)}`;
-            result += `\n D16~17 点4的x: ${reader.readInt(2)}`;
-            result += `\n D18~19 点4的y: ${reader.readInt(2)}`;
+            result += `\nD1~2 点1的x: ${reader.readInt(2)}`;
+            result += `\nD3~4 点1的y: ${reader.readInt(2)}`;
+            result += `\nD5~6 点2的x: ${reader.readInt(2)}`;
+            result += `\nD7~8 点2的y: ${reader.readInt(2)}`;
+            result += `\nD9 custom: ${reader.readInt(1)}`;
+            result += `\nD10 分辨率: ${reader.readInt(1)}`;
+            result += `\nD11 预览光功率(1~10): ${reader.readInt(1)}`;
+            result += `\nD12~13 点3的x: ${reader.readInt(2)}`;
+            result += `\nD14~15 点3的y: ${reader.readInt(2)}`;
+            result += `\nD16~17 点4的x: ${reader.readInt(2)}`;
+            result += `\nD18~19 点4的y: ${reader.readInt(2)}`;
             break;
           default:
             result += `未知:${state} `;
@@ -315,7 +341,7 @@ class HexReader {
         switch (state) {
           case 1:
             result += "传输文件 ";
-            result += `\n D1~4 数据大小(字节): ${reader.readInt(4)}`;
+            result += `\nD1~4 数据大小(字节): ${reader.readInt(4)}`;
             break;
           case 2:
             result += "传输结束 ";
@@ -325,7 +351,7 @@ class HexReader {
             break;
           case 6:
             result += "擦除单个文件 ";
-            result += `\n D1~4 文件索引: ${reader.readInt(4)}`;
+            result += `\nD1~4 文件索引: ${reader.readInt(4)}`;
             break;
           default:
             result += `未知:${state} `;
@@ -407,7 +433,7 @@ class HexReader {
   }
 
   //指令返回值解析
-  function parseResultData(data) {
+  function parseResultData(data, parseWorkState, parseSetting) {
     const reader = new HexReader(data);
     let result = "";
     let read;
@@ -422,7 +448,14 @@ class HexReader {
 
         read = reader.readString(1);
         if (read !== undefined) {
-          result += `功能码: ${read} ${parseResultFuncCode(read, reader)}`;
+          result += `功能码: ${read} `;
+          if (parseWorkState) {
+            result += parseWorkStateResult(read, reader);
+          } else if (parseSetting) {
+            result += parseSettingResult(read, reader);
+          } else {
+            result += parseResultFuncCode(read, reader);
+          }
         }
 
         //last
@@ -469,6 +502,162 @@ class HexReader {
         result = "未知指令";
         break;
     }
+    return result;
+  }
+
+  //解析工作状态指令返回数据
+  function parseWorkStateResult(func, reader) {
+    let result = "";
+    if (func == "00") {
+      result = "查询指令";
+    } else {
+      result = "未知指令";
+    }
+
+    result += " 查询工作状态 ";
+
+    const mode = reader.readInt(1);
+    result += `\n工作模式: `;
+    switch (mode) {
+      case 0x01:
+        result += `打印模式`;
+        break;
+      case 0x02:
+        result += `打印预览模式`;
+        break;
+      case 0x04:
+        result += `调焦模式`;
+        break;
+      case 0x05:
+        result += `文件下载模式`;
+        break;
+      case 0x06:
+        result += `空闲模式`;
+        break;
+      case 0x07:
+        result += `关机模式`;
+        break;
+      case 0x08:
+        result += `设置模式`;
+        break;
+      case 0x09:
+        result += `出厂模式`;
+        break;
+      default:
+        result += `未知:${mode}`;
+        break;
+    }
+
+    const workState = reader.readInt(1);
+    result += `\n当前模式工作状态(工作中，暂停，结束。): ${workState}`;
+
+    result += `\n打印进度: ${reader.readInt(1)}%`;
+    result += `\n激光强度: ${reader.readInt(1)}%`;
+    result += `\n打印速度: ${reader.readInt(1)}%`;
+
+    const error = reader.readInt(1);
+    result += `\n错误状态: `;
+    switch (error) {
+      case 0:
+        result += `无错误`;
+        break;
+      case 1:
+        result += `不处于安全状态，且自由模式没开。`;
+        break;
+      case 2:
+        result += `打印超过边界报警`;
+        break;
+      case 3:
+        result += `激光工作温度报警`;
+        break;
+      case 4:
+        result += `打印过程中移动设备报警`;
+        break;
+      case 5:
+        result += `打印过程中遮挡激光报警`;
+        break;
+      case 6:
+        result += `打印数据错误`;
+        break;
+      case 7:
+        result += `文件编号查询错误`;
+        break;
+      case 8:
+        result += `陀螺仪自检错误`;
+        break;
+      case 9:
+        result += `flash自检错误`;
+        break;
+      default:
+        result += `未知错误:${error}`;
+        break;
+    }
+
+    result += `\n文件索引: ${reader.readInt(4)}`;
+    result += `\n工作温度: ${reader.readInt(1)}`;
+    result += `\ncustom: ${reader.readInt(1)}`;
+    result += `\nZ轴连接状态(0:未连接 1:连接): ${reader.readInt(1)}`;
+    result += `\n打印次数: ${reader.readInt(1)}`;
+
+    const mState = reader.readInt(1);
+    result += `\n工作模式选择位: `;
+    switch (mState) {
+      case 0:
+        result += `5W激光`;
+        break;
+      case 1:
+        result += `10W激光`;
+        break;
+      case 2:
+        result += `单色笔模式`;
+        break;
+      case 3:
+        result += `刀切割模式`;
+        break;
+      case 4:
+        result += `彩绘模式`;
+        break;
+      case 5:
+        result += `CNC模式`;
+        break;
+      default:
+        result += `未知模式:${mState}`;
+        break;
+    }
+
+    result += `\nR轴连接状态: ${reader.readInt(1)}`;
+    result += `\nS轴连接状态: ${reader.readInt(1)}`;
+
+    return result;
+  }
+
+  function parseSettingResult(func, reader) {
+    let result = "";
+    if (func == "00") {
+      result = "查询指令";
+    } else {
+      result = "未知指令";
+    }
+
+    result += " 查询设置状态 ";
+
+    result += `\n自由模式(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\n工作提示音(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\n连续预览(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\nGCode预览(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\n安全状态(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\ncustom: ${reader.readInt(1)}`;
+    result += `\nZ轴(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\nZ轴方向(0:直板 1:圆柱): ${reader.readInt(1)}`;
+    result += `\n触摸按键(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\n测距红外只是光(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\n一键打印(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\nR轴(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\nS轴(0:关闭 1:打开): ${reader.readInt(1)}`;
+    result += `\n旋转方向(0:反转 1:正转): ${reader.readInt(1)}`;
+    result += `\n激光功率选择(0:app 1:指令): ${reader.readInt(1)}`;
+    result += `\nstate: ${reader.readInt(1)}`;
+
     return result;
   }
 })();
