@@ -1,17 +1,17 @@
 const vscode = require("vscode");
 
-var laserPeckerParseBlePanel = undefined;
+var svgParsePanel = undefined;
 
-class LaserPeckerParseBlePanel {
+class SvgParsePanel {
   // 创建或者显示panel
   createOrShow(context) {
-    if (laserPeckerParseBlePanel) {
-      laserPeckerParseBlePanel.reveal(vscode.ViewColumn.One);
+    if (svgParsePanel) {
+      svgParsePanel.reveal(vscode.ViewColumn.One);
     } else {
       // Otherwise, create a new panel.
-      laserPeckerParseBlePanel = vscode.window.createWebviewPanel(
-        "LaserPeckerBleParsePanel",
-        "LaserPecker指令解析",
+      svgParsePanel = vscode.window.createWebviewPanel(
+        "SvgParsePanel",
+        "Svg解析",
         vscode.ViewColumn.One, //vscode.window.activeTextEditor
         {
           // Enable javascript in the webview
@@ -25,8 +25,8 @@ class LaserPeckerParseBlePanel {
       );
       this._extensionUri = context.extensionUri;
 
-      laserPeckerParseBlePanel.onDidDispose(() => this.dispose(), null, null);
-      laserPeckerParseBlePanel.webview.onDidReceiveMessage(
+      svgParsePanel.onDidDispose(() => this.dispose(), null, null);
+      svgParsePanel.webview.onDidReceiveMessage(
         (message) => {
           switch (message.command) {
             default:
@@ -39,23 +39,23 @@ class LaserPeckerParseBlePanel {
       );
     }
 
-    laserPeckerParseBlePanel.webview.html = this.getHtmlBody();
+    svgParsePanel.webview.html = this.getHtmlBody();
   }
 
   dispose() {
     // Clean up our resources
-    laserPeckerParseBlePanel.dispose();
-    laserPeckerParseBlePanel = undefined;
+    svgParsePanel.dispose();
+    svgParsePanel = undefined;
   }
 
   getHtmlBody() {
-    const webview = laserPeckerParseBlePanel.webview;
+    const webview = svgParsePanel.webview;
 
     // Local path to main script run in the webview
     const scriptPath = vscode.Uri.joinPath(
       this._extensionUri,
       "res",
-      "laserPeckerBleParse.js"
+      "svgParse.js"
     );
     const scriptUri = webview.asWebviewUri(scriptPath);
 
@@ -103,20 +103,26 @@ class LaserPeckerParseBlePanel {
 				<link href="${stylesVSCodeUri}" rel="stylesheet">
         <link href="${stylesMainUri}" rel="stylesheet">
 
-        <title>LaserPecker指令解析</title>
+        <title>Svg解析</title>
     </head>
     <body>
-      <div class="title-wrap"><img src="${imgPathUri}" width="25"/><h1>LaserPecker指令解析</h1></div>
-      <label for="data">指令数据:</label>
-      <textarea id="data" name="data" placeholder="请输入指令数据..." autofocus rows="3"></textarea>
-      <div class="button-wrap">
-        <button id="parse">解析指令</button>
-        <button id="parseResult">解析返回值</button>
-        <button id="parseWorkStateResult">解析(工作状态)返回值</button>
-        <button id="parseSettingResult">解析(设置状态)返回值</button>
+      <div class="title-wrap"><img src="${imgPathUri}" width="25"/><h1>Svg数据解析</h1></div>
+      <label for="data">Svg数据(纯路径数据或者Svg标签数据):</label>
+
+      <div class="propertyWrap">
+        <label for="width">width:</label><input id="width" type="text" value="100">
+        <label for="height">height:</label><input id="height" type="text" value="100">
+        <label for="viewBox">viewBox:</label><input id="viewBox" type="text" value="0 0 100 100">
+        <label for="showBorder">显示边框:</label><input id="showBorder" type="checkbox">
       </div>
-      <label for="result">解析数据:</label>
-      <textarea id="result" name="result" placeholder="解析后的数据..." rows="28" disabled></textarea>
+
+      <textarea id="data" name="data" style="width:100%" placeholder="请输入Svg数据..." autofocus rows="20"></textarea>
+      <div class="button-wrap" style="display: flex; margin-top: 1rem; margin-bottom: 1rem">
+        <button id="parse">解析</button>
+      </div>
+      <label>输出结果:</label>
+      <div id="svgWrap" class="svg-wrap" style="margin-top: 1rem; margin-bottom: 1rem">
+      </div>
       <script nonce="${nonce}" src="${scriptUri}"></script>
     </body>
     </html>`;
@@ -133,4 +139,4 @@ class LaserPeckerParseBlePanel {
   }
 }
 
-exports.LaserPeckerParseBlePanel = new LaserPeckerParseBlePanel();
+exports.SvgParsePanel = new SvgParsePanel();

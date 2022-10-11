@@ -3,9 +3,10 @@
 const vscode = require("vscode");
 const { AngcyoViewsProvider } = require("./src/angcyoViewsProvider");
 const { HttpViewsProvider } = require("./src/httpViewsProvider");
-const { laserPeckerParseBlePanel } = require("./src/laserPeckerParseBlePanel");
+const { LaserPeckerParseBlePanel } = require("./src/laserPeckerParseBlePanel");
 const { LaserPeckerParsePanel } = require("./src/laserPeckerParsePanel");
 const { LaserPeckerViewsProvider } = require("./src/laserPeckerViewsProvider");
+const { SvgParsePanel } = require("./src/svgParsePanel");
 const { WelcomViewsProvider } = require("./src/welcomViewsProvider");
 
 // this method is called when your extension is activated
@@ -61,7 +62,13 @@ function activate(context) {
   //LaserPecker蓝牙指令解析
   vscode.commands.registerCommand("angcyo.laserPeckerBleParse", () => {
     console.log(`LaserPecker蓝牙指令解析`);
-    laserPeckerParseBlePanel.createOrShow(context);
+    LaserPeckerParseBlePanel.createOrShow(context);
+  });
+
+  //Svg解析
+  vscode.commands.registerCommand("angcyo.svgParse", () => {
+    console.log(`Svg解析`);
+    SvgParsePanel.createOrShow(context);
   });
 }
 

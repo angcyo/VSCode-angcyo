@@ -1,5 +1,9 @@
 # Change Log
 
+## 2022-10-12
+
++ svg parse
+
 ## 2022-10-02
 
 + refresh

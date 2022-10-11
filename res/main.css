@@ -1,43 +1,73 @@
 html {
-  width: 100%;
+    width: 100%;
 }
 
 body {
-  background-color: transparent;
-  width: 100%;
+    background-color: transparent;
+    width: 100%;
 }
 
 .button-wrap {
-  display: flex;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+    display: flex;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .button-wrap button {
-  margin-right: 1rem;
+    margin-right: 1rem;
 }
 
 .image-wrap {
-  display: flex;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+    display: flex;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .image-wrap img {
-  width: 33.3%;
-  display: inline;
+    width: 33.3%;
+    display: inline;
 }
 
-.title-wrap{
+.title-wrap {
     vertical-align: middle;
 }
 
 .title-wrap * {
-  display: inline-block;
+    display: inline-block;
 }
 
 textarea {
-  width: 100%;
-  max-width: 100%;
-  min-width: 100%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+}
+
+.propertyWrap {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.propertyWrap input {
+    display: inline-block;
+    width: 160px;
+    margin-right: 1rem;
+}
+
+#width {
+    width: 80px;
+}
+
+#height {
+    width: 80px;
+}
+
+#showBorder {
+    width: auto;
+}
+
+#svgWrap svg {
+    width: auto;
+    height: auto;
+    border-color: var(--vscode-focusBorder);
+    border-style: hidden;
 }
