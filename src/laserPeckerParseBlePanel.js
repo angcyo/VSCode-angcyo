@@ -114,6 +114,7 @@ class LaserPeckerParseBlePanel {
         <button id="parseResult">解析返回值</button>
         <button id="parseWorkStateResult">解析(工作状态)返回值</button>
         <button id="parseSettingResult">解析(设置状态)返回值</button>
+        <button id="complete">补齐指令(+头+长度+校验和)</button>
       </div>
       <label for="result">解析数据:</label>
       <textarea id="result" name="result" placeholder="解析后的数据..." rows="28" disabled></textarea>

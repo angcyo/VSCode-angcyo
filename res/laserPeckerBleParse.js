@@ -54,6 +54,25 @@ class HexReader {
   }
 
   //校验和
+  sunCheckValue() {
+    if (this.length >= 3 * 2) {
+      //包含长度字节
+      this.offset = 6;
+      let sum = 0;
+      let int = this.readInt();
+      console.log(sum, int);
+      while (int !== undefined) {
+        sum += int;
+        int = this.readInt();
+        console.log(sum, int);
+      }
+      return sum.toString(16).padStart(4, "0").toUpperCase();
+    } else {
+      return "";
+    }
+  }
+
+  //校验和
   sunCheck() {
     if (this.length >= 3 * 2) {
       //包含长度字节
@@ -98,6 +117,7 @@ class HexReader {
   );
   const parseSettingResultButton =
     document.getElementById("parseSettingResult");
+  const completeButton = document.getElementById("complete");
 
   function formatValue() {
     const data = dataText.value.toUpperCase().replace(/\s/g, "");
@@ -140,6 +160,19 @@ class HexReader {
     if (data) {
       resultText.value =
         formatData(data) + "\n" + parseResultData(data, false, true);
+    }
+  });
+  completeButton.addEventListener("click", (event) => {
+    let data = dataText.value.toUpperCase().replace(/\s/g, "");
+    if (data) {
+      //转成大写, 并且去除所有空格
+      const head = "AABB"; //指令头
+      let len = (data.length / 2 + 2).toString(16); //指令长度
+      len = len.padStart(2, "0").toUpperCase();
+      data = `${head}${len}${data}`;
+      const reader = new HexReader(data);
+      const reslut = `${data}${reader.sunCheckValue()}`
+      resultText.value = `${reslut}\n${formatData(reslut)}`;
     }
   });
 
