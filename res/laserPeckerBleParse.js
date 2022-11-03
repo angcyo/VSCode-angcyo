@@ -91,10 +91,15 @@ class HexReader {
           int = reader.readInt();
           console.log(sum, int);
         }
-        return `${sum.toString(16).toUpperCase()} 实际:${this.data.slice(
-          needLength - 4,
-          needLength
-        )}`;
+        const sumCheck = sum.toString(16).toUpperCase().padStart(4, "0");
+        const sumCheckRead = this.data.slice(needLength - 4, needLength);
+        let verify;
+        if (sumCheck === sumCheckRead) {
+          verify = "√";
+        } else {
+          verify = "×";
+        }
+        return `${sumCheck} 实际:${sumCheckRead} ${verify}`;
       } else {
         return `字节长度不匹配(包含头字节):请求总长度${
           needLength / 2
@@ -171,7 +176,7 @@ class HexReader {
       len = len.padStart(2, "0").toUpperCase();
       data = `${head}${len}${data}`;
       const reader = new HexReader(data);
-      const reslut = `${data}${reader.sunCheckValue()}`
+      const reslut = `${data}${reader.sunCheckValue()}`;
       resultText.value = `${reslut}\n${formatData(reslut)}`;
     }
   });
