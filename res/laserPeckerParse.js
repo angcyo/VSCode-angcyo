@@ -16,6 +16,12 @@
 
   const imageWrap = document.getElementById("imageWrap");
 
+  //持久化
+  dataText.value = localStorage.getItem("laserPeckerParseData");
+  dataText.addEventListener("change", () => {
+    localStorage.setItem("laserPeckerParseData", dataText.value);
+  });
+
   //
   formatButton.addEventListener("click", (event) => {
     resultText.value = JSON.stringify(JSON.parse(dataText.value), null, 4);

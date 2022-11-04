@@ -55,6 +55,15 @@ class LaserPeckerViewsProvider {
         tooltip: "Svg数据解析",
         //description: item.url,
       },
+      {
+        label: "lpbin解析",
+        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        command: {
+          command: "angcyo.binParse",
+        },
+        tooltip: "lpbin解析",
+        //description: item.url,
+      },
     ];
     const urlItems = await Api.fetchUrlChildrenList(
       `https://gitcode.net/angcyo/json/-/raw/master/laserPeckerUrl.json`

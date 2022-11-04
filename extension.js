@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
 const { AngcyoViewsProvider } = require("./src/angcyoViewsProvider");
+const { BinParsePanel } = require("./src/binParsePanel");
 const { HttpViewsProvider } = require("./src/httpViewsProvider");
 const { LaserPeckerParseBlePanel } = require("./src/laserPeckerParseBlePanel");
 const { LaserPeckerParsePanel } = require("./src/laserPeckerParsePanel");
@@ -69,6 +70,12 @@ function activate(context) {
   vscode.commands.registerCommand("angcyo.svgParse", () => {
     console.log(`Svg解析`);
     SvgParsePanel.createOrShow(context);
+  });
+
+  //lpbin解析
+  vscode.commands.registerCommand("angcyo.binParse", () => {
+    console.log(`lpbin解析`);
+    BinParsePanel.createOrShow(context);
   });
 }
 

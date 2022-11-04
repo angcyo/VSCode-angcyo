@@ -109,6 +109,8 @@ class HexReader {
   }
 }
 
+// 脚本内容
+
 (function () {
   const vscode = acquireVsCodeApi();
   console.log("初始化laserPeckerParseBlePanel.js", vscode, window);
@@ -135,6 +137,12 @@ class HexReader {
       return undefined;
     }
   }
+
+  //持久化
+  dataText.value = localStorage.getItem("laserPeckerParseBleData");
+  dataText.addEventListener("change", () => {
+    localStorage.setItem("laserPeckerParseBleData", dataText.value);
+  });
 
   //解析发送的指令
   parseButton.addEventListener("click", (event) => {
