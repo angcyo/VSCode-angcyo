@@ -1,5 +1,23 @@
 # Welcome to your VS Code Extension
 
+## 文档
+
+https://code.visualstudio.com/api
+
+## 发布扩展
+
+https://code.visualstudio.com/api/working-with-extensions/publishing-extension
+
+```
+$ cd myExtension
+$ vsce package
+# myExtension.vsix generated
+$ vsce publish
+# <publisherID>.myExtension published to VS Code Marketplace
+```
+
+https://marketplace.visualstudio.com/manage/publishers/angcyo
+
 ## What's in the folder
 
 * This folder contains all of the files necessary for your extension.
