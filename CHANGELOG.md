@@ -1,5 +1,10 @@
 # Change Log
 
+# 2022-11-4
+
++ localStorage
++ lpbin
+
 # 2022-10-28
 
 + `√` or `×`
