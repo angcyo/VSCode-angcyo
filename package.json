@@ -2,7 +2,7 @@
   "name": "angcyo",
   "displayName": "angcyo",
   "description": "还能这么玩, `骚年`我在群里等你! 一个能把Idea写崩溃的蓝神.",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "license": "MIT",
   "publisher": "angcyo",
   "repository": {
@@ -80,50 +80,10 @@
       "type": "object",
       "title": "angcyo configuration",
       "properties": {
-        "angcyo-memo.count": {
-          "type": "number",
-          "description": "备忘录的数量",
-          "default": 0
-        },
-        "angcyo-memo.memo1": {
+        "angcyo-memo.memo": {
           "type": "string",
-          "description": "备忘录1"
-        },
-        "angcyo-memo.memo2": {
-          "type": "string",
-          "description": "备忘录2"
-        },
-        "angcyo-memo.memo3": {
-          "type": "string",
-          "description": "备忘录3"
-        },
-        "angcyo-memo.memo4": {
-          "type": "string",
-          "description": "备忘录4"
-        },
-        "angcyo-memo.memo5": {
-          "type": "string",
-          "description": "备忘录5"
-        },
-        "angcyo-memo.memo6": {
-          "type": "string",
-          "description": "备忘录6"
-        },
-        "angcyo-memo.memo7": {
-          "type": "string",
-          "description": "备忘录7"
-        },
-        "angcyo-memo.memo8": {
-          "type": "string",
-          "description": "备忘录8"
-        },
-        "angcyo-memo.memo9": {
-          "type": "string",
-          "description": "备忘录9"
-        },
-        "angcyo-memo.memo10": {
-          "type": "string",
-          "description": "备忘录10"
+          "description": "备忘录",
+          "default": ""
         }
       }
     }
