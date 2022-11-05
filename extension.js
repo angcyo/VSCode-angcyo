@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
+const { AngcyoMemoPanel } = require("./src/angcyoMemoPanel");
 const { AngcyoViewsProvider } = require("./src/angcyoViewsProvider");
 const { BinParsePanel } = require("./src/binParsePanel");
 const { HttpViewsProvider } = require("./src/httpViewsProvider");
@@ -76,6 +77,12 @@ function activate(context) {
   vscode.commands.registerCommand("angcyo.binParse", () => {
     console.log(`lpbin解析`);
     BinParsePanel.createOrShow(context);
+  });
+
+  //angcyo.memo 备忘录
+  vscode.commands.registerCommand("angcyo.memo", () => {
+    console.log(`备忘录`);
+    AngcyoMemoPanel.createOrShow(context);
   });
 }
 

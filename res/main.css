@@ -97,3 +97,19 @@ textarea {
 .timestamp label {
   margin-right: 0.5rem;
 }
+
+.memo-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.memo-wrap label {
+  padding: 1rem;
+}
+
+.memo-wrap textarea {
+  flex: 1;
+  width: auto;
+  max-width: auto;
+  min-width: auto;
+}
