@@ -36,9 +36,22 @@ class AngcyoMemoPanel {
               const index = message.index;
               const value = message.value;
 
+              const memoJson = vscode.workspace
+                .getConfiguration("angcyo-memo")
+                .get(`memo`, "");
+              let memo = {};
+              if (memoJson) {
+                memo = JSON.parse(memoJson);
+              }
+              if (value) {
+                memo[`memo${index}`] = value;
+              } else {
+                delete memo[`memo${index}`];
+              }
+
               vscode.workspace
                 .getConfiguration("angcyo-memo")
-                .update(`memo${index}`, value, true);
+                .update(`memo`, JSON.stringify(memo), true);
 
               break;
             default:
@@ -54,13 +67,19 @@ class AngcyoMemoPanel {
     angcyoMemoPanel.webview.html = this.getHtmlBody();
 
     //发送数据到webview
-    for (let index = 0; index < 10; index++) {
+    const memoJson = vscode.workspace
+      .getConfiguration("angcyo-memo")
+      .get(`memo`, "");
+    let memo = {};
+    if (memoJson) {
+      memo = JSON.parse(memoJson);
+    }
+
+    for (let index = 1; index <= 10; index++) {
       angcyoMemoPanel.webview.postMessage({
         type: "memo",
-        index: index + 1,
-        value: vscode.workspace
-          .getConfiguration("angcyo-memo")
-          .get(`memo${index + 1}`, ""),
+        index: index,
+        value: memo[`memo${index}`] || "",
       });
     }
   }
@@ -131,55 +150,7 @@ class AngcyoMemoPanel {
     <body>
       <div class="title-wrap"><img src="${imgPathUri}" width="25"/><h1>备忘录</h1></div>
 
-      <div class="margin memo-wrap">
-        <label for="memo1">1:</label>
-        <textarea id="memo1" name="memo1" placeholder="这个需要记一下..." autofocus rows="2"></textarea>
-      </div>
-
-      <div class="margin memo-wrap">
-        <label for="memo2">2:</label>
-        <textarea id="memo2" name="memo2" placeholder="这个需要记一下..." rows="2"></textarea>
-      </div>
-
-     <div class="margin memo-wrap">
-      <label for="memo3">3:</label>
-      <textarea id="memo3" name="memo3" placeholder="这个需要记一下..." rows="2"></textarea>
-     </div>
-
-      <div class="margin memo-wrap">
-        <label for="memo4">4:</label>
-         <textarea id="memo4" name="memo4" placeholder="这个需要记一下..." rows="2"></textarea>
-      </div>
-
-      <div class="margin memo-wrap">
-        <label for="memo5">5:</label>
-        <textarea id="memo5" name="memo5" placeholder="这个需要记一下..." rows="2"></textarea>
-      </div>
-
-      <div class="margin memo-wrap">
-        <label for="memo6">6:</label>
-        <textarea id="memo6" name="memo6" placeholder="这个需要记一下..." rows="2"></textarea>
-      </div>
-
-      <div class="margin memo-wrap">
-       <label for="memo7">7:</label>
-        <textarea id="memo7" name="memo7" placeholder="这个需要记一下..." rows="2"></textarea>
-      </div>
-
-      <div class="margin memo-wrap">
-        <label for="memo8">8:</label>
-        <textarea id="memo8" name="memo8" placeholder="这个需要记一下..." rows="2"></textarea>
-      </div>
-
-      <div class="margin memo-wrap">
-          <label for="memo9">9:</label>
-          <textarea id="memo9" name="memo9" placeholder="这个需要记一下..." rows="2"></textarea>
-      </div>
-
-      <div class="margin memo-wrap">
-        <label for="memo10">10:</label>
-        <textarea id="memo10" name="memo10" placeholder="这个需要记一下..." rows="2"></textarea>
-      </div>
+      <div id="memoWrap"></div>
 
       <script nonce="${nonce}" src="${scriptUri}"></script>
     </body>

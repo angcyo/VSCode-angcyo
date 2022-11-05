@@ -8,10 +8,24 @@
   const vscode = acquireVsCodeApi();
   //console.log("初始化svgParse.js", vscode, window)
 
+  const memoWrapElement = document.getElementById("memoWrap");
+
   //初始化
   window.addEventListener("load", (event) => {
-    for (let index = 0; index < 10; index++) {
-      configEdit(index + 1);
+    let memoListHtml = "";
+    const count = 10;
+
+    for (let index = 1; index <= count; index++) {
+      memoListHtml += `<div class="margin memo-wrap">
+        <label for="memo${index}">${index}:</label>
+        <textarea id="memo${index}" name="memo${index}" placeholder="这个需要记一下..." autofocus rows="2"></textarea>
+      </div>`;
+    }
+
+    memoWrapElement.innerHTML = memoListHtml;
+
+    for (let index = 1; index <= count; index++) {
+      configEdit(index);
     }
   });
 

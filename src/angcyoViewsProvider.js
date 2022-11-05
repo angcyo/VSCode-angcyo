@@ -25,17 +25,26 @@ class AngcyoViewsProvider {
 
   //获取有效的备忘录数量
   getMemoCount() {
-    let count = 0;
-    for (let index = 0; index < 10; index++) {
-      const value = vscode.workspace
-        .getConfiguration("angcyo-memo")
-        .get(`memo${index + 1}`, "");
+    //let count = 0;
+    // for (let index = 0; index < 10; index++) {
+    //   const value = vscode.workspace
+    //     .getConfiguration("angcyo-memo")
+    //     .get(`memo${index + 1}`, "");
 
-      if (value) {
-        count++;
-      }
+    //   if (value) {
+    //     count++;
+    //   }
+    // }
+    //return count;
+
+    const memoJson = vscode.workspace
+      .getConfiguration("angcyo-memo")
+      .get(`memo`, "");
+    let memo = {};
+    if (memoJson) {
+      memo = JSON.parse(memoJson);
     }
-    return count;
+    return Object.keys(memo).length;
   }
 
   async getTopChildrenList() {
