@@ -127,7 +127,7 @@ class BinParsePanel {
     </head>
     <body>
       <div class="title-wrap"><img src="${imgPathUri}" width="25"/><h1>lpbin文件解析</h1></div>
-      <label class="padding">lpbin文件生成以及解析</label>
+      <label class="padding margin">时间/时间戳格式转换↓</label>
 
       <div class="margin timestamp">
         <label for="timestamp">时间戳:</label>
@@ -142,6 +142,9 @@ class BinParsePanel {
         <label id="timeResult" for="time">~</label>
       </div>
 
+      <br/>
+      <label class="padding margin">lpbin文件生成以及解析↓</label>
+
       <div class="margin">
         <input id="selectFile" type="file" accept=".bin,.lpbin">
         <label id="fileLabel" for="selectFile"></label>
@@ -149,7 +152,7 @@ class BinParsePanel {
 
       <div class="margin">
         <label for="data">插入的数据: (t:构建时间; v:固件版本 n:版本名称 d:版本描述 r:升级范围)</label>
-        <textarea id="data" name="data" placeholder="需要插入到bin末尾的数据..." autofocus rows="6"></textarea>
+        <textarea id="data" name="data" placeholder="需要插入到bin末尾的数据..." autofocus rows="8"></textarea>
       </div>
 
       <div class="button-wrap">
