@@ -38,7 +38,7 @@ class AngcyoMemoPanel {
 
               vscode.workspace
                 .getConfiguration("angcyo-memo")
-                .update(`memo${index}`, value);
+                .update(`memo${index}`, value, true);
 
               break;
             default:
