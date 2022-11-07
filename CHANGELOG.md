@@ -1,5 +1,9 @@
 # Change Log
 
+## 2022-11-7
+
+* update setTimeout
+
 ## 2022-11-5
 
 +  记一下 `备忘录`
