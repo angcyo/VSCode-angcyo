@@ -49,6 +49,11 @@ function activate(context) {
     laserPeckerViewsProvider.refresh();
   });
 
+  //单独刷新angcyo
+  vscode.commands.registerCommand("angcyo.refresh.angcyo", () => {
+    angcyoViewsProvider.refresh();
+  });
+
   //打开网页
   vscode.commands.registerCommand("angcyo.openUrl", async (url) => {
     console.log(`命令打开url:${url}`);
