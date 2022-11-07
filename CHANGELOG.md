@@ -3,6 +3,7 @@
 ## 2022-11-7
 
 * update setTimeout
++ command item
 
 ## 2022-11-5
 
