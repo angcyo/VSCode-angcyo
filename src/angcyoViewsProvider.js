@@ -1,26 +1,33 @@
 const vscode = require("vscode");
-const { Api } = require("./api");
 const path = require("path");
-class AngcyoViewsProvider {
+const { TreeDataProvider } = require("./treeDataProvider");
+class AngcyoViewsProvider extends TreeDataProvider {
   constructor() {
-    this._onDidChangeTreeData = new vscode.EventEmitter();
-    this.onDidChangeTreeData = this._onDidChangeTreeData.event;
+    super("https://gitcode.net/angcyo/json/-/raw/master/angcyoUrl.json");
   }
 
-  refresh() {
-    this._onDidChangeTreeData.fire();
-  }
-
-  async getChildren(element) {
-    if (element && element.childList) {
-      return Promise.resolve(Api.buildTreeItem(element.childList));
+  async getTopChildren() {
+    //总共的数量
+    const count = this.getMemoCount();
+    let description;
+    if (count) {
+      description = `共:${count}`;
     } else {
-      return this.getTopChildrenList();
+      description = "备忘录";
     }
-  }
-
-  getTreeItem(element) {
-    return element;
+    const last = [
+      {
+        label: "记一下",
+        iconPath: path.join(__filename, "..", "..", "res", "memo.svg"),
+        command: {
+          command: "angcyo.memo",
+        },
+        tooltip: "备忘录, 记一下",
+        description: description,
+      },
+    ];
+    const urlItems = await this.getUrlItems();
+    return [...urlItems, ...last];
   }
 
   //获取有效的备忘录数量
@@ -45,32 +52,6 @@ class AngcyoViewsProvider {
       memo = JSON.parse(memoJson);
     }
     return Object.keys(memo).length;
-  }
-
-  async getTopChildrenList() {
-    //总共的数量
-    const count = this.getMemoCount();
-    let description;
-    if (count) {
-      description = `共:${count}`;
-    } else {
-      description = "备忘录";
-    }
-    const last = [
-      {
-        label: "记一下",
-        iconPath: path.join(__filename, "..", "..", "res", "memo.svg"),
-        command: {
-          command: "angcyo.memo",
-        },
-        tooltip: "备忘录, 记一下",
-        description: description,
-      },
-    ];
-    const urlItems = await Api.fetchUrlChildrenList(
-      `https://gitcode.net/angcyo/json/-/raw/master/angcyoUrl.json`
-    );
-    return [...urlItems, ...last];
   }
 }
 

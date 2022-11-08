@@ -28,7 +28,8 @@
       {
         "command": "angcyo.refresh",
         "title": "Refresh Angcyo",
-        "icon": "res/refresh.svg"
+        "icon": "res/refresh.svg",
+        "category": "angcyo"
       }
     ],
     "menus": {

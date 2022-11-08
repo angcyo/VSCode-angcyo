@@ -1,15 +1,14 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+const path = require("path");
 const vscode = require("vscode");
 const { AngcyoMemoPanel } = require("./src/angcyoMemoPanel");
 const { AngcyoViewsProvider } = require("./src/angcyoViewsProvider");
 const { BinParsePanel } = require("./src/binParsePanel");
-const { HttpViewsProvider } = require("./src/httpViewsProvider");
 const { LaserPeckerParseBlePanel } = require("./src/laserPeckerParseBlePanel");
 const { LaserPeckerParsePanel } = require("./src/laserPeckerParsePanel");
-const { LaserPeckerViewsProvider } = require("./src/laserPeckerViewsProvider");
 const { SvgParsePanel } = require("./src/svgParsePanel");
-const { WelcomViewsProvider } = require("./src/welcomViewsProvider");
+const { TreeDataProvider } = require("./src/treeDataProvider");
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -20,22 +19,74 @@ const { WelcomViewsProvider } = require("./src/welcomViewsProvider");
 function activate(context) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
-  console.log("插件激活...");
+  console.log("插件激活..." + context.extensionUri); //file:///e%3A/VSCodeProjects/angcyoJs
+  //console.log("插件激活..." + context.extensionPath); //e:\VSCodeProjects\angcyoJs
   console.log(context);
+
+  //__filename
+  console.log(__filename);
 
   //显示欢迎页
   vscode.commands.executeCommand("setContext", "angcyo.showWelcome", true);
 
-  const welcomViewsProvider = new WelcomViewsProvider();
+  //
+  const welcomViewsProvider = new TreeDataProvider();
   vscode.window.registerTreeDataProvider("welcomeViews", welcomViewsProvider);
 
+  //
   const angcyoViewsProvider = new AngcyoViewsProvider();
   vscode.window.registerTreeDataProvider("angcyoViews", angcyoViewsProvider);
 
-  const httpViewsProvider = new HttpViewsProvider();
+  //
+  const httpViewsProvider = new TreeDataProvider(
+    "https://gitcode.net/angcyo/json/-/raw/master/recommendUrl.json"
+  );
   vscode.window.registerTreeDataProvider("httpViews", httpViewsProvider);
 
-  const laserPeckerViewsProvider = new LaserPeckerViewsProvider();
+  //
+  const parseSvgIconPath = path.join(__filename, "..", "res", "parse.svg");
+  const laserPeckerViewsProvider = new TreeDataProvider(
+    `https://gitcode.net/angcyo/json/-/raw/master/laserPeckerUrl.json`,
+    [
+      {
+        label: "LP文件解析",
+        iconPath: parseSvgIconPath,
+        command: {
+          command: "angcyo.laserPeckerParse",
+        },
+        tooltip: "LaserPecker文件格式数据解析",
+        //description: item.url,
+      },
+      {
+        label: "LP指令解析",
+        iconPath: parseSvgIconPath,
+        command: {
+          command: "angcyo.laserPeckerBleParse",
+        },
+        tooltip: "LaserPecker蓝牙指令数据解析",
+        //description: item.url,
+      },
+      {
+        label: "Svg解析",
+        iconPath: parseSvgIconPath,
+        command: {
+          command: "angcyo.svgParse",
+        },
+        tooltip: "Svg数据解析",
+        //description: item.url,
+      },
+      {
+        label: "lpbin解析",
+        iconPath: parseSvgIconPath,
+        command: {
+          command: "angcyo.binParse",
+        },
+        tooltip: "lpbin解析",
+        //description: item.url,
+      },
+    ]
+  );
+  //console.log(parseSvgIconPath);//e:\VSCodeProjects\angcyoJs\res\parse.svg
   vscode.window.registerTreeDataProvider(
     "laserPeckerViews",
     laserPeckerViewsProvider
@@ -92,7 +143,9 @@ function activate(context) {
 }
 
 // this method is called when your extension is deactivated
-function deactivate() {}
+function deactivate() {
+  vscode.window.showInformationMessage(`angcyo is deactivate~`);
+}
 
 module.exports = {
   activate,
