@@ -19,16 +19,29 @@
   var selectPath = "";
   var targetPath = "";
 
-  const json = {
-    t: new Date().getTime(),
-    v: 1,
-    n: "版本名称",
-    d: "版本描述",
-    r: "1~9999",
-  };
+  const jsonStr =
+    localStorage.getItem("createBinJson") ||
+    JSON.stringify({
+      t: new Date().getTime(),
+      v: 1,
+      n: "版本名称",
+      d: "版本描述",
+      r: "1~9999",
+    });
+  const json = JSON.parse(jsonStr);
+  json.t = new Date().getTime();
+  dataElement.value = JSON.stringify(json, null, 4);
 
-  const oldJson = localStorage.getItem("createBinJson");
-  dataElement.value = JSON.stringify(JSON.parse(oldJson) || json, null, 4);
+  //
+  fileLabel.addEventListener("click", () => {
+    if (selectPath) {
+      //打开文件所在目录
+      vscode.postMessage({
+        command: "reveal",
+        path: selectPath,
+      });
+    }
+  });
 
   //选择文件监听
   selectFile.addEventListener(`change`, () => {
@@ -46,7 +59,7 @@
       readFileMd5(selectFile.files[0], (md5) => {
         console.log(md5);
 
-        fileLabel.innerHTML = `文件路径: ${selectPath}<br>文件MD5: ${md5}<br>生成路径: ${targetPath}`;
+        fileLabel.innerHTML = `文件路径: ${selectPath}<br>文件MD5: ${md5}<br>生成路径: ${targetPath} (会覆盖同名文件)`;
       });
     } else {
       fileLabel.textContent = "";
@@ -56,37 +69,53 @@
   //生成lpbin文件
   create.addEventListener("click", (event) => {
     if (selectFile.files?.length > 0) {
-      //格式化json
-      dataElement.value = JSON.stringify(
-        JSON.parse(dataElement.value),
-        null,
-        4
-      );
-
-      //持久化
-      localStorage.setItem("createBinJson", dataElement.value);
-
-      readFile(selectFile.files[0], (data) => {
-        //result.value = data.join(",");
-        //const dataString = new TextDecoder("ISO-8859-1").decode(data);
-
-        let dataU8Array = data;
-        let newDataU8Array = createData();
-        let resultU8Array = [];
-
-        dataU8Array = Array.prototype.slice.call(dataU8Array);
-        newDataU8Array = Array.prototype.slice.call(newDataU8Array);
-
-        resultU8Array = dataU8Array.concat(newDataU8Array);
-
-        result.value = resultU8Array.join(",");
-
+      const path = selectFile.files[0].path;
+      if (path.toLowerCase().endsWith(".lpbin")) {
         vscode.postMessage({
-          command: "save",
-          path: targetPath,
-          data: result.value,
+          text: "已经是lpbin格式文件!",
         });
-      });
+        return;
+      }
+
+      let data = undefined;
+      try {
+        data = JSON.parse(dataElement.value);
+      } catch {}
+
+      if (data) {
+        //格式化json
+        dataElement.value = JSON.stringify(data, null, 4);
+
+        //持久化
+        localStorage.setItem("createBinJson", dataElement.value);
+
+        readFile(selectFile.files[0], (data) => {
+          //result.value = data.join(",");
+          //const dataString = new TextDecoder("ISO-8859-1").decode(data);
+
+          let dataU8Array = data;
+          let newDataU8Array = createData();
+          let resultU8Array = [];
+
+          dataU8Array = Array.prototype.slice.call(dataU8Array);
+          newDataU8Array = Array.prototype.slice.call(newDataU8Array);
+
+          resultU8Array = dataU8Array.concat(newDataU8Array);
+
+          result.value = resultU8Array.join(",");
+
+          vscode.postMessage({
+            command: "save",
+            path: targetPath,
+            data: result.value,
+            reveal: true, //打开保存的文件所在目录
+          });
+        });
+      } else {
+        vscode.postMessage({
+          text: "Json数据格式异常,请检查输入...",
+        });
+      }
     } else {
       result.value = "请先选择文件...";
       vscode.postMessage({
@@ -98,40 +127,47 @@
   //解析lpbin文件
   parse.addEventListener("click", (event) => {
     if (selectFile.files?.length > 0) {
-      readFile(selectFile.files[0], (data) => {
-        result.value = data.join(",");
+      const path = selectFile.files[0].path;
+      if (path.toLowerCase().endsWith(".lpbin")) {
+        readFile(selectFile.files[0], (data) => {
+          result.value = data.join(",");
 
-        const dataLength = data.byteLength;
-        const lengthU8Array = data.slice(dataLength - 4);
-        //追加的数据总长度
-        const length = readIntFromUint8Array(lengthU8Array);
+          const dataLength = data.byteLength;
+          const lengthU8Array = data.slice(dataLength - 4);
+          //追加的数据总长度
+          const length = readIntFromUint8Array(lengthU8Array);
 
-        //校验头, 2个字节
-        const dataStartIndex = dataLength - length + 2;
-        const headU8Array = data.slice(dataLength - length, dataStartIndex);
+          //校验头, 2个字节
+          const dataStartIndex = dataLength - length + 2;
+          const headU8Array = data.slice(dataLength - length, dataStartIndex);
 
-        const head = readHexFromUint8Array(headU8Array);
-        //console.log(headU8Array);
-        //console.log(head);
-        if (head == "AABB") {
-          const jsonU8Array = data.slice(dataStartIndex, dataLength - 4);
-          const json = readStringFromUint8Array(jsonU8Array);
-          console.log(json);
+          const head = readHexFromUint8Array(headU8Array);
+          //console.log(headU8Array);
+          //console.log(head);
+          if (head == "AABB") {
+            const jsonU8Array = data.slice(dataStartIndex, dataLength - 4);
+            const json = readStringFromUint8Array(jsonU8Array);
+            console.log(json);
 
-          dataElement.value = JSON.stringify(JSON.parse(json), null, 4);
+            dataElement.value = JSON.stringify(JSON.parse(json), null, 4);
 
-          vscode.postMessage({
-            text: `解析成功, 总长度:${length}bytes`,
-          });
-          vscode.postMessage({
-            text: json,
-          });
-        } else {
-          vscode.postMessage({
-            text: "不合法的数据格式, 滚犊子...",
-          });
-        }
-      });
+            vscode.postMessage({
+              text: `解析成功, 总长度:${length}bytes`,
+            });
+            vscode.postMessage({
+              text: json,
+            });
+          } else {
+            vscode.postMessage({
+              text: "不合法的数据格式, 滚犊子...",
+            });
+          }
+        });
+      } else {
+        vscode.postMessage({
+          text: "请选择lpbin格式文件!",
+        });
+      }
     } else {
       result.value = "请先选择文件...";
       vscode.postMessage({
@@ -282,4 +318,12 @@
     }
     return fmt;
   }
+
+  // 创建事件对象
+  var inputEvent = document.createEvent("HTMLEvents");
+  // 初始化事件
+  inputEvent.initEvent("input", false, false);
+  // 触发事件
+  timestampElement.dispatchEvent(inputEvent);
+  timeElement.dispatchEvent(inputEvent);
 })();

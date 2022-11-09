@@ -61,6 +61,19 @@ class Api {
       return childrenList;
     }
   }
+
+  /**
+   * 读取文件内容
+   * "res", "main.css"
+   */
+  async readFile(context, ...pathSegments) {
+    const uri = vscode.Uri.joinPath(context.extensionUri, ...pathSegments);
+    const data = await vscode.workspace.fs.readFile(uri);
+    const dataStr = Buffer.from(data).toString("utf8");
+    //console.log(dataStr);
+    console.log(`读取文件:${uri} :${dataStr.length}bytes`);
+    return dataStr;
+  }
 }
 
 exports.Api = new Api();

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="{{reset}}" rel="stylesheet" />
+    <link href="{{vscode}}" rel="stylesheet" />
+    <link href="{{main}}" rel="stylesheet" />
+
+    <title>{{title}}</title>
+  </head>
+  <body>
+    <div class="title-wrap">
+      <img src="{{angcyo}}" width="25" title="angcyo" />
+      <h1>{{title}}</h1>
+    </div>
+    <label for="data">原始数据:</label>
+    <textarea
+      id="data"
+      name="data"
+      placeholder="请输入原始数据..."
+      autofocus
+      rows="20"
+    ></textarea>
+    <div class="button-wrap">
+      <button type="button" id="format">格式化</button>
+      <button type="button" id="formatData">格式化(仅内部data)</button>
+      <button type="button" id="removeImage">格式化(去除图片字段)</button>
+      <button type="button" id="extractImage">提取所有图片</button>
+      <button type="button" id="base64Image">解析base64图片</button>
+      <button type="button" id="clear">清空结果</button>
+    </div>
+    <label for="result">格式化数据:</label>
+    <textarea
+      id="result"
+      name="result"
+      placeholder="格式化后的数据..."
+      rows="50"
+      disabled
+    ></textarea>
+    <div id="imageWrap" class="image-wrap"></div>
+    <script nonce="{{nonce}}" src="{{script}}"></script>
+  </body>
+</html>

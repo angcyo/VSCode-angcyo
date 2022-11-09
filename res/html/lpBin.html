@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="{{reset}}" rel="stylesheet" />
+    <link href="{{vscode}}" rel="stylesheet" />
+    <link href="{{main}}" rel="stylesheet" />
+
+    <title>{{title}}</title>
+  </head>
+  <body>
+    <div class="title-wrap">
+      <img src="{{angcyo}}" width="25" title="angcyo" />
+      <h1>{{title}}</h1>
+    </div>
+    <label class="padding margin">时间/时间戳格式转换↓</label>
+
+    <div class="margin timestamp">
+      <label for="timestamp">时间戳:</label>
+      <input
+        type="text"
+        id="timestamp"
+        name="name"
+        required
+        minlength="10"
+        maxlength="13"
+        placeholder="10位秒/13位毫秒"
+      />
+      <span>→ </span>
+      <label id="timestampResult" for="timestamp">~</label>
+
+      <label for="time">时间:</label>
+      <input
+        type="text"
+        id="time"
+        name="name"
+        required
+        minlength="10"
+        maxlength="23"
+        placeholder="yyyy-MM-dd HH:mm:ss:SSS"
+      />
+      <input type="datetime-local" id="dateTime" placeholder="日期和时间" />
+      <span>→ </span>
+      <label id="timeResult" for="time">~</label>
+    </div>
+
+    <br />
+    <label class="padding margin">lpbin文件生成及解析↓</label>
+
+    <div class="margin">
+      <input
+        id="selectFile"
+        type="file"
+        accept=".bin,.lpbin"
+        placeholder="请选择文件..."
+      />
+      <label id="fileLabel" style="cursor: pointer"></label>
+    </div>
+
+    <div class="margin">
+      <label for="data"
+        >插入的数据: (t:构建时间; v:固件版本 n:版本名称 d:版本描述
+        r:升级范围)</label
+      >
+      <textarea
+        id="data"
+        name="data"
+        placeholder="需要插入到bin末尾的数据..."
+        autofocus
+        rows="8"
+      ></textarea>
+    </div>
+
+    <div class="button-wrap">
+      <button type="button" id="create">生成lpbin</button>
+      <button type="button" id="parse">解析lpbin</button>
+    </div>
+
+    <label for="result">解析数据:</label>
+    <textarea
+      id="result"
+      name="result"
+      placeholder="解析后的数据..."
+      rows="28"
+      disabled
+    ></textarea>
+
+    <script nonce="{{nonce}}" src="{{spark}}"></script>
+    <script nonce="{{nonce}}" src="{{script}}"></script>
+  </body>
+</html>

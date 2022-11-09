@@ -17,23 +17,31 @@
   const imageWrap = document.getElementById("imageWrap");
 
   //持久化
-  dataText.value = localStorage.getItem("laserPeckerParseData");
-  dataText.addEventListener("change", () => {
-    localStorage.setItem("laserPeckerParseData", dataText.value);
+  dataText.value = localStorage.getItem("data");
+  dataText.addEventListener("input", () => {
+    localStorage.setItem("data", dataText.value);
+  });
+  //持久化
+  resultText.value = localStorage.getItem("result");
+  resultText.addEventListener("change", () => {
+    localStorage.setItem("result", resultText.value);
   });
 
   //
   formatButton.addEventListener("click", (event) => {
     resultText.value = JSON.stringify(JSON.parse(dataText.value), null, 4);
+    localStorage.setItem("result", resultText.value);
   });
   clearButton.addEventListener("click", (event) => {
     resultText.value = "";
     clearAllImage();
+    localStorage.setItem("result", resultText.value);
   });
   formatDataButton.addEventListener("click", (event) => {
     const dataString = JSON.parse(dataText.value).data;
     const data = JSON.parse(dataString);
     resultText.value = JSON.stringify(data, null, 4);
+    localStorage.setItem("result", resultText.value);
   });
   removeImageButton.addEventListener("click", (event) => {
     const data = JSON.parse(dataText.value);
@@ -52,6 +60,7 @@
       data: array,
     };
     resultText.value = JSON.stringify(newData, null, 4);
+    localStorage.setItem("result", resultText.value);
   });
   extractImageButton.addEventListener("click", (event) => {
     clearAllImage();
@@ -94,6 +103,7 @@
         text: "未识别到[data]字段",
       });
     }
+    localStorage.setItem("result", resultText.value);
   });
   base64ImageButton.addEventListener("click", (event) => {
     if (dataText.value && dataText.value.trim().startsWith("data:")) {

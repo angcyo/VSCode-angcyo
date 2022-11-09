@@ -1,114 +1,6 @@
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 
-//从字符串中读取十六进制字符
-class HexReader {
-  constructor(data) {
-    //数据
-    this.data = data;
-    this.length = data.length;
-
-    //当前读取的偏移字符
-    this.offset = 0;
-  }
-
-  //读取几个字节的数据, 并且返回整数
-  readInt(len) {
-    const data = this.readString(len || 1);
-    if (data) {
-      return parseInt(data, 16);
-    }
-  }
-
-  //读取几个字节的字符数据
-  readString(len) {
-    const start = this.offset;
-    const end = start + (len || 1) * 2;
-    if (this.length >= end) {
-      //没有超范围
-      this.offset = end;
-      return this.data.slice(start, end);
-    }
-  }
-
-  //剩下的字节十六进制
-  lastByte() {
-    //当前第几个字节
-    const current = this.offset / 2;
-    //工作的字节数
-    const sum = this.length / 2;
-
-    let result = "";
-    for (let i = current; i < sum; i++) {
-      //从0开始计算 -1
-      //去除3个固定字节 -3
-      result += `\nD${i - 1 - 3} ${this.readString(1)}`;
-    }
-
-    //校验和
-    const check = this.sunCheck();
-    if (check) {
-      result += `\n计算出的校验和:${check}`;
-    }
-    return result;
-  }
-
-  //校验和
-  sunCheckValue() {
-    if (this.length >= 3 * 2) {
-      //包含长度字节
-      this.offset = 6;
-      let sum = 0;
-      let int = this.readInt();
-      console.log(sum, int);
-      while (int !== undefined) {
-        sum += int;
-        int = this.readInt();
-        console.log(sum, int);
-      }
-      return sum.toString(16).padStart(4, "0").toUpperCase();
-    } else {
-      return "";
-    }
-  }
-
-  //校验和
-  sunCheck() {
-    if (this.length >= 3 * 2) {
-      //包含长度字节
-      this.offset = 4;
-      const len = this.readInt(); //数据的总字节数, 字符数需要手动*2
-      const needLength = len * 2 + 3 * 2;
-      if (this.length >= needLength) {
-        //有效的数据长度
-        const dataStr = this.data.slice(6, needLength - 4);
-        const reader = new HexReader(dataStr);
-        let sum = 0;
-        let int = reader.readInt();
-        console.log(sum, int);
-        while (int !== undefined) {
-          sum += int;
-          int = reader.readInt();
-          console.log(sum, int);
-        }
-        const sumCheck = sum.toString(16).toUpperCase().padStart(4, "0");
-        const sumCheckRead = this.data.slice(needLength - 4, needLength);
-        let verify;
-        if (sumCheck === sumCheckRead) {
-          verify = "√";
-        } else {
-          verify = "×";
-        }
-        return `${sumCheck} 实际:${sumCheckRead} ${verify}`;
-      } else {
-        return `字节长度不匹配(包含头字节):请求总长度${
-          needLength / 2
-        } 实际总长度${this.length / 2}`;
-      }
-    }
-  }
-}
-
 // 脚本内容
 
 (function () {
@@ -139,9 +31,14 @@ class HexReader {
   }
 
   //持久化
-  dataText.value = localStorage.getItem("laserPeckerParseBleData");
+  dataText.value = localStorage.getItem("data");
   dataText.addEventListener("change", () => {
-    localStorage.setItem("laserPeckerParseBleData", dataText.value);
+    localStorage.setItem("data", dataText.value);
+  });
+  //持久化
+  resultText.value = localStorage.getItem("result");
+  resultText.addEventListener("change", () => {
+    localStorage.setItem("result", resultText.value);
   });
 
   //解析发送的指令
@@ -149,6 +46,7 @@ class HexReader {
     const data = formatValue();
     if (data) {
       resultText.value = formatData(data) + "\n" + parseData(data);
+      localStorage.setItem("result", resultText.value);
     }
   });
   //解析指令返回的数据
@@ -157,6 +55,7 @@ class HexReader {
     if (data) {
       resultText.value =
         formatData(data) + "\n" + parseResultData(data, false, false);
+      localStorage.setItem("result", resultText.value);
     }
   });
   //解析工作状态指令返回的数据
@@ -165,6 +64,7 @@ class HexReader {
     if (data) {
       resultText.value =
         formatData(data) + "\n" + parseResultData(data, true, false);
+      localStorage.setItem("result", resultText.value);
     }
   });
   //解析设置状态指令返回的数据
@@ -173,6 +73,7 @@ class HexReader {
     if (data) {
       resultText.value =
         formatData(data) + "\n" + parseResultData(data, false, true);
+      localStorage.setItem("result", resultText.value);
     }
   });
   completeButton.addEventListener("click", (event) => {
@@ -186,6 +87,7 @@ class HexReader {
       const reader = new HexReader(data);
       const reslut = `${data}${reader.sunCheckValue()}`;
       resultText.value = `${reslut}\n${formatData(reslut)}`;
+      localStorage.setItem("result", resultText.value);
     }
   });
 
@@ -707,3 +609,111 @@ class HexReader {
     return result;
   }
 })();
+
+//从字符串中读取十六进制字符
+class HexReader {
+  constructor(data) {
+    //数据
+    this.data = data;
+    this.length = data.length;
+
+    //当前读取的偏移字符
+    this.offset = 0;
+  }
+
+  //读取几个字节的数据, 并且返回整数
+  readInt(len) {
+    const data = this.readString(len || 1);
+    if (data) {
+      return parseInt(data, 16);
+    }
+  }
+
+  //读取几个字节的字符数据
+  readString(len) {
+    const start = this.offset;
+    const end = start + (len || 1) * 2;
+    if (this.length >= end) {
+      //没有超范围
+      this.offset = end;
+      return this.data.slice(start, end);
+    }
+  }
+
+  //剩下的字节十六进制
+  lastByte() {
+    //当前第几个字节
+    const current = this.offset / 2;
+    //工作的字节数
+    const sum = this.length / 2;
+
+    let result = "";
+    for (let i = current; i < sum; i++) {
+      //从0开始计算 -1
+      //去除3个固定字节 -3
+      result += `\nD${i - 1 - 3} ${this.readString(1)}`;
+    }
+
+    //校验和
+    const check = this.sunCheck();
+    if (check) {
+      result += `\n计算出的校验和:${check}`;
+    }
+    return result;
+  }
+
+  //校验和
+  sunCheckValue() {
+    if (this.length >= 3 * 2) {
+      //包含长度字节
+      this.offset = 6;
+      let sum = 0;
+      let int = this.readInt();
+      console.log(sum, int);
+      while (int !== undefined) {
+        sum += int;
+        int = this.readInt();
+        console.log(sum, int);
+      }
+      return sum.toString(16).padStart(4, "0").toUpperCase();
+    } else {
+      return "";
+    }
+  }
+
+  //校验和
+  sunCheck() {
+    if (this.length >= 3 * 2) {
+      //包含长度字节
+      this.offset = 4;
+      const len = this.readInt(); //数据的总字节数, 字符数需要手动*2
+      const needLength = len * 2 + 3 * 2;
+      if (this.length >= needLength) {
+        //有效的数据长度
+        const dataStr = this.data.slice(6, needLength - 4);
+        const reader = new HexReader(dataStr);
+        let sum = 0;
+        let int = reader.readInt();
+        console.log(sum, int);
+        while (int !== undefined) {
+          sum += int;
+          int = reader.readInt();
+          console.log(sum, int);
+        }
+        const sumCheck = sum.toString(16).toUpperCase().padStart(4, "0");
+        const sumCheckRead = this.data.slice(needLength - 4, needLength);
+        let verify;
+        if (sumCheck === sumCheckRead) {
+          verify = "√";
+        } else {
+          verify = "×";
+        }
+        return `${sumCheck} 实际:${sumCheckRead} ${verify}`;
+      } else {
+        return `字节长度不匹配(包含头字节):请求总长度${
+          needLength / 2
+        } 实际总长度${this.length / 2}`;
+      }
+    }
+  }
+}

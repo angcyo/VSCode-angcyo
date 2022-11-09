@@ -2,13 +2,10 @@
 // Import the module and reference it with the alias vscode in your code below
 const path = require("path");
 const vscode = require("vscode");
-const { AngcyoMemoPanel } = require("./src/angcyoMemoPanel");
 const { AngcyoViewsProvider } = require("./src/angcyoViewsProvider");
-const { BinParsePanel } = require("./src/binParsePanel");
-const { LaserPeckerParseBlePanel } = require("./src/laserPeckerParseBlePanel");
-const { LaserPeckerParsePanel } = require("./src/laserPeckerParsePanel");
-const { SvgParsePanel } = require("./src/svgParsePanel");
+const { MemoWebviewPanel } = require("./src/memoWebviewPanel");
 const { TreeDataProvider } = require("./src/treeDataProvider");
+const { WebviewPanel } = require("./src/webviewPannel");
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -24,7 +21,7 @@ function activate(context) {
   console.log(context);
 
   //__filename
-  console.log(__filename);
+  console.log(__filename); //e:\VSCodeProjects\angcyoJs\extension.js
 
   //显示欢迎页
   vscode.commands.executeCommand("setContext", "angcyo.showWelcome", true);
@@ -49,16 +46,16 @@ function activate(context) {
     `https://gitcode.net/angcyo/json/-/raw/master/laserPeckerUrl.json`,
     [
       {
-        label: "LP文件解析",
+        label: "lp工程文件数据解析",
         iconPath: parseSvgIconPath,
         command: {
           command: "angcyo.laserPeckerParse",
         },
-        tooltip: "LaserPecker文件格式数据解析",
+        tooltip: "LaserPecker工程文件数据解析",
         //description: item.url,
       },
       {
-        label: "LP指令解析",
+        label: "lp蓝牙指令数据解析",
         iconPath: parseSvgIconPath,
         command: {
           command: "angcyo.laserPeckerBleParse",
@@ -76,12 +73,12 @@ function activate(context) {
         //description: item.url,
       },
       {
-        label: "lpbin解析",
+        label: "lpbin文件创建及解析",
         iconPath: parseSvgIconPath,
         command: {
           command: "angcyo.binParse",
         },
-        tooltip: "lpbin解析",
+        tooltip: "lpbin文件创建及解析",
         //description: item.url,
       },
     ]
@@ -112,34 +109,66 @@ function activate(context) {
   });
 
   //LaserPecker数据解析
+  const laserPeckerPanel = new WebviewPanel(
+    "angcyo.laserPeckerParse",
+    "LaserPecker工程文件数据解析",
+    "res/js/lpProject.js",
+    "res/html/lpProject.html"
+  );
   vscode.commands.registerCommand("angcyo.laserPeckerParse", () => {
-    console.log(`LaserPecker数据解析`);
-    LaserPeckerParsePanel.createOrShow(context);
+    console.log(`LaserPecker工程文件数据解析`);
+    laserPeckerPanel.createOrShow(context);
   });
 
   //LaserPecker蓝牙指令解析
+  const laserPeckerBlePanel = new WebviewPanel(
+    "angcyo.laserPeckerBleParse",
+    "LaserPecker蓝牙指令解析",
+    "res/js/lpBle.js",
+    "res/html/lpBle.html"
+  );
   vscode.commands.registerCommand("angcyo.laserPeckerBleParse", () => {
     console.log(`LaserPecker蓝牙指令解析`);
-    LaserPeckerParseBlePanel.createOrShow(context);
+    laserPeckerBlePanel.createOrShow(context);
   });
 
   //Svg解析
+  const svgParsePanel = new WebviewPanel(
+    "angcyo.svgParse",
+    "Svg解析",
+    "res/js/svgParse.js",
+    "res/html/svgParse.html"
+  );
   vscode.commands.registerCommand("angcyo.svgParse", () => {
     console.log(`Svg解析`);
-    SvgParsePanel.createOrShow(context);
+    svgParsePanel.createOrShow(context);
   });
 
   //lpbin解析
+  const lpBinPanel = new MemoWebviewPanel(
+    "angcyo.binParse",
+    "lpbin文件创建及解析",
+    "res/js/lpBin.js",
+    "res/html/lpBin.html"
+  );
   vscode.commands.registerCommand("angcyo.binParse", () => {
-    console.log(`lpbin解析`);
-    BinParsePanel.createOrShow(context);
+    console.log(`lpbin文件创建及解析`);
+    lpBinPanel.createOrShow(context);
   });
 
   //angcyo.memo 备忘录
+  const memoPanel = new MemoWebviewPanel(
+    "angcyo.memo",
+    "记一下, 备忘录",
+    "res/js/memo.js",
+    "res/html/memo.html"
+  );
   vscode.commands.registerCommand("angcyo.memo", () => {
     console.log(`备忘录`);
-    AngcyoMemoPanel.createOrShow(context);
+    memoPanel.createOrShow(context);
   });
+
+  //Api.readFile(context, "res", "main.css");
 }
 
 // this method is called when your extension is deactivated

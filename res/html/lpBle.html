@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="{{reset}}" rel="stylesheet" />
+    <link href="{{vscode}}" rel="stylesheet" />
+    <link href="{{main}}" rel="stylesheet" />
+
+    <title>{{title}}</title>
+  </head>
+  <body>
+    <div class="title-wrap">
+      <img src="{{angcyo}}" width="25" title="angcyo" />
+      <h1>{{title}}</h1>
+    </div>
+    <label for="data">指令数据:</label>
+    <textarea
+      id="data"
+      name="data"
+      placeholder="请输入指令数据..."
+      autofocus
+      rows="3"
+    ></textarea>
+    <div class="button-wrap">
+      <button type="button" id="parse">解析指令</button>
+      <button type="button" id="parseResult">解析返回值</button>
+      <button type="button" id="parseWorkStateResult">
+        解析(工作状态)返回值
+      </button>
+      <button type="button" id="parseSettingResult">
+        解析(设置状态)返回值
+      </button>
+      <button type="button" id="complete">补齐指令(+头+长度+校验和)</button>
+    </div>
+    <label for="result">解析数据:</label>
+    <textarea
+      id="result"
+      name="result"
+      placeholder="解析后的数据..."
+      rows="28"
+      disabled
+    ></textarea>
+    <script nonce="{{nonce}}" src="{{script}}"></script>
+  </body>
+</html>

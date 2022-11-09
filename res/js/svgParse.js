@@ -20,6 +20,7 @@
     const width = widthText.value.trim();
     const height = heightText.value.trim();
     viewBoxText.value = `0 0 ${width} ${height}`;
+    localStorage.setItem("viewBox", viewBoxText.value);
   }
 
   //更新边框显示
@@ -32,20 +33,35 @@
   }
 
   //持久化
-  dataText.value = localStorage.getItem("svgData");
-  dataText.addEventListener("change", () => {
-    localStorage.setItem("svgData", dataText.value);
+  showBorder.checked = localStorage.getItem("showBorder") === "1";
+  widthText.value = localStorage.getItem("width") || 100;
+  heightText.value = localStorage.getItem("height") || 100;
+  viewBoxText.value = localStorage.getItem("viewBox") || "0 0 100 100";
+
+  dataText.value = localStorage.getItem("data");
+  dataText.addEventListener("input", () => {
+    localStorage.setItem("data", dataText.value);
+
+    //直接触发解析
+    parseButton.click();
   });
 
   //
   widthText.addEventListener("input", () => {
     updateViewBoxText();
+    localStorage.setItem("width", widthText.value);
   });
   heightText.addEventListener("input", () => {
     updateViewBoxText();
+    localStorage.setItem("height", heightText.value);
+  });
+
+  viewBoxText.addEventListener("input", () => {
+    localStorage.setItem("viewBox", viewBoxText.value);
   });
   showBorder.addEventListener("change", () => {
     updateBorder();
+    localStorage.setItem("showBorder", showBorder.checked ? "1" : "0");
   });
 
   parseButton.addEventListener("click", () => {
@@ -65,4 +81,11 @@
     svgWrap.innerHTML = svgTag;
     updateBorder();
   });
+
+  // 创建事件对象
+  var event = document.createEvent("HTMLEvents");
+  // 初始化事件
+  event.initEvent("input", false, false);
+  // 触发事件
+  dataText.dispatchEvent(event);
 })();
