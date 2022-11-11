@@ -19,7 +19,7 @@
   const jsonStr =
     localStorage.getItem("json") ||
     JSON.stringify({
-      mtype: 0,
+      mtype: 10012,
       left: 0,
       top: 0,
       width: 10,
