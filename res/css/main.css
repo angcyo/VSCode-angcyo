@@ -7,23 +7,44 @@ body {
   width: 100%;
 }
 
+textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+}
+
 .button-wrap {
   display: flex;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  flex-flow: wrap;
+  align-items: center;
+}
+
+.inline-flex {
+  display: inline-flex;
+  flex-flow: wrap;
+  align-items: center;
 }
 
 .button-wrap button {
   margin-right: 1rem;
 }
 
-.image-wrap {
+.button-wrap input {
+  width: auto;
+}
+
+.button-wrap label {
+  margin-right: 1rem;
+}
+
+.file-select-wrap {
   display: flex;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  flex-flow: wrap;
 }
 
-.image-wrap img {
+.file-select-wrap img {
   width: 33.3%;
   display: inline;
 }
@@ -34,12 +55,6 @@ body {
 
 .title-wrap * {
   display: inline-block;
-}
-
-textarea {
-  width: 100%;
-  max-width: 100%;
-  min-width: 100%;
 }
 
 .propertyWrap {
@@ -86,6 +101,7 @@ textarea {
   display: flex;
   align-items: center;
   text-align: center;
+  flex-flow: wrap;
 }
 
 .timestamp input {
@@ -101,6 +117,7 @@ textarea {
 .memo-wrap {
   display: flex;
   align-items: center;
+  flex-flow: wrap;
 }
 
 .memo-wrap label {
@@ -112,4 +129,43 @@ textarea {
   width: auto;
   max-width: auto;
   min-width: auto;
+}
+
+#host {
+  width: 50%;
+}
+
+#mtype-wrap label {
+  margin-top: 0.5rem;
+}
+
+#frame-wrap * {
+  margin-top: 0.5rem;
+}
+
+#frame-wrap label {
+  margin-right: 0.3rem;
+}
+
+#frame-wrap input {
+  width: 6rem;
+  margin-right: 1rem;
+}
+
+#engrave-params-wrap label {
+  margin-right: 0.3rem;
+}
+
+#engrave-params-wrap input {
+  width: 4.5rem;
+  margin-right: 1rem;
+}
+
+.inline-flex input {
+  width: auto !important;
+  margin-right: 0.3rem !important;
+}
+
+.font-style input {
+  width: 4.5rem !important;
 }

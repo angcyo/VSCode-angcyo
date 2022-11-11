@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
+    /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="{{reset}}" rel="stylesheet" />
+    <link href="{{vscode}}" rel="stylesheet" />
+    <link href="{{main}}" rel="stylesheet" />
+
+    <title>{{title}}</title>
+  </head>
+  <body>
+    <div class="title-wrap">
+      <img src="{{angcyo}}" width="25" title="angcyo" />
+      <h1>{{title}}</h1>
+    </div>
+
+    <div class="button-wrap">
+      <label for="host">服务器地址:</label>
+      <input id="host" type="text" />
+    </div>
+
+    <div id="mtype-wrap" class="button-wrap"></div>
+
+    <div id="file-select-wrap" class="margin">
+      <label for="select-file">请选择对应的文件:</label>
+      <input
+        id="select-file"
+        type="file"
+        accept=".jpg,.png,.jpeg,.bmp,.svg,.gcode"
+      />
+      <img id="image" title="需要雕刻的图片" width="100rem" />
+      <div id="image-filter-wrap" class="button-wrap margin"></div>
+    </div>
+
+    <div id="text-input-wrap" class="margin">
+      <label for="text-input">请输入对应的文本内容:</label>
+      <textarea
+        id="text-input"
+        autofocus
+        rows="3"
+        placeholder="请输入对应的文本内容..."
+      ></textarea>
+
+      <div class="inline-flex margin font-style">
+        <label for="fontSize">字体大小(mm):</label>
+        <input id="fontSize" type="text" placeholder="毫米" />
+
+        <label for="charSpacing">字间距(mm):</label>
+        <input id="charSpacing" type="text" placeholder="毫米" />
+
+        <label for="lineSpacing">行间距(mm):</label>
+        <input id="lineSpacing" type="text" placeholder="毫米" />
+      </div>
+    </div>
+
+    <div id="frame-wrap" class="button-wrap margin">
+      <label>坐标(mm): </label>
+      <label for="left">left:</label>
+      <input id="left" type="text" placeholder="坐标x" />
+
+      <label for="top">top:</label>
+      <input id="top" type="text" placeholder="坐标y" />
+
+      <label for="width">width:</label>
+      <input id="width" type="text" placeholder="宽度" />
+
+      <label for="height">height:</label>
+      <input id="height" type="text" placeholder="高度" />
+
+      <label for="scaleX">scaleX:</label>
+      <input id="scaleX" type="text" placeholder="x缩放比例" />
+
+      <label for="scaleY">scaleY:</label>
+      <input id="scaleY" type="text" placeholder="y缩放比例" />
+
+      <label for="angle">angle:</label>
+      <input id="angle" type="text" placeholder="旋转°" />
+    </div>
+
+    <div id="other-wrap" class="button-wrap margin">
+      <label>样式: </label>
+      <label for="paintStyleStroke" class="inline-flex">
+        <input
+          name="paintStyle"
+          id="paintStyleStroke"
+          type="radio"
+          value="1"
+          checked
+        />Stroke</label
+      >
+      <label for="paintStyleFill" class="inline-flex">
+        <input
+          name="paintStyle"
+          id="paintStyleFill"
+          type="radio"
+          value="0"
+        />Fill</label
+      >
+      <label for="paintStyleStrokeFill" class="inline-flex">
+        <input
+          name="paintStyle"
+          id="paintStyleStrokeFill"
+          type="radio"
+          value="2"
+        />Fill+Stroke</label
+      >
+
+      <label><input type="checkbox" id="inverse" />反色</label>
+    </div>
+
+    <div id="engrave-params-wrap" class="button-wrap margin">
+      <label>雕刻参数: </label>
+      <label for="printPower">功率:</label>
+      <input id="printPower" type="text" placeholder="[0~100]" />
+
+      <label for="printDepth">深度:</label>
+      <input id="printDepth" type="text" placeholder="[0~100]" />
+
+      <label for="printCount">次数:</label>
+      <input id="printCount" type="text" placeholder="[1~255]" />
+
+      <label>L4激光类型: </label>
+      <label class="inline-flex">
+        <input name="printType" type="radio" value="0" checked />450nm</label
+      >
+      <label class="inline-flex">
+        <input name="printType" type="radio" value="1" checked />1064nm</label
+      >
+
+      <label for="printPrecision">C加速级别:</label>
+      <input id="printPrecision" type="text" placeholder="[1~5]" />
+    </div>
+
+    <div class="margin">
+      <label for="data">需要雕刻的数据↓</label>
+      <textarea
+        id="data"
+        name="data"
+        placeholder="需要雕刻的数据..."
+        autofocus
+        rows="25"
+      ></textarea>
+    </div>
+
+    <div class="button-wrap">
+      <button type="button" id="post">发送</button>
+    </div>
+
+    <script nonce="{{nonce}}" src="{{script}}"></script>
+  </body>
+</html>

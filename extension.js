@@ -81,6 +81,15 @@ function activate(context) {
         tooltip: "lpbin文件创建及解析",
         //description: item.url,
       },
+      {
+        label: "lp自动雕刻",
+        iconPath: parseSvgIconPath,
+        command: {
+          command: "angcyo.autoEngrave",
+        },
+        tooltip: "LaserPecker自动雕刻",
+        //description: item.url,
+      },
     ]
   );
   //console.log(parseSvgIconPath);//e:\VSCodeProjects\angcyoJs\res\parse.svg
@@ -154,6 +163,18 @@ function activate(context) {
   vscode.commands.registerCommand("angcyo.binParse", () => {
     console.log(`lpbin文件创建及解析`);
     lpBinPanel.createOrShow(context);
+  });
+
+  //lp自动雕刻
+  const autoEngravePanel = new WebviewPanel(
+    "angcyo.autoEngrave",
+    "lp自动雕刻",
+    "res/js/autoEngrave.js",
+    "res/html/autoEngrave.html"
+  );
+  vscode.commands.registerCommand("angcyo.autoEngrave", () => {
+    console.log(`lp自动雕刻`);
+    autoEngravePanel.createOrShow(context);
   });
 
   //angcyo.memo 备忘录

@@ -6,9 +6,9 @@ class Api {
   //获取网址列表
   async fetchUrlChildrenList(api) {
     const req = await fetch(api);
-    const josn = await req.json();
+    const json = await req.json();
 
-    return this.buildTreeItem(josn.data);
+    return this.buildTreeItem(json.data);
   }
 
   //构建vs treeItem
