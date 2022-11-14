@@ -22,15 +22,12 @@
   const jsonStr =
     localStorage.getItem("createBinJson") ||
     JSON.stringify({
-      t: new Date().getTime(),
-      v: 1,
+      v: 100,
       n: "版本名称",
       d: "版本描述",
-      r: "1~9999",
+      r: "100~999",
     });
-  const json = JSON.parse(jsonStr);
-  json.t = new Date().getTime();
-  dataElement.value = JSON.stringify(json, null, 4);
+  dataElement.value = jsonStr;
 
   //
   fileLabel.addEventListener("click", () => {
@@ -59,7 +56,21 @@
       readFileMd5(selectFile.files[0], (md5) => {
         console.log(md5);
 
-        fileLabel.innerHTML = `文件路径: ${selectPath}<br>文件MD5: ${md5}<br>生成路径: ${targetPath} (会覆盖同名文件)`;
+        fileLabel.innerHTML = `文件路径: ${selectPath}<br>生成路径: ${targetPath} (会覆盖同名文件)`;
+
+        try {
+          const json = JSON.parse(dataElement.value);
+          if (selectPath.toLowerCase().endsWith(".bin")) {
+            json.t = new Date().getTime();
+            json.md5 = md5;
+          } else {
+            delete json.t;
+            delete json.md5;
+          }
+          dataElement.value = JSON.stringify(json, null, 4);
+        } catch (error) {
+          console.dir(error);
+        }
       });
     } else {
       fileLabel.textContent = "";
@@ -85,10 +96,6 @@
       if (data) {
         //格式化json
         dataElement.value = JSON.stringify(data, null, 4);
-
-        //持久化
-        localStorage.setItem("createBinJson", dataElement.value);
-
         readFile(selectFile.files[0], (data) => {
           //result.value = data.join(",");
           //const dataString = new TextDecoder("ISO-8859-1").decode(data);
@@ -111,6 +118,10 @@
             reveal: true, //打开保存的文件所在目录
           });
         });
+        //持久化
+        delete data.t;
+        delete data.md5;
+        localStorage.setItem("createBinJson", JSON.stringify(data, null, 4));
       } else {
         vscode.postMessage({
           text: "Json数据格式异常,请检查输入...",
