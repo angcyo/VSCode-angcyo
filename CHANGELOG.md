@@ -1,5 +1,8 @@
 # Change Log
 
+## 2022-11-14
+
++ bin md5
 ## 2022-11-11
 
 + auto engrave
