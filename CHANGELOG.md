@@ -1,5 +1,10 @@
 # Change Log
 
+## 2022-11-17
+
++ log parse
++ device
+
 ## 2022-11-14
 
 + bin md5
