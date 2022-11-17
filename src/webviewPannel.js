@@ -202,6 +202,10 @@ class WebviewPanel {
         //__filename
         //command:revealFileInOS
       }
+    } else if (message.command === "open") {
+      const url = message.url;
+      vscode.window.showInformationMessage(`准备打开:${url}`);
+      vscode.commands.executeCommand("angcyo.openUrl", url);
     }
   }
 }

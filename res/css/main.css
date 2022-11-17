@@ -182,3 +182,9 @@ textarea {
 #lines {
   width: 6rem;
 }
+
+.inputContext {
+  width: 40rem !important;
+  min-width: auto;
+  max-width: auto;
+}

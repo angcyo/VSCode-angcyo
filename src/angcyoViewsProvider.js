@@ -17,6 +17,14 @@ class AngcyoViewsProvider extends TreeDataProvider {
     }
     const last = [
       {
+        label: "设备直连",
+        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        command: {
+          command: "angcyo.deviceConnect",
+        },
+        tooltip: "设备直连通信",
+      },
+      {
         label: "日志分析",
         iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
         command: {

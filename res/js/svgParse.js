@@ -83,7 +83,7 @@
   });
 
   // 创建事件对象
-  var event = document.createEvent("HTMLEvents");
+  const event = document.createEvent("HTMLEvents");
   // 初始化事件
   event.initEvent("input", false, false);
   // 触发事件

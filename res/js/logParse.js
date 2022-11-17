@@ -9,7 +9,7 @@
   //console.log("初始化logParse.js", vscode, window)
   const info = document.getElementById("info");
   const content = document.getElementById("content");
-  initTextInput("host");
+  initTextInput("host", "http://192.168.31.191:9200/");
   initTextInput("scheme");
   initTextInput("lines", 20);
 
@@ -85,6 +85,10 @@
 
   clickButton("error", async () => {
     renderApiInfo("/log/error.log");
+  });
+
+  clickButton("log", async () => {
+    renderApiInfo("/log/log.log");
   });
 
   clickButton("crash", async () => {

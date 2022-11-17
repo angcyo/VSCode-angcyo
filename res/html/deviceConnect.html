@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
+    /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="{{reset}}" rel="stylesheet" />
+    <link href="{{vscode}}" rel="stylesheet" />
+    <link href="{{main}}" rel="stylesheet" />
+
+    <title>{{title}}</title>
+  </head>
+  <body>
+    <div class="title-wrap">
+      <img src="{{angcyo}}" width="25" title="angcyo" />
+      <h1>{{title}}</h1>
+    </div>
+
+    <div class="button-wrap">
+      <label for="host">服务地址:</label>
+      <input id="host" class="inputContext" type="text" />
+    </div>
+
+    <div class="button-wrap">
+      <label for="body" class="label">内容:</label>
+      <textarea
+        id="body"
+        name="body"
+        class="inputContext"
+        placeholder="scheme..."
+        autofocus
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="button-wrap margin">
+      <button type="button" id="deviceInfo">设备信息</button>
+      <button type="button" id="openScheme">打开指定的Scheme</button>
+      <button type="button" id="whatsApp">WhatsApp 1对1</button>
+    </div>
+
+    <div id="content"></div>
+
+    <script nonce="{{nonce}}" src="{{spark}}"></script>
+    <script nonce="{{nonce}}" src="{{script}}"></script>
+  </body>
+</html>

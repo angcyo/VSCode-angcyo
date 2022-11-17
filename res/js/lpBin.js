@@ -331,7 +331,7 @@
   }
 
   // 创建事件对象
-  var inputEvent = document.createEvent("HTMLEvents");
+  const inputEvent = document.createEvent("HTMLEvents");
   // 初始化事件
   inputEvent.initEvent("input", false, false);
   // 触发事件

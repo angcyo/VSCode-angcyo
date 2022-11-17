@@ -117,6 +117,18 @@ function activate(context) {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`${url}`));
   });
 
+  //设备直连
+  const deviceConnectPanel = new WebviewPanel(
+    "angcyo.deviceConnect",
+    "设备直连",
+    "res/js/deviceConnect.js",
+    "res/html/deviceConnect.html"
+  );
+  vscode.commands.registerCommand("angcyo.deviceConnect", () => {
+    console.log(`设备直连`);
+    deviceConnectPanel.createOrShow(context);
+  });
+
   //日志分析
   const logParsePanel = new WebviewPanel(
     "angcyo.logParse",
