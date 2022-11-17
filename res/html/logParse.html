@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
+    /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="{{reset}}" rel="stylesheet" />
+    <link href="{{vscode}}" rel="stylesheet" />
+    <link href="{{main}}" rel="stylesheet" />
+
+    <title>{{title}}</title>
+  </head>
+  <body>
+    <div class="title-wrap">
+      <img src="{{angcyo}}" width="25" title="angcyo" />
+      <h1>{{title}}</h1>
+    </div>
+
+    <div class="button-wrap">
+      <label for="host">url:</label>
+      <input id="host" type="text" />
+
+      <label for="scheme" class="label">scheme:</label>
+      <input id="scheme" type="text" placeholder="scheme" />
+
+      <label for="lines" class="label">行数:</label>
+      <input id="lines" type="text" placeholder="行数" />
+    </div>
+
+    <div class="button-wrap margin">
+      <button type="button" id="clearContent">清除→</button>
+      <button type="button" id="back">返回←</button>
+      <button type="button" id="fetch">获取</button>
+      <button type="button" id="httpFolder">网络目录</button>
+      <button type="button" id="fontFolder">字体目录</button>
+      <button type="button" id="crashFolder">崩溃目录</button>
+      <button type="button" id="logFolder">日志目录</button>
+      <button type="button" id="projectFolder">工程目录</button>
+      <button type="button" id="vectorFolder">矢量目录</button>
+      <button type="button" id="transferFolder">传输目录</button>
+      <button type="button" id="engraveFolder">雕刻目录</button>
+    </div>
+
+    <div class="button-wrap margin">
+      <button type="button" id="clearInfo">清除→</button>
+      <button type="button" id="l">运行日志</button>
+      <button type="button" id="device">设备信息</button>
+      <button type="button" id="error">错误记录</button>
+      <button type="button" id="crash">崩溃日志</button>
+      <button type="button" id="ble">蓝牙日志</button>
+      <button type="button" id="engrave">雕刻信息</button>
+    </div>
+
+    <div id="info">...</div>
+    <hr />
+    <div id="content">...</div>
+
+    <script nonce="{{nonce}}" src="{{spark}}"></script>
+    <script nonce="{{nonce}}" src="{{script}}"></script>
+  </body>
+</html>

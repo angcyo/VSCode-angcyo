@@ -17,6 +17,14 @@ class AngcyoViewsProvider extends TreeDataProvider {
     }
     const last = [
       {
+        label: "日志分析",
+        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        command: {
+          command: "angcyo.logParse",
+        },
+        tooltip: "日志数据分析",
+      },
+      {
         label: "记一下",
         iconPath: path.join(__filename, "..", "..", "res", "memo.svg"),
         command: {

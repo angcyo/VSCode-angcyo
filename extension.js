@@ -117,6 +117,18 @@ function activate(context) {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`${url}`));
   });
 
+  //日志分析
+  const logParsePanel = new WebviewPanel(
+    "angcyo.logParse",
+    "日志分析",
+    "res/js/logParse.js",
+    "res/html/logParse.html"
+  );
+  vscode.commands.registerCommand("angcyo.logParse", () => {
+    console.log(`日志分析`);
+    logParsePanel.createOrShow(context);
+  });
+
   //LaserPecker数据解析
   const laserPeckerPanel = new WebviewPanel(
     "angcyo.laserPeckerParse",

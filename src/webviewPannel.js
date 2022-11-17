@@ -175,7 +175,8 @@ class WebviewPanel {
    * @param {*} message
    */
   onDidReceiveMessage(message) {
-    console.log(`收到来自webview的消息:${message}`);
+    console.log(`收到来自webview的消息↓`);
+    console.log(message);
 
     if (message.command === undefined || message.command === "message") {
       vscode.window.showInformationMessage(`${message.text}`);

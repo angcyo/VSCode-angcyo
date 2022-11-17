@@ -95,7 +95,7 @@
       });
     } else {
       vscode.postMessage({
-        text: "无效的服务器地址!",
+        text: "无效的服务器地址:" + api,
       });
     }
   });

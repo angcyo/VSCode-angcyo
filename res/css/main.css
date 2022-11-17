@@ -169,3 +169,16 @@ textarea {
 .font-style input {
   width: 4.5rem !important;
 }
+
+.label {
+  margin-left: 0.6rem;
+}
+
+#host {
+  width: 40rem !important;
+}
+
+#scheme,
+#lines {
+  width: 6rem;
+}
