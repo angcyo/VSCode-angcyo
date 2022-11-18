@@ -7,10 +7,12 @@
 (function () {
   const vscode = acquireVsCodeApi();
   //console.log("初始化logParse.js", vscode, window)
+  const result = document.getElementById("result");
   const content = document.getElementById("content");
   const bodyInput = document.getElementById("body");
   initTextInput("host", "http://192.168.31.191:9200/");
-  initTextInput("body");
+  initTextInput("body", "", true);
+  initTextInput("content", "hello!");
 
   clickButton("deviceInfo", async () => {
     renderApiContent("/device");
@@ -19,9 +21,7 @@
   clickButton("openScheme", async () => {
     renderApiContent("/scheme", {
       method: "POST",
-      body: {
-        scheme: localStorage.getItem("body"),
-      },
+      body: JSON.parse(localStorage.getItem("body")),
     });
   });
 
@@ -47,11 +47,16 @@
 
     if (first) {
       chatList.push(first);
-      content.innerHTML = chatList.join("<br>");
+      result.innerHTML = chatList.join("<br>");
 
-      const api = `https://api.whatsapp.com/send/?phone=${first}`;
+      const content = localStorage.getItem("content");
+
+      //const api = `https://api.whatsapp.com/send/?phone=${first}`;
+      const api = `whatsapp://send/?phone=${first}&text=${encodeURI(content)}`;
+      //window.open(`whatsapp://send/?phone=${first}`);
+
       vscode.postMessage({
-        command: "open",
+        command: "app",
         url: api,
       });
     } else {
@@ -80,9 +85,18 @@
    * @param {string} id 控件的id
    * @param {string} key 持久化的key
    */
-  function initTextInput(id, def = "") {
+  function initTextInput(id, def = "", json = false) {
     const input = document.getElementById(id);
+    if (def) {
+      localStorage.setItem(id, def);
+    }
     input.addEventListener(`input`, () => {
+      if (json) {
+        try {
+          const format = JSON.stringify(JSON.parse(input.value), null, 4);
+          input.value = format;
+        } catch (error) {}
+      }
       localStorage.setItem(id, input.value);
     });
     input.value = localStorage.getItem(id) || def;
@@ -108,7 +122,7 @@
     const text = await fetchText(url, config);
     //console.log(text);
     //content.innerText = text;
-    content.innerHTML = text?.replaceAll("\n", "<br>");
+    result.innerHTML = text?.replaceAll("\n", "<br>");
   }
 
   /**

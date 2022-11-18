@@ -206,6 +206,10 @@ class WebviewPanel {
       const url = message.url;
       vscode.window.showInformationMessage(`准备打开:${url}`);
       vscode.commands.executeCommand("angcyo.openUrl", url);
+    } else if (message.command === "app") {
+      const url = message.url;
+      vscode.window.showInformationMessage(`准备打开:${url}`);
+      vscode.env.openExternal(vscode.Uri.parse(url));
     }
   }
 }

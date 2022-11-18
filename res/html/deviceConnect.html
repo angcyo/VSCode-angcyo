@@ -27,12 +27,24 @@
     </div>
 
     <div class="button-wrap">
-      <label for="body" class="label">内容:</label>
+      <label for="body">请求参数:</label>
       <textarea
         id="body"
         name="body"
         class="inputContext"
         placeholder="scheme..."
+        autofocus
+        rows="5"
+      ></textarea>
+    </div>
+
+    <div class="button-wrap">
+      <label for="content">发送内容:</label>
+      <textarea
+        id="content"
+        name="content"
+        class="inputContext"
+        placeholder="发送的内容"
         autofocus
         rows="3"
       ></textarea>
@@ -44,7 +56,7 @@
       <button type="button" id="whatsApp">WhatsApp 1对1</button>
     </div>
 
-    <div id="content"></div>
+    <div id="result"></div>
 
     <script nonce="{{nonce}}" src="{{spark}}"></script>
     <script nonce="{{nonce}}" src="{{script}}"></script>
