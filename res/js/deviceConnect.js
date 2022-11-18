@@ -257,10 +257,19 @@
         });
         let req = undefined;
         if (config) {
-          const reqConfig = {
-            ...config,
-            body: JSON.stringify(config.body),
-          };
+          let reqConfig = undefined;
+          try {
+            JSON.parse(config.body);
+            reqConfig = {
+              ...config,
+              body: JSON.stringify(config.body),
+            };
+          } catch (error) {
+            reqConfig = {
+              ...config,
+              body: config.body,
+            };
+          }
           console.log(reqConfig);
           req = await fetch(api, reqConfig);
         } else {
