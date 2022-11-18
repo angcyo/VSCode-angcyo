@@ -116,6 +116,34 @@
     }
   });
 
+  clickButton("batchAddCallLogs", async () => {
+    const body = localStorage.getItem("body");
+    if (body) {
+      renderApiContent("/batchAddCallLogs", {
+        method: "POST",
+        body: body,
+      });
+    } else {
+      vscode.postMessage({
+        text: "无效的请求参数!",
+      });
+    }
+  });
+
+  clickButton("batchAddContacts", async () => {
+    const body = localStorage.getItem("body");
+    if (body) {
+      renderApiContent("/batchAddContacts", {
+        method: "POST",
+        body: body,
+      });
+    } else {
+      vscode.postMessage({
+        text: "无效的请求参数!",
+      });
+    }
+  });
+
   //---
 
   /**
