@@ -32,6 +32,13 @@
     });
   });
 
+  clickButton("copy", async () => {
+    vscode.postMessage({
+      command: "copy",
+      data: result.innerHTML?.replaceAll("<br>", "\n"),
+    });
+  });
+
   //记录已经聊天的账号
   const chatList = [];
 

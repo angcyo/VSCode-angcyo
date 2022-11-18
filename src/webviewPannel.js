@@ -240,6 +240,11 @@ class WebviewPanel {
         vscode.window.showInformationMessage(`已保存至:${uri.fsPath}`);
         lastSaveUri = uri;
       }
+    } else if (message.command === "copy") {
+      //复制内容
+      const data = message.data;
+      vscode.env.clipboard.writeText(data);
+      vscode.window.showInformationMessage(`已复制!`);
     }
   }
 }
