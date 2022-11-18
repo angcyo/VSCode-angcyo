@@ -5,6 +5,7 @@
 - whatsapp
 - gcode
 - copy
+- batch contacts
 
 ## 2022-11-17
 
