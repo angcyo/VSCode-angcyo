@@ -12,22 +12,23 @@
   initTextInput("host", "http://192.168.31.191:9200/");
   initTextInput("body", "", true);
   initTextInput("content", "hello!");
+  initSelectFile();
 
   clickButton("deviceInfo", async () => {
     renderApiContent("/device");
-  });
-
-  clickButton("save", async () => {
-    vscode.postMessage({
-      command: "saveAs",
-      data: result.innerHTML?.replaceAll("<br>", "\n"),
-    });
   });
 
   clickButton("openScheme", async () => {
     renderApiContent("/scheme", {
       method: "POST",
       body: JSON.parse(localStorage.getItem("body")),
+    });
+  });
+
+  clickButton("save", async () => {
+    vscode.postMessage({
+      command: "saveAs",
+      data: result.innerHTML?.replaceAll("<br>", "\n"),
     });
   });
 
@@ -73,9 +74,8 @@
   });
 
   clickButton("gcodeAdjust", async () => {
-    const body = localStorage.getItem("body");
-    try {
-      const json = JSON.parse(body);
+    const json = getRequestBody();
+    if (json) {
       const content = localStorage.getItem("content") || "";
       if (content) {
         json.content = content;
@@ -88,14 +88,43 @@
           text: "无效的请求内容!",
         });
       }
+    }
+  });
+
+  clickButton("bitmapToGCode", async () => {
+    const json = getRequestBody();
+    if (json) {
+      const content = localStorage.getItem("selectImageData") || "";
+      if (content) {
+        json.content = content;
+        renderApiContent("/bitmapToGCode", {
+          method: "POST",
+          body: json,
+        });
+      } else {
+        vscode.postMessage({
+          text: "请选择图片!",
+        });
+      }
+    }
+  });
+
+  //---
+
+  /**
+   * 获取请求体json
+   */
+  function getRequestBody() {
+    const body = localStorage.getItem("body");
+    try {
+      const json = JSON.parse(body);
+      return json;
     } catch (error) {
       vscode.postMessage({
         text: "无效的请求参数:" + body,
       });
     }
-  });
-
-  //---
+  }
 
   /**
    * 点击一个按钮
@@ -130,6 +159,31 @@
       console.log(input.value);
     });
     input.value = localStorage.getItem(id) || def;
+  }
+
+  function initSelectFile() {
+    const element = document.getElementById("select-file");
+
+    //选择文件监听
+    element.addEventListener(`change`, () => {
+      if (element.files?.length > 0) {
+        const file = element.files[0];
+        //图片
+        readFileBase64(file, (base64) => {
+          //console.log(base64);
+          localStorage.setItem("selectImageData", base64); //保存选中的图片数据
+        });
+      }
+    });
+  }
+
+  function readFileBase64(file, callback) {
+    const reader = new FileReader();
+    reader.onload = function fileReadCompleted() {
+      // 当读取完成时，内容只在`reader.result`中
+      callback(reader.result);
+    };
+    reader.readAsDataURL(file);
   }
 
   /**

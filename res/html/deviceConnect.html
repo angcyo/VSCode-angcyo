@@ -48,6 +48,12 @@
         autofocus
         rows="8"
       ></textarea>
+      <label for="select-file" class="label">文件:</label>
+      <input
+        id="select-file"
+        type="file"
+        accept=".jpg,.png,.jpeg,.bmp,.svg,.gcode"
+      />
     </div>
 
     <div class="button-wrap margin">
@@ -56,6 +62,7 @@
       <button type="button" id="openScheme">打开指定的Scheme</button>
       <button type="button" id="whatsApp">WhatsApp 1对1</button>
       <button type="button" id="gcodeAdjust">GCode调整</button>
+      <button type="button" id="bitmapToGCode">图片转GCode</button>
     </div>
 
     <div id="result"></div>
