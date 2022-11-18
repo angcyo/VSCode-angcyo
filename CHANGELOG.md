@@ -2,19 +2,22 @@
 
 ## 2022-11-18
 
-+ whatsapp
+- whatsapp
+- gcode
 
 ## 2022-11-17
 
-+ log parse
-+ device
+- log parse
+- device
 
 ## 2022-11-14
 
-+ bin md5
+- bin md5
+
 ## 2022-11-11
 
-+ auto engrave
+- auto engrave
+
 ## 2022-11-9
 
 - ref tree provider / webview
