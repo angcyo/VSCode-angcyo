@@ -5,8 +5,14 @@
  * 2022-11-8
  */
 
+const { TextEncoder } = require("util");
 const vscode = require("vscode");
 const { Api } = require("./api");
+
+/**
+ * 最后一次保存的uri
+ */
+var lastSaveUri = null;
 
 class WebviewPanel {
   /**
@@ -28,6 +34,7 @@ class WebviewPanel {
    * @param {*} context 创建或者直接显示
    */
   async createOrShow(context) {
+    this._context = context;
     if (this.webviewPanel) {
       //如果已经存在, 则直接显示
       this.webviewPanel.reveal(vscode.ViewColumn.Active);
@@ -174,7 +181,7 @@ class WebviewPanel {
    * 收到来自网页的消息时, 回调
    * @param {*} message
    */
-  onDidReceiveMessage(message) {
+  async onDidReceiveMessage(message) {
     console.log(`收到来自webview的消息↓`);
     console.log(message);
 
@@ -210,6 +217,29 @@ class WebviewPanel {
       const url = message.url;
       vscode.window.showInformationMessage(`准备打开:${url}`);
       vscode.env.openExternal(vscode.Uri.parse(url));
+    } else if (message.command === "saveAs") {
+      const data = message.data;
+      //console.log("保存:" + data);
+      //vscode.window.showInformationMessage(`准备打开:${url}`);
+      //vscode.env.openExternal(vscode.Uri.parse(url));
+      //vscode.commands.executeCommand("saveAs", data);
+
+      //let uri = this._context.extensionUri;
+      //let doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+      //await vscode.window.showTextDocument(doc, { preview: false });
+      const uri = await vscode.window.showSaveDialog({
+        defaultUri: lastSaveUri || this._context.extensionUri,
+        //saveLabel: "...saveLabel...", //保存按钮的文本
+        //title: "...title...", //对话框的标题
+      });
+      if (uri) {
+        //console.log(uri.path);
+        //console.log(uri.fsPath);
+        const encode = new TextEncoder("utf-8");
+        vscode.workspace.fs.writeFile(uri, encode.encode(data));
+        vscode.window.showInformationMessage(`已保存至:${uri.fsPath}`);
+        lastSaveUri = uri;
+      }
     }
   }
 }

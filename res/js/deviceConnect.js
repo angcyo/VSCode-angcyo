@@ -8,7 +8,6 @@
   const vscode = acquireVsCodeApi();
   //console.log("初始化logParse.js", vscode, window)
   const result = document.getElementById("result");
-  const content = document.getElementById("content");
   const bodyInput = document.getElementById("body");
   initTextInput("host", "http://192.168.31.191:9200/");
   initTextInput("body", "", true);
@@ -16,6 +15,13 @@
 
   clickButton("deviceInfo", async () => {
     renderApiContent("/device");
+  });
+
+  clickButton("save", async () => {
+    vscode.postMessage({
+      command: "saveAs",
+      data: result.innerHTML?.replaceAll("<br>", "\n"),
+    });
   });
 
   clickButton("openScheme", async () => {
@@ -66,6 +72,29 @@
     }
   });
 
+  clickButton("gcodeAdjust", async () => {
+    const body = localStorage.getItem("body");
+    try {
+      const json = JSON.parse(body);
+      const content = localStorage.getItem("content") || "";
+      if (content) {
+        json.content = content;
+        renderApiContent("/gcodeAdjust", {
+          method: "POST",
+          body: json,
+        });
+      } else {
+        vscode.postMessage({
+          text: "无效的请求内容!",
+        });
+      }
+    } catch (error) {
+      vscode.postMessage({
+        text: "无效的请求参数:" + body,
+      });
+    }
+  });
+
   //---
 
   /**
@@ -87,7 +116,7 @@
    */
   function initTextInput(id, def = "", json = false) {
     const input = document.getElementById(id);
-    if (def) {
+    if (!localStorage.getItem(id) && def) {
       localStorage.setItem(id, def);
     }
     input.addEventListener(`input`, () => {
@@ -98,6 +127,7 @@
         } catch (error) {}
       }
       localStorage.setItem(id, input.value);
+      console.log(input.value);
     });
     input.value = localStorage.getItem(id) || def;
   }
