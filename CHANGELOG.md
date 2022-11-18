@@ -4,6 +4,7 @@
 
 - whatsapp
 - gcode
+- copy
 
 ## 2022-11-17
 
@@ -25,8 +26,7 @@
 ## 2022-11-7
 
 - update setTimeout
-
-* command item
+- command item
 
 ## 2022-11-5
 
