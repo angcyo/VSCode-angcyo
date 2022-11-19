@@ -1,5 +1,9 @@
 # Change Log
 
+## 2022-11-19
+
+- gravity
+
 ## 2022-11-18
 
 - whatsapp
