@@ -33,6 +33,10 @@ textarea {
   width: auto;
 }
 
+.button-wrap * {
+  margin-top: 0.5rem;
+}
+
 .button-wrap label {
   margin-right: 1rem;
 }
@@ -114,6 +118,10 @@ textarea {
   margin-right: 0.5rem;
 }
 
+.timestamp * {
+  margin-bottom: 0.5rem;
+}
+
 .memo-wrap {
   display: flex;
   align-items: center;
@@ -133,10 +141,6 @@ textarea {
 
 #host {
   width: 50%;
-}
-
-#mtype-wrap label {
-  margin-top: 0.5rem;
 }
 
 #frame-wrap * {
@@ -164,6 +168,7 @@ textarea {
 .inline-flex input {
   width: auto !important;
   margin-right: 0.3rem !important;
+  margin-top: 0px !important;
 }
 
 .font-style input {
@@ -187,4 +192,8 @@ textarea {
   width: 40rem !important;
   min-width: auto;
   max-width: auto;
+}
+
+#gravity {
+  width: 4rem !important;
 }

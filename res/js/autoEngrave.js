@@ -51,6 +51,7 @@
   initPaintStyle();
   initOtherStyle();
   initEngraveParams();
+  initGravity();
 
   onJsonChange();
 
@@ -435,5 +436,10 @@
     initIntInput("printCount");
     initIntInput("printPrecision");
     initRadioIntInput("printType");
+  }
+
+  function initGravity() {
+    initRadioIntInput("gravity");
+    initIntInput("gravity");
   }
 })();
