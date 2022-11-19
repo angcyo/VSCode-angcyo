@@ -258,16 +258,15 @@
         let req = undefined;
         if (config) {
           let reqConfig = undefined;
-          try {
-            JSON.parse(config.body);
-            reqConfig = {
-              ...config,
-              body: JSON.stringify(config.body),
-            };
-          } catch (error) {
+          if (typeof config.body == "string") {
             reqConfig = {
               ...config,
               body: config.body,
+            };
+          } else {
+            reqConfig = {
+              ...config,
+              body: JSON.stringify(config.body),
             };
           }
           console.log(reqConfig);
