@@ -41,7 +41,7 @@
   const json = JSON.parse(jsonStr);
   dataElement.value = JSON.stringify(json, null, 4);
   hostInput.value =
-    localStorage.getItem("host") || "http://192.168.31.191:9200/engrave";
+    localStorage.getItem("host") || "http://192.168.31.191:9200/engrave?device=&activity=true";
 
   //init
   initMtypeElement();
