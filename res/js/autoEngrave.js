@@ -66,8 +66,9 @@
           //如果类型是图片
           json.imageOriginal = localStorage.getItem("selectImageData");
           break;
-        case 10004:
-        case 10020:
+        case 0: //raw
+        case 10004: //svg
+        case 10020: //gcode
           //如果类型是svg/gcode
           json.data = localStorage.getItem("selectVectorData");
           break;
@@ -113,8 +114,8 @@
       //显示图片相关属性
       fileSelectWrap.style.display = "block";
       imageFilterWrap.style.display = "block";
-    } else if (json.mtype == 10004 || json.mtype == 10020) {
-      //Svg GCode
+    } else if (json.mtype == 10004 || json.mtype == 10020 || json.mtype == 0) {
+      //Svg GCode Raw
       fileSelectWrap.style.display = "block";
       imageFilterWrap.style.display = "none";
     } else {
@@ -225,6 +226,10 @@
       {
         value: 10020,
         label: "GCode",
+      },
+      {
+        value: 0,
+        label: "Raw",
       },
     ];
     let html = `<label>数据类型:</label>`;
@@ -367,8 +372,12 @@
             image.style.display = "block";
             localStorage.setItem("selectImageData", base64); //保存选中的图片数据
           });
-        } else if (json.mtype == 10004 || json.mtype == 10020) {
-          //svg 和 gcode
+        } else if (
+          json.mtype == 10004 ||
+          json.mtype == 10020 ||
+          json.mtype == 0
+        ) {
+          //svg 和 gcode raw
           readFileString(file, (text) => {
             //console.log(text);
             localStorage.setItem("selectVectorData", text); //保存选中的图片数据
