@@ -24,6 +24,8 @@
     <div class="button-wrap">
       <label for="host">服务器地址:</label>
       <input id="host" type="text" />
+
+      <button type="button" id="post" class="label">发送雕刻</button>
     </div>
 
     <div id="mtype-wrap" class="button-wrap"></div>
@@ -60,7 +62,7 @@
       </div>
     </div>
 
-    <div id="frame-wrap" class="button-wrap margin">
+    <div id="frame-wrap" class="button-wrap">
       <label>坐标(mm): </label>
       <label for="left">left:</label>
       <input id="left" type="text" placeholder="坐标x" />
@@ -84,7 +86,7 @@
       <input id="angle" type="text" placeholder="旋转°" />
     </div>
 
-    <div id="gravity-wrap" class="button-wrap margin">
+    <div id="gravity-wrap" class="button-wrap">
       <label>重力: </label>
       <label for="gravityLT" class="inline-flex">
         <input
@@ -162,7 +164,7 @@
       <input id="gravity" type="text" placeholder="重力值" />
     </div>
 
-    <div id="other-wrap" class="button-wrap margin">
+    <div id="other-wrap" class="button-wrap">
       <label>样式: </label>
       <label for="paintStyleStroke" class="inline-flex">
         <input
@@ -225,10 +227,6 @@
         autofocus
         rows="25"
       ></textarea>
-    </div>
-
-    <div class="button-wrap">
-      <button type="button" id="post">发送</button>
     </div>
 
     <script nonce="{{nonce}}" src="{{script}}"></script>

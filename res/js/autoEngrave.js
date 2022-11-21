@@ -299,9 +299,14 @@
    * 初始化一个整型输入框
    * @param {string} id
    */
-  function initIntInput(id) {
+  function initIntInput(id, def = undefined) {
     const input = document.getElementById(id);
-    input.value = json[id];
+    if (json[id]) {
+      input.value = json[id];
+    } else if (def) {
+      input.value = def;
+    }
+
     input.addEventListener("input", (event) => {
       if (event.target.value) {
         json[id] = parseInt(event.target.value);
