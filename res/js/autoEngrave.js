@@ -41,7 +41,8 @@
   const json = JSON.parse(jsonStr);
   dataElement.value = JSON.stringify(json, null, 4);
   hostInput.value =
-    localStorage.getItem("host") || "http://192.168.31.191:9200/engrave?device=&activity=true";
+    localStorage.getItem("host") ||
+    "http://192.168.31.191:9200/engrave?device=&activity=true";
 
   //init
   initMtypeElement();
@@ -86,16 +87,23 @@
       vscode.postMessage({
         text: "正在请求...",
       });
-      const req = await fetch(api, {
-        method: "POST",
-        body: jsonBody,
-      });
-      const text = await req.text();
-      //console.log(text);
+      try {
+        const req = await fetch(api, {
+          method: "POST",
+          body: jsonBody,
+        });
+        const text = await req.text();
+        //console.log(text);
 
-      vscode.postMessage({
-        text: text,
-      });
+        vscode.postMessage({
+          text: text,
+        });
+      } catch (error) {
+        console.dir(error);
+        vscode.postMessage({
+          text: "请求异常:" + error,
+        });
+      }
     } else {
       vscode.postMessage({
         text: "无效的服务器地址:" + api,
