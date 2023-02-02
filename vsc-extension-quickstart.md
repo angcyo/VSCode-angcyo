@@ -16,6 +16,8 @@ $ vsce publish
 # <publisherID>.myExtension published to VS Code Marketplace
 ```
 
+### 插件发布地址
+
 https://marketplace.visualstudio.com/manage/publishers/angcyo
 
 ### 打包

@@ -2,7 +2,7 @@
   "name": "angcyo",
   "displayName": "angcyo",
   "description": "还能这么玩, `骚年`我在群里等你! 一个能把Idea写崩溃的蓝神.",
-  "version": "1.1.17",
+  "version": "1.1.18",
   "license": "MIT",
   "publisher": "angcyo",
   "repository": {
@@ -30,6 +30,11 @@
         "command": "angcyo.refresh",
         "title": "Refresh Angcyo",
         "icon": "res/refresh.svg",
+        "category": "angcyo"
+      },
+      {
+        "command": "angcyo.command.addQuotationMarkLaserPecker",
+        "title": "LaserPecker 添加双引号",
         "category": "angcyo"
       }
     ],
