@@ -181,7 +181,7 @@ function activate(context) {
   });
 
   //lpbin解析
-  const lpBinPanel = new MemoWebviewPanel(
+  const lpBinPanel = new WebviewPanel(
     "angcyo.binParse",
     "lpbin文件创建及解析",
     "res/js/lpBin.js",
@@ -205,7 +205,7 @@ function activate(context) {
   });
 
   //angcyo.memo 备忘录
-  const memoPanel = new MemoWebviewPanel(
+  const memoPanel = new WebviewPanel(
     "angcyo.memo",
     "记一下, 备忘录",
     "res/js/memo.js",
