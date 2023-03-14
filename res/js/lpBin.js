@@ -337,4 +337,22 @@
   // 触发事件
   timestampElement.dispatchEvent(inputEvent);
   timeElement.dispatchEvent(inputEvent);
+
+  //
+  const configButtonList = document.querySelectorAll(
+    "#deviceButtonWrap button"
+  );
+  configButtonList.forEach((element) => {
+    element.addEventListener("click", () => {
+      const range = element.getAttribute("data-range");
+
+      try {
+        const json = JSON.parse(dataElement.value);
+        json.r = range;
+        dataElement.value = JSON.stringify(json, null, 4);
+      } catch (error) {
+        console.dir(error);
+      }
+    });
+  });
 })();
