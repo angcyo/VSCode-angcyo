@@ -144,6 +144,18 @@ function activate(context) {
     logParsePanel.createOrShow(context);
   });
 
+  //js工具
+  const jsToolsPanel = new WebviewPanel(
+    "angcyo.jsTools",
+    "js工具",
+    "res/js/jsTools.js",
+    "res/html/jsTools.html"
+  );
+  vscode.commands.registerCommand("angcyo.jsTools", () => {
+    console.log(`js工具`);
+    jsToolsPanel.createOrShow(context);
+  });
+
   //LaserPecker数据解析
   const laserPeckerPanel = new WebviewPanel(
     "angcyo.laserPeckerParse",

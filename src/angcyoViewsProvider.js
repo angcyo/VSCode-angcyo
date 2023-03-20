@@ -33,6 +33,14 @@ class AngcyoViewsProvider extends TreeDataProvider {
         tooltip: "日志数据分析",
       },
       {
+        label: "js工具",
+        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        command: {
+          command: "angcyo.jsTools",
+        },
+        tooltip: "js工具",
+      },
+      {
         label: "记一下",
         iconPath: path.join(__filename, "..", "..", "res", "memo.svg"),
         command: {
