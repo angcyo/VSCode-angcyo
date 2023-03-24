@@ -7,7 +7,12 @@
 (function () {
   const vscode = acquireVsCodeApi();
 
+  const host = document.getElementById("host");
+  const content = document.getElementById("content");
   const result = document.getElementById("result");
+
+  initTextInput("host", "ws://192.168.2.109:9301");
+  initTextInput("content");
 
   clickButton("uuid", async () => {
     const uuid = crypto.randomUUID();
@@ -24,6 +29,65 @@
       uuidUp +
       "\n" +
       uuid2Up;
+  });
+
+  var wsSocket;
+  clickButton("connect", () => {
+    if (wsSocket == undefined) {
+      const url = host.value; //"ws://localhost:8080"
+      wsSocket = new WebSocket(url); //创建WebSocket连接
+
+      wsSocket.onopen = function (event) {
+        appendResult("Connection open ...");
+      };
+
+      wsSocket.onmessage = function (event) {
+        if (typeof event.data === "string") {
+          appendResult("Received Message: " + event.data);
+        }
+
+        if (event.data instanceof ArrayBuffer) {
+          var buffer = event.data;
+          console.log("Received Buffer: " + buffer.size);
+        }
+      };
+
+      wsSocket.onclose = function (event) {
+        appendResult("Connection closed.");
+      };
+    } else {
+      appendResult("is connected.");
+    }
+  });
+  clickButton("disconnect", () => {
+    wsSocket?.close();
+    wsSocket = undefined;
+    result.innerHTML = "";
+  });
+  clickButton("send", () => {
+    const text = content.value;
+    appendResult("发送:" + text);
+    wsSocket?.send(text);
+  });
+  clickButton("send5", () => {
+    var binary = new Uint8Array(5 * 1024 * 1024);
+    appendResult("发送5MB");
+    wsSocket?.send(binary.buffer);
+  });
+  clickButton("send10", () => {
+    var binary = new Uint8Array(10 * 1024 * 1024);
+    appendResult("发送10MB");
+    wsSocket?.send(binary.buffer);
+  });
+  clickButton("send20", () => {
+    var binary = new Uint8Array(20 * 1024 * 1024);
+    appendResult("发送20MB");
+    wsSocket?.send(binary.buffer);
+  });
+  clickButton("send100", () => {
+    var binary = new Uint8Array(100 * 1024 * 1024);
+    appendResult("发送100MB");
+    wsSocket?.send(binary.buffer);
   });
 
   //---
@@ -100,5 +164,15 @@
       }
     }
     return fmt;
+  }
+
+  /**拼接返回值 */
+  function appendResult(text) {
+    if (result.innerHTML) {
+      result.innerHTML =
+        result.innerHTML + "\n" + "\n" + nowTimeString() + "\n" + text;
+    } else {
+      result.innerHTML = nowTimeString() + "\n" + text;
+    }
   }
 })();

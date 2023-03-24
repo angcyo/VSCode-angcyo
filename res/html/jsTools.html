@@ -22,7 +22,22 @@
     </div>
 
     <div class="button-wrap">
+      <label for="host">url:</label>
+      <input id="host" type="text" />
+
+      <label for="content" class="label">内容:</label>
+      <input id="content" type="text" class="inputContext" placeholder="内容" />
+    </div>
+
+    <div class="button-wrap margin">
       <button type="button" id="uuid">随机UUID</button>
+      <button type="button" id="connect">连接到WS服务器</button>
+      <button type="button" id="disconnect">断开连接</button>
+      <button type="button" id="send">发送内容</button>
+      <button type="button" id="send5">发送5MB</button>
+      <button type="button" id="send10">发送10MB</button>
+      <button type="button" id="send20">发送20MB</button>
+      <button type="button" id="send30">发送100MB</button>
     </div>
 
     <div id="content" class="margin">
