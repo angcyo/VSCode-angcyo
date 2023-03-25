@@ -44,11 +44,13 @@
   clickButton("connect", () => {
     if (wsSocket == undefined) {
       const url = host.value; //"ws://localhost:8080"
+
+      appendResult("准备连接到:" + url);
       wsSocket = new WebSocket(url); //创建WebSocket连接
 
       wsSocket.onopen = function (event) {
         isConnection = true;
-        appendResult("Connection open ...");
+        appendResult("已连接到:" + url);
       };
 
       wsSocket.onmessage = function (event) {
@@ -64,7 +66,7 @@
 
       wsSocket.onclose = function (event) {
         wsSocket = undefined;
-        appendResult("Connection closed.");
+        appendResult("连接被关闭!");
       };
     } else if (isConnection) {
       appendResult("已连接");
