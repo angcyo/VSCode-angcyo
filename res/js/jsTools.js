@@ -10,11 +10,13 @@
   const host = document.getElementById("host");
   const content = document.getElementById("content");
   const sendSize = document.getElementById("sendSize");
+  const sendLoopCount = document.getElementById("sendLoopCount");
   const result = document.getElementById("result");
 
   initTextInput("host", "ws://192.168.2.109:9301");
   initTextInput("content");
   initTextInput("sendSize");
+  initTextInput("sendLoopCount");
 
   clickButton("uuid", async () => {
     const uuid = crypto.randomUUID();
@@ -31,6 +33,10 @@
       uuidUp +
       "\n" +
       uuid2Up;
+  });
+
+  clickButton("clear", () => {
+    result.innerHTML = "";
   });
 
   var isConnection = false;
@@ -80,11 +86,21 @@
   });
   clickButton("sendByte", () => {
     const size = sendSize.value || 1;
-    var binary = new Uint8Array(size * 1024 * 1024);
-    appendResult(`发送字节:${size}MB`);
-    wrapTime("", () => {
-      wsSocket?.send(binary.buffer);
-    });
+    sendByte("", size);
+  });
+  clickButton("sendLoop", () => {
+    const text = content.value;
+    const count = sendLoopCount.value || 1;
+    for (let i = 0; i < count; i++) {
+      sendString(`第${i + 1}次,`, text);
+    }
+  });
+  clickButton("sendByteLoop", () => {
+    const size = sendSize.value || 1;
+    const count = sendLoopCount.value || 1;
+    for (let i = 0; i < count; i++) {
+      sendByte(`第${i + 1}次,`, size);
+    }
   });
   clickButton("send5", () => {
     var binary = new Uint8Array(5 * 1024 * 1024);
@@ -134,6 +150,23 @@
   });
 
   //---
+
+  /**发送字节数 kb */
+  function sendByte(tag, size) {
+    var binary = new Uint8Array(size * 1024);
+    appendResult(`发送字节:${size}KB`);
+    wrapTime(tag, () => {
+      wsSocket?.send(binary.buffer);
+    });
+  }
+
+  /**发送字符串*/
+  function sendString(tag, text) {
+    appendResult("发送:" + text);
+    wrapTime(tag, () => {
+      wsSocket?.send(text);
+    });
+  }
 
   /**
    * 点击一个按钮
