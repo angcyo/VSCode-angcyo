@@ -27,6 +27,14 @@
 
       <label for="content" class="label">内容:</label>
       <input id="content" type="text" class="inputContext" placeholder="内容" />
+
+      <label for="sendSize" class="label">指定大小(MB):</label>
+      <input
+        id="sendSize"
+        type="number"
+        class="input"
+        placeholder="bytes大小"
+      />
     </div>
 
     <div class="button-wrap margin">
@@ -34,6 +42,7 @@
       <button type="button" id="connect">连接到WS服务器</button>
       <button type="button" id="disconnect">断开连接</button>
       <button type="button" id="send">发送内容</button>
+      <button type="button" id="sendByte">发送字节</button>
       <button type="button" id="send5">发送5MB</button>
       <button type="button" id="send10">发送10MB</button>
       <button type="button" id="send20">发送20MB</button>

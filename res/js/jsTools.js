@@ -9,10 +9,12 @@
 
   const host = document.getElementById("host");
   const content = document.getElementById("content");
+  const sendSize = document.getElementById("sendSize");
   const result = document.getElementById("result");
 
   initTextInput("host", "ws://192.168.2.109:9301");
   initTextInput("content");
+  initTextInput("sendSize");
 
   clickButton("uuid", async () => {
     const uuid = crypto.randomUUID();
@@ -31,6 +33,7 @@
       uuid2Up;
   });
 
+  var isConnection = false;
   var wsSocket;
   clickButton("connect", () => {
     if (wsSocket == undefined) {
@@ -38,6 +41,7 @@
       wsSocket = new WebSocket(url); //创建WebSocket连接
 
       wsSocket.onopen = function (event) {
+        isConnection = true;
         appendResult("Connection open ...");
       };
 
@@ -53,10 +57,13 @@
       };
 
       wsSocket.onclose = function (event) {
+        wsSocket = undefined;
         appendResult("Connection closed.");
       };
+    } else if (isConnection) {
+      appendResult("已连接");
     } else {
-      appendResult("is connected.");
+      appendResult("正在连接中...");
     }
   });
   clickButton("disconnect", () => {
@@ -67,27 +74,49 @@
   clickButton("send", () => {
     const text = content.value;
     appendResult("发送:" + text);
-    wsSocket?.send(text);
+    wrapTime("", () => {
+      wsSocket?.send(text);
+    });
+  });
+  clickButton("sendByte", () => {
+    const size = sendSize.value || 1;
+    var binary = new Uint8Array(size * 1024 * 1024);
+    appendResult(`发送字节:${size}MB`);
+    wrapTime("", () => {
+      wsSocket?.send(binary.buffer);
+    });
   });
   clickButton("send5", () => {
     var binary = new Uint8Array(5 * 1024 * 1024);
     appendResult("发送5MB");
-    wsSocket?.send(binary.buffer);
+
+    wrapTime("", () => {
+      wsSocket?.send(binary.buffer);
+    });
   });
   clickButton("send10", () => {
     var binary = new Uint8Array(10 * 1024 * 1024);
     appendResult("发送10MB");
-    wsSocket?.send(binary.buffer);
+
+    wrapTime("", () => {
+      wsSocket?.send(binary.buffer);
+    });
   });
   clickButton("send20", () => {
     var binary = new Uint8Array(20 * 1024 * 1024);
     appendResult("发送20MB");
-    wsSocket?.send(binary.buffer);
+
+    wrapTime("", () => {
+      wsSocket?.send(binary.buffer);
+    });
   });
   clickButton("send100", () => {
     var binary = new Uint8Array(100 * 1024 * 1024);
     appendResult("发送100MB");
-    wsSocket?.send(binary.buffer);
+
+    wrapTime("", () => {
+      wsSocket?.send(binary.buffer);
+    });
   });
 
   //---
@@ -174,5 +203,22 @@
     } else {
       result.innerHTML = nowTimeString() + "\n" + text;
     }
+  }
+
+  function wrapTime(tag, action) {
+    tick();
+    action();
+    appendTime(tag);
+  }
+
+  var tickTime = 0;
+
+  function tick() {
+    tickTime = new Date().getTime();
+  }
+
+  function appendTime(tag) {
+    const time = new Date().getTime();
+    appendResult((tag || "") + "耗时:" + (time - tickTime) + "ms");
   }
 })();
