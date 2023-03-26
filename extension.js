@@ -147,12 +147,12 @@ function activate(context) {
   //js工具
   const jsToolsPanel = new WebviewPanel(
     "angcyo.jsTools",
-    "js工具",
+    "JS工具",
     "res/js/jsTools.js",
     "res/html/jsTools.html"
   );
   vscode.commands.registerCommand("angcyo.jsTools", () => {
-    console.log(`js工具`);
+    console.log(`JS工具`);
     jsToolsPanel.createOrShow(context);
   });
 

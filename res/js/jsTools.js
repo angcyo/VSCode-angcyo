@@ -34,6 +34,14 @@
       "\n" +
       uuid2Up;
   });
+  clickButton("base64Encode", () => {
+    const text = content.value;
+    result.innerHTML = nowTimeString() + "\n" + btoa(text); //加密
+  });
+  clickButton("base64Decode", () => {
+    const text = content.value;
+    result.innerHTML = nowTimeString() + "\n" + atob(text); //解密
+  });
 
   clickButton("clear", () => {
     result.innerHTML = "";
