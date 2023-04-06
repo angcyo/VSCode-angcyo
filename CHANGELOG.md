@@ -12,6 +12,10 @@
 
 + js tools
 
+## 2023-02-02
+
++ auto add quotation mark
+
 ## 2022-11-21
 
 - fix raw
