@@ -14,6 +14,7 @@
   const fileLabel = document.getElementById("fileLabel");
   const dataElement = document.getElementById("data");
   const dateTimeElement = document.getElementById("dateTime");
+  const deviceButtonWrap = document.getElementById("deviceButtonWrap");
 
   //2个路径
   var selectPath = "";
@@ -28,6 +29,41 @@
       r: "100~999",
     });
   dataElement.value = jsonStr;
+
+  //接收来自vscode的数据
+  // Handle messages sent from the extension to the webview
+  window.addEventListener("message", (event) => {
+    const message = event.data; // The json data that the extension sent
+    switch (message.type) {
+      case "device":
+        const deviceList = JSON.parse(message.value);
+        console.log(deviceList);
+
+        deviceList?.forEach((item) => {
+          const button = document.createElement("button");
+          button.innerHTML = item.name;
+          deviceButtonWrap.appendChild(button);
+
+          button.addEventListener("click", () => {
+            try {
+              const itemJson = item;
+              delete itemJson.name;
+              const json = {
+                ...JSON.parse(dataElement.value),
+                ...itemJson,
+              };
+              dataElement.value = JSON.stringify(json, null, 4);
+            } catch (error) {
+              console.dir(error);
+              vscode.postMessage({
+                text: error.message,
+              });
+            }
+          });
+        });
+        return;
+    }
+  });
 
   //
   fileLabel.addEventListener("click", () => {
@@ -337,22 +373,4 @@
   // 触发事件
   timestampElement.dispatchEvent(inputEvent);
   timeElement.dispatchEvent(inputEvent);
-
-  //
-  const configButtonList = document.querySelectorAll(
-    "#deviceButtonWrap button"
-  );
-  configButtonList.forEach((element) => {
-    element.addEventListener("click", () => {
-      const range = element.getAttribute("data-range");
-
-      try {
-        const json = JSON.parse(dataElement.value);
-        json.r = range;
-        dataElement.value = JSON.stringify(json, null, 4);
-      } catch (error) {
-        console.dir(error);
-      }
-    });
-  });
 })();

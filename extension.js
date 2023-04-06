@@ -4,6 +4,7 @@ const path = require("path");
 const vscode = require("vscode");
 const { AngcyoViewsProvider } = require("./src/angcyoViewsProvider");
 const { MemoWebviewPanel } = require("./src/memoWebviewPanel");
+const { LpbinWebviewPanel } = require("./src/lpbinWebviewPanel");
 const { TreeDataProvider } = require("./src/treeDataProvider");
 const { WebviewPanel } = require("./src/webviewPannel");
 const {
@@ -193,12 +194,7 @@ function activate(context) {
   });
 
   //lpbin解析
-  const lpBinPanel = new WebviewPanel(
-    "angcyo.binParse",
-    "lpbin文件创建及解析",
-    "res/js/lpBin.js",
-    "res/html/lpBin.html"
-  );
+  const lpBinPanel = new LpbinWebviewPanel();
   vscode.commands.registerCommand("angcyo.binParse", () => {
     console.log(`lpbin文件创建及解析`);
     lpBinPanel.createOrShow(context);
@@ -217,12 +213,7 @@ function activate(context) {
   });
 
   //angcyo.memo 备忘录
-  const memoPanel = new WebviewPanel(
-    "angcyo.memo",
-    "记一下, 备忘录",
-    "res/js/memo.js",
-    "res/html/memo.html"
-  );
+  const memoPanel = new MemoWebviewPanel();
   vscode.commands.registerCommand("angcyo.memo", () => {
     console.log(`备忘录`);
     memoPanel.createOrShow(context);

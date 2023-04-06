@@ -5,7 +5,7 @@
 
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
+      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}'; connect-src 'self' https://gitee.com/;"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -64,31 +64,7 @@
       <label id="fileLabel" style="cursor: pointer"></label>
     </div>
 
-    <div class="button-wrap margin" id="deviceButtonWrap">
-      <button type="button" data-range="150~199">LP1-Z</button>
-      <button type="button" data-range="1500~1599">LP1-Z(dev)</button>
-      <button type="button" data-range="250~269">LP1-Z-PRO(mpu6050)</button>
-      <button type="button" data-range="270~299">LP1-Z-PRO(8658)</button>
-      <button type="button" data-range="2500~2599">
-        LP1-Z-PRO(mpu6050 dev)
-      </button>
-      <button type="button" data-range="300~349">LP2(HK32)</button>
-      <button type="button" data-range="3000~3099">LP2(HK32 dev)</button>
-      <button type="button" data-range="350~369">LP2(mpu6050)</button>
-      <button type="button" data-range="3500~3599">LP2(mpu6050 dev)</button>
-      <button type="button" data-range="370~399">LP2(8658)</button>
-      <button type="button" data-range="3700~3799">LP2(8658 dev)</button>
-      <button type="button" data-range="4000~4099">LP3-TY</button>
-      <button type="button" data-range="550~599">LP3 内置</button>
-      <button type="button" data-range="5500~5510">LP3(内置 dev)</button>
-      <button type="button" data-range="5511~5599">LP3(外置 dev)</button>
-      <button type="button" data-range="650~699">LP4</button>
-      <button type="button" data-range="6500~6599">LP4(dev)</button>
-      <button type="button" data-range="700~749">LX1</button>
-      <button type="button" data-range="7000~7099">LX1(dev)</button>
-      <button type="button" data-range="750~799">LX2</button>
-      <button type="button" data-range="7500~7599">LX2(dev)</button>
-    </div>
+    <div class="button-wrap margin" id="deviceButtonWrap"></div>
 
     <div class="margin">
       <label for="data"
