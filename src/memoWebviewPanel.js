@@ -2,6 +2,15 @@ const vscode = require("vscode");
 const { WebviewPanel } = require("./webviewPannel");
 
 class MemoWebviewPanel extends WebviewPanel {
+  constructor() {
+    super(
+      "angcyo.memo",
+      "记一下, 备忘录",
+      "res/js/memo.js",
+      "res/html/memo.html"
+    );
+  }
+
   onInitWebviewPanel() {
     super.onInitWebviewPanel();
     //发送数据到webview
