@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
+    /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="{{reset}}" rel="stylesheet" />
+    <link href="{{vscode}}" rel="stylesheet" />
+    <link href="{{main}}" rel="stylesheet" />
+
+    <title>{{title}}</title>
+  </head>
+  <body>
+    <div class="title-wrap">
+      <img src="{{angcyo}}" width="25" title="angcyo" />
+      <h1>{{title}}</h1>
+    </div>
+
+    <div class="button-wrap">
+      <label for="host">本机服务api:</label>
+      <input id="host" type="text" />
+
+      <label for="folder" class="label">保存路径:</label>
+      <input
+        id="folder"
+        type="text"
+        class="inputContext"
+        placeholder="接收文件保存路径"
+      />
+
+      <button type="button" id="selectFolder">选择文件夹</button>
+    </div>
+
+    <div class="button-wrap margin">
+      <button type="button" id="clear">清屏</button>
+      <button type="button" id="startServer">启动服务</button>
+    </div>
+
+    <div id="content" class="margin">
+      <textarea
+        id="result"
+        name="result"
+        placeholder="结果输出..."
+        rows="28"
+        disabled
+      ></textarea>
+    </div>
+
+    <script nonce="{{nonce}}" src="{{spark}}"></script>
+    <script nonce="{{nonce}}" src="{{script}}"></script>
+  </body>
+</html>

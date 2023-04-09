@@ -5,6 +5,7 @@ const vscode = require("vscode");
 const { AngcyoViewsProvider } = require("./src/angcyoViewsProvider");
 const { MemoWebviewPanel } = require("./src/memoWebviewPanel");
 const { LpbinWebviewPanel } = require("./src/lpbinWebviewPanel");
+const { HttpServerWebviewPanel } = require("./src/httpServerWebviewPanel");
 const { TreeDataProvider } = require("./src/treeDataProvider");
 const { WebviewPanel } = require("./src/webviewPannel");
 const {
@@ -155,6 +156,12 @@ function activate(context) {
   vscode.commands.registerCommand("angcyo.jsTools", () => {
     console.log(`JS工具`);
     jsToolsPanel.createOrShow(context);
+  });
+  //httpServer
+  const httpServerWebviewPanel = new HttpServerWebviewPanel();
+  vscode.commands.registerCommand("angcyo.httpServer", () => {
+    console.log(`httpServer`);
+    httpServerWebviewPanel.createOrShow(context);
   });
 
   //LaserPecker数据解析

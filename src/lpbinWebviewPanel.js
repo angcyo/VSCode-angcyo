@@ -1,6 +1,7 @@
 const vscode = require("vscode");
 const { WebviewPanel } = require("./webviewPannel");
 
+//lpbin固件文件生成及解析
 class LpbinWebviewPanel extends WebviewPanel {
   constructor() {
     super(

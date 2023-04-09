@@ -178,6 +178,14 @@ class WebviewPanel {
   }
 
   /**
+   * 发送消息到webview
+   * @param {*} params
+   */
+  postMessage(params) {
+    this.webviewPanel.webview.postMessage(params);
+  }
+
+  /**
    * 收到来自网页的消息时, 回调
    * @param {*} message
    */
