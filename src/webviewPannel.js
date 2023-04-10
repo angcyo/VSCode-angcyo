@@ -182,7 +182,7 @@ class WebviewPanel {
    * @param {*} params
    */
   postMessage(params) {
-    this.webviewPanel.webview.postMessage(params);
+    this.webviewPanel?.webview?.postMessage(params);
   }
 
   /**

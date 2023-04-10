@@ -121,8 +121,8 @@ class HttpServerWebviewPanel extends WebviewPanel {
     this.broadcastClient?.close();
     this.broadcastClient = null;
 
-    this.httpServer?.close();
-    this.httpServer = null;
+    this.httpServerClient?.close();
+    this.httpServerClient = null;
   }
 
   /**
@@ -173,7 +173,7 @@ class HttpServerWebviewPanel extends WebviewPanel {
 
   /**开始一个文件接收服务 */
   startServer() {
-    if (this.httpServer) {
+    if (this.httpServerClient) {
       //已经开始了广播,证明服务也已经启动了
       this.postMessage({
         type: "message",
@@ -247,9 +247,9 @@ class HttpServerWebviewPanel extends WebviewPanel {
         });
       }
     });
-    this.httpServer = server;
+    this.httpServerClient = server;
     server.on("error", (err) => {
-      this.httpServer = null;
+      this.httpServerClient = null;
       console.log(`Server error: ${err}`);
       this.postMessage({
         type: "message",
@@ -257,7 +257,7 @@ class HttpServerWebviewPanel extends WebviewPanel {
       });
     });
     server.on("close", () => {
-      this.httpServer = null;
+      this.httpServerClient = null;
       console.log(`Server closed`);
       this.postMessage({
         type: "message",
