@@ -92,9 +92,14 @@
           "description": "备忘录",
           "default": ""
         },
-        "angcyo-httpServer.uploadFolder": {
+        "angcyo-httpServer.uploadFolderWin": {
           "type": "string",
-          "description": "上传文件保存路径",
+          "description": "上传文件保存路径Windowns",
+          "default": ""
+        },
+        "angcyo-httpServer.uploadFolderMac": {
+          "type": "string",
+          "description": "上传文件保存路径Mac",
           "default": ""
         }
       }

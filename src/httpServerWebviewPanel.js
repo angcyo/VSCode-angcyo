@@ -16,6 +16,16 @@ class HttpServerWebviewPanel extends WebviewPanel {
   }
 
   initServer() {
+    this.osname = "Win";
+    //vscode.env.isWindows ? (this.osname = "Win") : (this.osname = "Mac");
+    //process.platform === "win32"
+    // const os = require("os");
+    if (os.platform() === "win32") {
+      this.osname = "Win";
+    } else {
+      this.osname = "Mac";
+    }
+
     //默认接收文件服务的端口
     this.port = 9200;
     //UDP关播服务的端口, 用关播把url地址发出去
@@ -27,18 +37,19 @@ class HttpServerWebviewPanel extends WebviewPanel {
 
     const folder = vscode.workspace
       .getConfiguration("angcyo-httpServer")
-      .get(`uploadFolder`, undefined);
-    this.updateFolder(
-      folder || vscode.workspace.workspaceFolders[0].uri.fsPath,
-      true
-    );
+      .get(`uploadFolder${this.osname}`, undefined);
+    this.updateFolder(folder, true);
   }
 
   updateFolder(folder, notify) {
-    this.folder = folder || vscode.workspace.workspaceFolders[0].uri.fsPath;
+    if (folder) {
+      this.folder = folder;
+    } else if (vscode.workspace.workspaceFolders?.length > 0) {
+      this.folder = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    }
     vscode.workspace
       .getConfiguration("angcyo-httpServer")
-      .update(`uploadFolder`, this.folder); //入库, 同时也会在线存储
+      .update(`uploadFolder${this.osname}`, this.folder); //入库, 同时也会在线存储
 
     if (notify) {
       this.postMessage({
@@ -267,7 +278,7 @@ class HttpServerWebviewPanel extends WebviewPanel {
       });
     });
     server.listen(this.port, () => {
-      const log = `Server running at ${this.url}`;
+      const log = `Server running at ${this.url} ->${this.folder}`;
       console.log(log);
       this.postMessage({
         type: "message",
