@@ -29,7 +29,8 @@ class HttpServerWebviewPanel extends WebviewPanel {
       .getConfiguration("angcyo-httpServer")
       .get(`uploadFolder`, undefined);
     this.updateFolder(
-      folder || vscode.workspace.workspaceFolders[0].uri.fsPath
+      folder || vscode.workspace.workspaceFolders[0].uri.fsPath,
+      true
     );
   }
 
@@ -64,10 +65,6 @@ class HttpServerWebviewPanel extends WebviewPanel {
     super.onDidReceiveMessage(message);
     switch (message.command) {
       case "startServer":
-        if (this.broadcastClient) {
-          //已经开始了广播,证明服务也已经启动了
-          break;
-        }
         this.broadcastUrl(); //广播url地址
         this.startServer(); //启动服务
         break;
@@ -123,6 +120,9 @@ class HttpServerWebviewPanel extends WebviewPanel {
     super.dispose();
     this.broadcastClient?.close();
     this.broadcastClient = null;
+
+    this.httpServer?.close();
+    this.httpServer = null;
   }
 
   /**
@@ -173,6 +173,15 @@ class HttpServerWebviewPanel extends WebviewPanel {
 
   /**开始一个文件接收服务 */
   startServer() {
+    if (this.httpServer) {
+      //已经开始了广播,证明服务也已经启动了
+      this.postMessage({
+        type: "message",
+        value: "服务已启动: " + this.url + " ->" + this.folder,
+      });
+      return;
+    }
+
     const http = require("http");
     const url = require("url");
     const formidable = require("formidable");
@@ -237,6 +246,23 @@ class HttpServerWebviewPanel extends WebviewPanel {
             });
         });
       }
+    });
+    this.httpServer = server;
+    server.on("error", (err) => {
+      this.httpServer = null;
+      console.log(`Server error: ${err}`);
+      this.postMessage({
+        type: "message",
+        value: err.message,
+      });
+    });
+    server.on("close", () => {
+      this.httpServer = null;
+      console.log(`Server closed`);
+      this.postMessage({
+        type: "message",
+        value: "Server closed",
+      });
     });
     server.listen(this.port, () => {
       const log = `Server running at ${this.url}`;
