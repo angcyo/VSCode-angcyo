@@ -23,10 +23,16 @@
       command: "startServer",
       url: url,
     });
+    vscode.postMessage({
+      command: "updateUploadFolder",
+      path: folder.value,
+    });
   });
 
   clickButton("selectFolder", () => {
-    selectFolder();
+    vscode.postMessage({
+      command: "selectFolder",
+    });
   });
 
   clickButton("openFolder", () => {
@@ -47,31 +53,11 @@
       case "message":
         appendResult(message.value);
         break;
-      case "folder":
+      case "uploadFolder":
         initTextInput("folder", message.value);
         break;
     }
   });
-
-  //---
-
-  function selectFolder() {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.setAttribute("multiple", "multiple");
-    input.setAttribute("directory", "directory");
-    input.setAttribute("webkitdirectory", "webkitdirectory");
-    input.style.display = "none";
-    document.body.appendChild(input);
-    input.click();
-    input.addEventListener("change", (event) => {
-      const folderPath = event.target.files[0].path;
-      folder.value = folderPath;
-      console.log(`Selected folder: ${folderPath}`);
-      // 处理文件夹路径
-      document.body.removeChild(input);
-    });
-  }
 
   //---
 

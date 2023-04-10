@@ -25,7 +25,26 @@ class HttpServerWebviewPanel extends WebviewPanel {
     this.ip = this.getLocalIp();
     this.url = "http://" + this.ip + ":" + this.port;
 
-    this.folder = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    const folder = vscode.workspace
+      .getConfiguration("angcyo-httpServer")
+      .get(`uploadFolder`, undefined);
+    this.updateFolder(
+      folder || vscode.workspace.workspaceFolders[0].uri.fsPath
+    );
+  }
+
+  updateFolder(folder, notify) {
+    this.folder = folder || vscode.workspace.workspaceFolders[0].uri.fsPath;
+    vscode.workspace
+      .getConfiguration("angcyo-httpServer")
+      .update(`uploadFolder`, this.folder); //入库, 同时也会在线存储
+
+    if (notify) {
+      this.postMessage({
+        type: "uploadFolder",
+        value: this.folder,
+      }); //发送默认存储路径到webview
+    }
   }
 
   onInitWebviewPanel() {
@@ -36,7 +55,7 @@ class HttpServerWebviewPanel extends WebviewPanel {
       value: this.url,
     }); //发送本机ip到webview
     this.postMessage({
-      type: "folder",
+      type: "uploadFolder",
       value: this.folder,
     }); //发送默认存储路径到webview
   }
@@ -51,6 +70,25 @@ class HttpServerWebviewPanel extends WebviewPanel {
         }
         this.broadcastUrl(); //广播url地址
         this.startServer(); //启动服务
+        break;
+      case "selectFolder":
+        const options = {
+          defaultUri: vscode.Uri.file(this.folder),
+          canSelectMany: false,
+          canSelectFiles: false,
+          canSelectFolders: true,
+          title: "选择保存的文件路径",
+          openLabel: "选择路径",
+        };
+        vscode.window.showOpenDialog(options).then((uri) => {
+          if (uri && uri[0]) {
+            this.updateFolder(uri[0].fsPath, true);
+            console.log(`Selected folder: ${this.folder}`);
+          }
+        });
+        break;
+      case "updateUploadFolder":
+        this.updateFolder(message.path, false);
         break;
     }
   }
