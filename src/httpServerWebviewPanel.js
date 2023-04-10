@@ -44,8 +44,13 @@ class HttpServerWebviewPanel extends WebviewPanel {
   updateFolder(folder, notify) {
     if (folder) {
       this.folder = folder;
-    } else if (vscode.workspace.workspaceFolders?.length > 0) {
+    } else if (
+      vscode.workspace.workspaceFolders &&
+      vscode.workspace.workspaceFolders.length > 0
+    ) {
       this.folder = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    } else {
+      this.folder = os.homedir(); // //this._context.extensionPath;
     }
     vscode.workspace
       .getConfiguration("angcyo-httpServer")

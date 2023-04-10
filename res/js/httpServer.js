@@ -11,7 +11,8 @@
   const result = document.getElementById("result");
   const folder = document.getElementById("folder");
 
-  host.value = "http://192.168.31.192:9200";
+  initTextInput("host", "http://192.168.31.192:9200");
+  initTextInput("folder", "E:/uploadFiles");
 
   clickButton("clear", () => {
     result.innerHTML = "";
@@ -54,7 +55,7 @@
         appendResult(message.value);
         break;
       case "uploadFolder":
-        initTextInput("folder", message.value);
+        folder.value = message.value;
         break;
     }
   });
