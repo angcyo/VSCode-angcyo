@@ -91,6 +91,11 @@
           "type": "string",
           "description": "备忘录",
           "default": ""
+        },
+        "angcyo-httpServer.uploadFolder": {
+          "type": "string",
+          "description": "上传文件保存路径",
+          "default": ""
         }
       }
     }

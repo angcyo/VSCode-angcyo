@@ -51,14 +51,16 @@ class HttpServerWebviewPanel extends WebviewPanel {
   onInitWebviewPanel() {
     super.onInitWebviewPanel();
     //发送数据到webview
-    this.postMessage({
-      type: "host",
-      value: this.url,
-    }); //发送本机ip到webview
-    this.postMessage({
-      type: "uploadFolder",
-      value: this.folder,
-    }); //发送默认存储路径到webview
+    setTimeout(() => {
+      this.postMessage({
+        type: "host",
+        value: this.url,
+      }); //发送本机ip到webview
+      this.postMessage({
+        type: "uploadFolder",
+        value: this.folder,
+      }); //发送默认存储路径到webview
+    }, 600); //延迟600毫秒, 兼容性能慢的电脑
   }
 
   onDidReceiveMessage(message) {
