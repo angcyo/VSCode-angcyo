@@ -201,3 +201,7 @@ textarea {
 #gravity {
   width: 4rem !important;
 }
+
+.ml {
+  margin-left: 0.6rem;
+}

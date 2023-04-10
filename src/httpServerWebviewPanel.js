@@ -24,6 +24,8 @@ class HttpServerWebviewPanel extends WebviewPanel {
     this.broadcastAddress = "255.255.255.255";
     this.ip = this.getLocalIp();
     this.url = "http://" + this.ip + ":" + this.port;
+
+    this.folder = vscode.workspace.workspaceFolders[0].uri.fsPath;
   }
 
   onInitWebviewPanel() {
@@ -33,6 +35,10 @@ class HttpServerWebviewPanel extends WebviewPanel {
       type: "host",
       value: this.url,
     }); //发送本机ip到webview
+    this.postMessage({
+      type: "folder",
+      value: this.folder,
+    }); //发送默认存储路径到webview
   }
 
   onDidReceiveMessage(message) {
@@ -63,6 +69,7 @@ class HttpServerWebviewPanel extends WebviewPanel {
         if (
           alias.family === "IPv4" &&
           alias.address !== "127.0.0.1" &&
+          alias.address.startsWith("192") &&
           !alias.internal
         ) {
           ip = alias.address;
@@ -107,7 +114,7 @@ class HttpServerWebviewPanel extends WebviewPanel {
     const port = this.broadcastPort;
     const address = this.broadcastAddress;
     client.bind(port, () => {
-      console.log(`Socket bind: ${port}`);
+      //console.log(`Socket bind: ${port}`);
 
       client.setBroadcast(true);
       client.send(JSON.stringify(message), port, address, (err) => {
@@ -116,7 +123,7 @@ class HttpServerWebviewPanel extends WebviewPanel {
         if (err) {
           console.log(err);
         } else {
-          console.log(`Message sent to ${address}:${port}`);
+          //console.log(`Message sent to ${address}:${port}`);
         }
 
         setTimeout(() => {
@@ -130,8 +137,10 @@ class HttpServerWebviewPanel extends WebviewPanel {
   startServer() {
     const http = require("http");
     const url = require("url");
+    const formidable = require("formidable");
 
     const server = http.createServer((req, res) => {
+      console.log("收到请求:" + req.url);
       this.postMessage({
         type: "message",
         value: "收到请求: " + req.url,
@@ -152,14 +161,43 @@ class HttpServerWebviewPanel extends WebviewPanel {
           res.end("success");
         });
       } else if (pathname === "/uploadFile") {
-        // this.postMessage({
-        //     type: "message",
-        //     value: newPath,
-        //   });
-        //   res.end("success:" + newPath);
+        // parse a file upload
+        const form = formidable({});
 
-        vscode.window.showSaveDialog();
-        res.end("success:");
+        form.parse(req, (err, fields, files) => {
+          if (err) {
+            res.writeHead(err.httpCode || 400, {
+              "Content-Type": "text/plain",
+            });
+            res.end(String(err));
+            return;
+          }
+
+          const oldPathUri = vscode.Uri.file(files.file.filepath);
+          const newPathUri = vscode.Uri.file(
+            this.folder + "/" + files.file.originalFilename
+          );
+          vscode.workspace.fs
+            .rename(oldPathUri, newPathUri, {
+              overwrite: true,
+            })
+            .then((err) => {
+              if (err) {
+                console.error(err);
+                res.writeHead(500, { "Content-Type": "text/plain" });
+                res.end("Internal Server Error");
+                return;
+              }
+              console.log("File saved successfully");
+              res.writeHead(200, { "Content-Type": "text/plain" });
+              res.end("File saved successfully");
+
+              this.postMessage({
+                type: "message",
+                value: newPathUri.fsPath,
+              });
+            });
+        });
       }
     });
     server.listen(this.port, () => {

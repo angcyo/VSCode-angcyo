@@ -29,6 +29,13 @@
     selectFolder();
   });
 
+  clickButton("openFolder", () => {
+    vscode.postMessage({
+      command: "reveal",
+      path: folder.value,
+    });
+  });
+
   //接收来自vscode的数据
   // Handle messages sent from the extension to the webview
   window.addEventListener("message", (event) => {
@@ -39,6 +46,9 @@
         break;
       case "message":
         appendResult(message.value);
+        break;
+      case "folder":
+        initTextInput("folder", message.value);
         break;
     }
   });
