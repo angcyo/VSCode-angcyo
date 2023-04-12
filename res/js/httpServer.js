@@ -21,12 +21,12 @@
   clickButton("startServer", () => {
     const url = host.value;
     vscode.postMessage({
-      command: "startServer",
-      url: url,
-    });
-    vscode.postMessage({
       command: "updateUploadFolder",
       path: folder.value,
+    });
+    vscode.postMessage({
+      command: "startServer",
+      url: url,
     });
   });
 
