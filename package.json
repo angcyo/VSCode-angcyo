@@ -50,7 +50,7 @@
     "viewsWelcome": [
       {
         "view": "welcomeViews",
-        "contents": "欢迎使用! by angcyo.\n[csdn](https://blog.csdn.net/angcyo)\n[github](https://github.com/angcyo)\n[QQ咨询](http://wpa.qq.com/msgrd?v=3&uin=664738095&site=qq&menu=yes)",
+        "contents": "欢迎使用! by angcyo.\n[Csdn](https://blog.csdn.net/angcyo)\n[Github](https://github.com/angcyo)\n[掘金](https://juejin.cn/user/1398234517866856)\n[QQ咨询](http://wpa.qq.com/msgrd?v=3&uin=664738095&site=qq&menu=yes)",
         "when": "angcyo.showWelcome"
       }
     ],
