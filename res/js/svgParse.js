@@ -8,6 +8,7 @@
   //const vscode = acquireVsCodeApi()
   //console.log("初始化svgParse.js", vscode, window)
   const dataText = document.getElementById("data");
+  const dataText2 = document.getElementById("data2");
   const widthText = document.getElementById("width");
   const heightText = document.getElementById("height");
   const viewBoxText = document.getElementById("viewBox");
@@ -25,10 +26,12 @@
 
   //更新边框显示
   function updateBorder() {
-    if (showBorder.checked) {
-      svgWrap.firstChild.style.borderStyle = "solid";
-    } else {
-      svgWrap.firstChild.style.borderStyle = "hidden";
+    if (svgWrap.firstChild) {
+      if (showBorder.checked) {
+        svgWrap.firstChild.style.borderStyle = "solid";
+      } else {
+        svgWrap.firstChild.style.borderStyle = "hidden";
+      }
     }
   }
 
@@ -46,7 +49,15 @@
     parseButton.click();
   });
 
-  //
+  dataText2.value = localStorage.getItem("data2");
+  dataText2.addEventListener("input", () => {
+    localStorage.setItem("data", dataText2.value);
+
+    //直接触发解析
+    parseButton.click();
+  });
+
+  //监听事件
   widthText.addEventListener("input", () => {
     updateViewBoxText();
     localStorage.setItem("width", widthText.value);
@@ -64,21 +75,16 @@
     localStorage.setItem("showBorder", showBorder.checked ? "1" : "0");
   });
 
+  //解析按钮
   parseButton.addEventListener("click", () => {
     const svgText = dataText.value.trim();
-    let svgTag = undefined;
-    if (svgText.startsWith("<")) {
-      //标签
-      svgTag = svgText;
-    } else {
-      //路径数据
-      const width = widthText.value.trim();
-      const height = heightText.value.trim();
-      const viewBox = viewBoxText.value.trim();
-      svgTag = `<svg width="${width}" height="${height}" viewBox="${viewBox}" ><path d="${svgText}" stroke='red'></path></svg>`;
-    }
+    const svgText2 = dataText2.value.trim();
 
-    svgWrap.innerHTML = svgTag;
+    svgWrap.innerHTML = "";
+
+    appendSvgText(svgText);
+    appendSvgText(svgText2);
+
     updateBorder();
   });
 
@@ -88,4 +94,40 @@
   event.initEvent("input", false, false);
   // 触发事件
   dataText.dispatchEvent(event);
+
+  function appendSvgTag(svgTag) {
+    svgWrap.innerHTML = svgWrap.innerHTML + svgTag;
+  }
+
+  function appendSvgText(svgText) {
+    if (svgText.startsWith("<")) {
+      //标签
+      appendSvgTag(`<div class="frame">${svgText}</div>`);
+    } else if (svgText) {
+      //路径数据
+      const width = widthText.value.trim();
+      const height = heightText.value.trim();
+      const viewBox = viewBoxText.value.trim();
+
+      //使用换行分割文本
+      const svgTextList = svgText.split("\n");
+      svgTextList.forEach((value, index) => {
+        var stroke = "red";
+        var fill = "none";
+
+        value.split(";").forEach((attrs, index) => {
+          const [key, value] = attrs.split("=");
+          if (key === "s") {
+            stroke = value || stroke;
+          } else if (key === "f") {
+            fill = value || fill;
+          }
+        });
+
+        appendSvgTag(
+          `<svg width="${width}" height="${height}" viewBox="${viewBox}" class="frame"><path d="${value}" stroke='${stroke}' fill='${fill}'></path></svg>`
+        );
+      });
+    }
+  }
 })();

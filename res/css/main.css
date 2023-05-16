@@ -205,3 +205,7 @@ textarea {
 .ml {
   margin-left: 0.6rem;
 }
+
+.frame {
+  position: absolute;
+}

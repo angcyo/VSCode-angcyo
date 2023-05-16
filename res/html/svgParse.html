@@ -22,6 +22,7 @@
     </div>
     <label for="data">Svg数据(纯路径数据或者Svg标签数据):</label>
 
+    <!-- 编辑控制区 -->
     <div class="propertyWrap">
       <label for="width">width:</label
       ><input id="width" type="text" value="100" />
@@ -33,16 +34,28 @@
       ><input id="showBorder" type="checkbox" />
     </div>
 
+    <!-- 文本输入区 -->
     <textarea
       id="data"
       name="data"
       placeholder="请输入Svg数据..."
       autofocus
-      rows="20"
+      rows="10"
     ></textarea>
+    <textarea
+      id="data2"
+      name="data2"
+      placeholder="请输入Svg数据2..."
+      autofocus
+      rows="10"
+    ></textarea>
+
+    <!-- 按钮控制区 -->
     <div class="button-wrap margin">
       <button type="button" id="parse">解析</button>
     </div>
+
+    <!-- 结果区 -->
     <label>输出结果:</label>
     <div id="svgWrap" class="svg-wrap margin"></div>
     <script nonce="{{nonce}}" src="{{script}}"></script>
