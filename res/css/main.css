@@ -206,6 +206,15 @@ textarea {
   margin-left: 0.6rem;
 }
 
+.mt {
+  margin-top: 0.6rem;
+}
+
 .frame {
   position: absolute;
+}
+
+.svgFlex {
+  display: flex;
+  gap: 1rem;
 }

@@ -51,7 +51,7 @@
 
   dataText2.value = localStorage.getItem("data2");
   dataText2.addEventListener("input", () => {
-    localStorage.setItem("data", dataText2.value);
+    localStorage.setItem("data2", dataText2.value);
 
     //直接触发解析
     parseButton.click();
