@@ -8,6 +8,8 @@
   const dataText = document.getElementById("data");
   const resultText = document.getElementById("result");
   const formatButton = document.getElementById("format");
+  const formatOptionsButton = document.getElementById("formatOptions");
+  const formatJsonStringButton = document.getElementById("formatJsonString");
   const formatDataButton = document.getElementById("formatData");
   const removeImageButton = document.getElementById("removeImage");
   const extractImageButton = document.getElementById("extractImage");
@@ -41,6 +43,16 @@
     const dataString = JSON.parse(dataText.value).data;
     const data = JSON.parse(dataString);
     resultText.value = JSON.stringify(data, null, 4);
+    localStorage.setItem("result", resultText.value);
+  });
+  formatOptionsButton.addEventListener("click", (event) => {
+    const dataString = JSON.parse(dataText.value).laserOptions;
+    const data = JSON.parse(dataString);
+    resultText.value = JSON.stringify(data, null, 4);
+    localStorage.setItem("result", resultText.value);
+  });
+  formatJsonStringButton.addEventListener("click", (event) => {
+    resultText.value = JSON.parse(dataText.value);
     localStorage.setItem("result", resultText.value);
   });
   removeImageButton.addEventListener("click", (event) => {
