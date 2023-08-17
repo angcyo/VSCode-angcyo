@@ -150,7 +150,9 @@
         "\n" +
         formatData(result) +
         "\n数据长度: " +
-        length;
+        length +
+        " hex: " +
+        numberToHexString(length.toString());
     }
   });
 
@@ -214,12 +216,21 @@
   //---
 
   function updateResultHexValue(hexValue) {
+    hexValue = hexValue.replace(/\s/g, "");
     const len = byteLength(hexValue);
     //计算校验和
     const sumCheck = sumCheckString(hexValue);
 
     resultText.value =
-      hexValue + "\n字节长度: " + len + "\n校验和: " + sumCheck;
+      hexValue +
+      "\n" +
+      formatData(hexValue) +
+      "\n字节长度: " +
+      len +
+      " hex: " +
+      numberToHexString(len.toString()) +
+      "\n校验和 hex: " +
+      sumCheck;
   }
 
   //计算字符串的字节长度
