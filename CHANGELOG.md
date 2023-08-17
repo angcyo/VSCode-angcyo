@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-8-17
+
++ hex parser
+
 ## 2023-7-25
 
 + json format
