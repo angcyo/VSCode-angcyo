@@ -13,14 +13,14 @@ textarea {
   min-width: 100%;
 }
 
-.button-wrap {
-  display: flex;
+.inline-flex {
+  display: inline-flex;
   flex-flow: wrap;
   align-items: center;
 }
 
-.inline-flex {
-  display: inline-flex;
+.button-wrap {
+  display: flex;
   flex-flow: wrap;
   align-items: center;
 }
@@ -217,4 +217,30 @@ textarea {
 .svgFlex {
   display: flex;
   gap: 1rem;
+}
+
+.input-wrap {
+  display: flex;
+  flex-flow: wrap;
+  align-items: center;
+}
+
+.input-wrap * {
+  margin-top: 0.5rem;
+}
+
+.input-wrap button {
+  margin-right: 1rem;
+}
+
+.input-wrap input {
+  width: 30rem;
+}
+
+.input-wrap *:not(:last-child) {
+  margin-right: 1rem;
+}
+
+#inputCommandData {
+  width: 57rem;
 }

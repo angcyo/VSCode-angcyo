@@ -91,6 +91,231 @@
     }
   });
 
+  inputChangeElement("inputCommandData", (value) => {
+    if (value) {
+      const bigHead = value.startsWith(":");
+      //移除第一个字符
+      if (bigHead) {
+        value = value.slice(1);
+      }
+      //使用空格分隔value
+      const values = value.split(" ").filter((item) => item);
+      let dataResult = ""; //所有数据放这里, 空格隔开了
+
+      //枚举
+      values.map((item) => {
+        if (item) {
+          let data;
+          let num;
+          //判断是否包含:号
+
+          if (item.includes(":")) {
+            //使用:分割
+            const items = item.split(":");
+            data = items[0];
+            num = items[1];
+          } else {
+            data = item;
+            num = undefined;
+          }
+
+          let hex;
+          if (data.endsWith("'")) {
+            //如果是以'结尾, 则使用字符串转十六进制
+            data = data.slice(0, -1);
+            hex = stringToHexString(data);
+          } else if (!isNumber(data)) {
+            hex = stringToHexString(data);
+          } else {
+            hex = numberToHexString(data);
+          }
+
+          dataResult += trimOrPadHexString(hex, num) + " ";
+        }
+      });
+
+      let result;
+      const length = byteLength(dataResult) + 2;
+      const lengthHex = numberToHexString(length.toString());
+      if (bigHead) {
+        result = "AA CC" + trimOrPadHexString(lengthHex, 4);
+      } else {
+        result = "AA BB" + lengthHex;
+      }
+
+      result += dataResult + sumCheckString(dataResult);
+
+      resultText.value =
+        result.replace(/\s/g, "") +
+        "\n" +
+        formatData(result) +
+        "\n数据长度: " +
+        length;
+    }
+  });
+
+  inputChangeElement("inputStringData", (value) => {
+    if (value) {
+      //设置
+      updateResultHexValue(stringToHexString(value));
+    }
+  });
+
+  inputChangeElement("inputNumberData", (value) => {
+    if (value) {
+      //设置
+      updateResultHexValue(numberToHexString(value));
+    }
+  });
+
+  //保存记录的值
+  inputChangeElement("record");
+
+  //清空记录
+  clickElement("clearButton", () => {
+    const record = document.getElementById("record");
+    record.value = "";
+    //触发input事件
+    record.dispatchEvent(new Event("input"));
+  });
+  //触发记录
+  clickElement("recordButton", () => {
+    const value = resultText.value;
+    //取第一行的数据, 拼接到记录中
+    const lines = value.split("\n");
+    const firstLine = lines[0];
+    const record = document.getElementById("record");
+    record.value = firstLine + "\n" + record.value;
+    //触发input事件
+    record.dispatchEvent(new Event("input"));
+  });
+
+  //---
+
+  //点击事件
+  function clickElement(id, callback) {
+    const element = document.getElementById(id);
+    element.addEventListener("click", callback);
+  }
+
+  //输入改变事件
+  function inputChangeElement(id, callback) {
+    const element = document.getElementById(id);
+    element.value = localStorage.getItem(id);
+    element.addEventListener("input", (event) => {
+      const value = event.target.value;
+      localStorage.setItem(id, value);
+      if (callback) {
+        callback(value, event);
+      }
+    });
+  }
+
+  //---
+
+  function updateResultHexValue(hexValue) {
+    const len = byteLength(hexValue);
+    //计算校验和
+    const sumCheck = sumCheckString(hexValue);
+
+    resultText.value =
+      hexValue + "\n字节长度: " + len + "\n校验和: " + sumCheck;
+  }
+
+  //计算字符串的字节长度
+  function byteLength(hexValue) {
+    //移除所有空格
+    const data = hexValue.replace(/\s/g, "");
+    //计算字节长度
+    const len = data.length / 2;
+    return len;
+  }
+
+  //校验和计算十六进制字符串的校验和
+  function sumCheckString(hexString) {
+    const reader = new HexReader(hexString);
+    let sum = 0;
+    let int = reader.readInt();
+    while (int !== undefined) {
+      sum += int;
+      int = reader.readInt();
+    }
+    return sum.toString(16).toUpperCase().padStart(4, "0");
+  }
+
+  function stringToHexString(value) {
+    //使用空格分隔value
+    const values = value.split(" ");
+    //过滤掉空值, 并转成十六进制
+    const hexValues = values
+      .filter((item) => item)
+      .map((item) => {
+        if (item) {
+          //将字符串转成字节数据
+          const bytes = new TextEncoder().encode(item);
+          //将字节数据转成十六进制
+          return Array.from(bytes)
+            .map((item) => item.toString(16).padStart(2, "0").toUpperCase())
+            .join(" ");
+        } else {
+          return "";
+        }
+      });
+    //拼接
+    const result = hexValues.join(" ");
+    return result;
+  }
+
+  function numberToHexString(value) {
+    //使用空格分隔value
+    const values = value.split(" ");
+    //过滤掉空值, 并转成十六进制
+    const hexValues = values
+      .filter((item) => item)
+      .map((item) => {
+        if (item) {
+          return parseInt(item).toString(16).padStart(2, "0").toUpperCase();
+        } else {
+          return "";
+        }
+      });
+    //拼接
+    const result = hexValues.join(" ");
+    return result;
+  }
+
+  //补齐或者剔除十六进制字符串的字节长度
+  function trimOrPadHexString(value, num, padStart = true) {
+    const hexs = value.split(" ");
+    if (num) {
+      const len = parseInt(num);
+      if (hexs.length > len) {
+        //截取
+        hexs.length = len;
+      }
+      //补0
+      if (padStart) {
+        while (hexs.length < len) {
+          hexs.unshift("00");
+        }
+      } else {
+        while (hexs.length < len) {
+          hexs.push("00");
+        }
+      }
+      //拼接
+      const result = hexs.join(" ");
+      return result;
+    } else {
+      return value;
+    }
+  }
+
+  //判断字符串是否是数字
+  function isNumber(str) {
+    return /^[0-9]+$/.test(str);
+  }
+
   //
   window.addEventListener("message", (event) => {
     const message = event.data; // The json data that the extension sent
@@ -113,6 +338,7 @@
 
   //格式化数据, 每个2个字符加入一个空格
   function formatData(data) {
+    data = data.replace(/\s/g, "");
     let result = "";
     for (let i = 0; i < data.length; i++) {
       result += data[i];
@@ -614,8 +840,8 @@
 class HexReader {
   constructor(data) {
     //数据
-    this.data = data;
-    this.length = data.length;
+    this.data = data.replace(/\s/g, "");
+    this.length = this.data.length;
 
     //当前读取的偏移字符
     this.offset = 0;
@@ -627,6 +853,7 @@ class HexReader {
     if (data) {
       return parseInt(data, 16);
     }
+    return undefined;
   }
 
   //读取几个字节的字符数据
@@ -638,6 +865,7 @@ class HexReader {
       this.offset = end;
       return this.data.slice(start, end);
     }
+    return undefined;
   }
 
   //剩下的字节十六进制

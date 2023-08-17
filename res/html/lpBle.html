@@ -26,8 +26,21 @@
       name="data"
       placeholder="请输入指令数据..."
       autofocus
-      rows="3"
+      rows="2"
     ></textarea>
+    <div class="input-wrap">
+      <input
+        id="inputCommandData"
+        type="text"
+        placeholder="请输入指令数据,空格隔开"
+      />
+      <input id="inputStringData" type="text" placeholder="字符串转十六进制" />
+      <input
+        id="inputNumberData"
+        type="text"
+        placeholder="十进制转十六进制,空格隔开多个"
+      />
+    </div>
     <div class="button-wrap margin">
       <button type="button" id="parse">解析指令</button>
       <button type="button" id="parseResult">解析返回值</button>
@@ -38,13 +51,22 @@
         解析(设置状态)返回值
       </button>
       <button type="button" id="complete">补齐指令(+头+长度+校验和)</button>
+      <button type="button" id="recordButton">记录</button>
+      <button type="button" id="clearButton">清除记录</button>
     </div>
-    <label for="result">解析数据:</label>
+    <label for="result">解析后的数据:</label>
     <textarea
       id="result"
       name="result"
       placeholder="解析后的数据..."
-      rows="28"
+      rows="10"
+      disabled
+    ></textarea>
+    <textarea
+      id="record"
+      name="record"
+      placeholder="记录数据..."
+      rows="10"
       disabled
     ></textarea>
     <script nonce="{{nonce}}" src="{{script}}"></script>
