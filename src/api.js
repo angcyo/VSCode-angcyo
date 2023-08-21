@@ -74,6 +74,39 @@ class Api {
     console.log(`读取文件:${uri} :${dataStr.length}bytes`);
     return dataStr;
   }
+
+  //进行get请求
+  async httpGet(url) {
+    const req = await fetch(url);
+    const data = await req.text();
+    return data;
+  }
+
+  //进行post请求
+  async httpPost(url, body) {
+    //判断body是否是json类型
+    let isJsonBody = false;
+
+    try {
+      JSON.parse(body);
+      isJsonBody = true;
+    } catch (error) {
+      isJsonBody = false;
+    }
+
+    let contentType = "text/plain";
+    if (isJsonBody) {
+      contentType = "application/json";
+    }
+
+    const req = await fetch(url, {
+      method: "POST",
+      body: body,
+      headers: { "Content-Type": contentType },
+    });
+    const data = await req.text();
+    return data;
+  }
 }
 
 exports.Api = new Api();

@@ -37,9 +37,23 @@
       <button type="button" id="selectFolder">选择文件夹</button>
     </div>
 
+    <div class="input-wrap">
+      <label for="httpUrl">http请求地址:</label>
+      <input id="httpUrl" type="text" />
+
+      <textarea
+        id="httpBody"
+        name="httpBody"
+        placeholder="请求体json数据"
+        rows="6"
+      ></textarea>
+    </div>
+
     <div class="button-wrap margin">
       <button type="button" id="clear">清屏</button>
       <button type="button" id="startServer">启动服务</button>
+      <button type="button" id="httpGet">get</button>
+      <button type="button" id="httpPost">post</button>
     </div>
 
     <div id="content" class="margin">

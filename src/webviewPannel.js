@@ -253,6 +253,25 @@ class WebviewPanel {
       const data = message.data;
       vscode.env.clipboard.writeText(data);
       vscode.window.showInformationMessage(`已复制!`);
+    } else if (message.command === "request") {
+      //网络请求
+      const url = message.url;
+      const method = message.method;
+      const body = message.body;
+
+      if (method && method.toLowerCase() === "post") {
+        const data = await Api.httpPost(url, body);
+        this.postMessage({
+          type: "response",
+          value: data,
+        });
+      } else {
+        const data = await Api.httpGet(url);
+        this.postMessage({
+          type: "response",
+          value: data,
+        });
+      }
     }
   }
 }

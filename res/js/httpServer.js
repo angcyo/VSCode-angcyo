@@ -10,9 +10,13 @@
   const host = document.getElementById("host");
   const result = document.getElementById("result");
   const folder = document.getElementById("folder");
+  const httpUrl = document.getElementById("httpUrl");
+  const httpBody = document.getElementById("httpBody");
 
   initTextInput("host", "http://192.168.31.192:9200");
   initTextInput("folder", "E:/uploadFiles");
+  initTextInput("httpUrl", "http://www.baidu.com/");
+  initTextInput("httpBody", "");
 
   clickButton("clear", () => {
     result.innerHTML = "";
@@ -43,10 +47,25 @@
     });
   });
 
+  clickButton("httpGet", () => {
+    const url = httpUrl.value;
+    httpGet(url);
+  });
+  clickButton("httpPost", () => {
+    const url = httpUrl.value;
+    const body = httpBody.value;
+    httpPost(url, body);
+  });
+
+  //---
+
   //接收来自vscode的数据
   // Handle messages sent from the extension to the webview
   window.addEventListener("message", (event) => {
     const message = event.data; // The json data that the extension sent
+    console.log(`收到来自vscode的消息↓`);
+    console.log(message);
+
     switch (message.type) {
       case "host":
         host.value = message.value;
@@ -59,6 +78,9 @@
         //触发input事件
         const inputEvent = new Event("input");
         folder.dispatchEvent(inputEvent);
+        break;
+      case "response":
+        updateResult(message.value);
         break;
     }
   });
@@ -87,7 +109,7 @@
     input.addEventListener(`input`, () => {
       localStorage.setItem(id, input.value);
     });
-    input.value = localStorage.getItem(id) || def;
+    input.value = tryJsonParse(localStorage.getItem(id) || def);
   }
 
   /**拼接返回值 */
@@ -98,6 +120,12 @@
     } else {
       result.innerHTML = nowTimeString() + "\n" + text;
     }
+  }
+
+  function updateResult(text) {
+    console.log(text);
+    console.log(tryJsonParse(text));
+    result.innerHTML = tryJsonParse(text);
   }
 
   function nowTimeString() {
@@ -133,5 +161,32 @@
       }
     }
     return fmt;
+  }
+
+  //尝试使用json格式字符串
+  function tryJsonParse(text) {
+    try {
+      return JSON.stringify(JSON.parse(text), null, 4);
+    } catch (e) {
+      return text;
+    }
+  }
+
+  //进行get请求
+  function httpGet(url) {
+    vscode.postMessage({
+      command: "request",
+      url: url,
+    });
+  }
+
+  //进行post请求
+  function httpPost(url, body) {
+    vscode.postMessage({
+      command: "request",
+      method: "POST",
+      url: url,
+      body: body,
+    });
   }
 })();
