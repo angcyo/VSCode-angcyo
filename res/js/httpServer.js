@@ -56,6 +56,9 @@
         break;
       case "uploadFolder":
         folder.value = message.value;
+        //触发input事件
+        const inputEvent = new Event("input");
+        folder.dispatchEvent(inputEvent);
         break;
     }
   });
