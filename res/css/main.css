@@ -244,3 +244,46 @@ textarea {
 #inputCommandData {
   width: 57rem;
 }
+
+.textarea-wrap {
+  display: flex;
+  flex-flow: wrap;
+  align-items: center;
+}
+
+.textarea-wrap * {
+  margin-top: 0.5rem;
+}
+
+.textarea-wrap *:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.textarea-wrap textarea {
+  flex: 1;
+  width: auto;
+  max-width: auto;
+  min-width: auto;
+}
+
+.link-wrap {
+  display: flex;
+  flex-flow: wrap;
+  align-items: center;
+}
+
+.link-wrap * {
+  margin-top: 0.5rem;
+}
+
+.link-wrap *:not(:last-child) {
+  margin-right: 1rem;
+}
+
+#lpUserName {
+  width: 10rem !important;
+}
+
+#lpPassword {
+  width: 10rem !important;
+}

@@ -83,7 +83,7 @@ class Api {
   }
 
   //进行post请求
-  async httpPost(url, body) {
+  async httpPost(url, body, token) {
     //判断body是否是json类型
     let isJsonBody = false;
 
@@ -102,10 +102,23 @@ class Api {
     const req = await fetch(url, {
       method: "POST",
       body: body,
-      headers: { "Content-Type": contentType },
+      headers: {
+        "Content-Type": contentType,
+        token: token,
+      },
     });
     const data = await req.text();
     return data;
+  }
+
+  //进行head请求, 判断[url]是有有效
+  async httpHead(url) {
+    try {
+      const req = await fetch(url);
+      return req.status === 200;
+    } catch (error) {
+      return false;
+    }
   }
 }
 

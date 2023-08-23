@@ -258,18 +258,32 @@ class WebviewPanel {
       const url = message.url;
       const method = message.method;
       const body = message.body;
+      const uuid = message.uuid;
+      const token = message.token;
 
       if (method && method.toLowerCase() === "post") {
-        const data = await Api.httpPost(url, body);
+        const data = await Api.httpPost(url, body, token);
         this.postMessage({
           type: "response",
           value: data,
+          uuid: uuid,
+          url: url,
+        });
+      } else if (method && method.toLowerCase() === "head") {
+        const data = await Api.httpHead(url);
+        this.postMessage({
+          type: "response",
+          value: data,
+          uuid: uuid,
+          url: url,
         });
       } else {
         const data = await Api.httpGet(url);
         this.postMessage({
           type: "response",
           value: data,
+          uuid: uuid,
+          url: url,
         });
       }
     }

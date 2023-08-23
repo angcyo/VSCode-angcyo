@@ -12,11 +12,34 @@
   const folder = document.getElementById("folder");
   const httpUrl = document.getElementById("httpUrl");
   const httpBody = document.getElementById("httpBody");
+  const lpUserName = document.getElementById("lpUserName");
+  const lpPassword = document.getElementById("lpPassword");
+  const lpBody = document.getElementById("lpBody");
+  const linkWrap = document.getElementById("linkWrap");
+  const lpTime = document.getElementById("lpTime");
+
+  let lpToken = localStorage.getItem("lpToken");
 
   initTextInput("host", "http://192.168.31.192:9200");
   initTextInput("folder", "E:/uploadFiles");
   initTextInput("httpUrl", "http://www.baidu.com/");
   initTextInput("httpBody", "");
+  initTextInput("lpUserName", "angcyo@126.com");
+  initTextInput("lpPassword", "angcyo");
+  initTextInput(
+    "lpBody",
+    JSON.stringify(
+      {
+        id: null,
+        nickname: "",
+        mobile: "",
+        email: "",
+      },
+      null,
+      4
+    )
+  );
+  initTextInput("lpTime", nowTimeString("yyyy-MM-dd"));
 
   clickButton("clear", () => {
     result.innerHTML = "";
@@ -57,12 +80,44 @@
     httpPost(url, body);
   });
 
+  //---LP
+
+  clickButton("lpLogin", () => {
+    const url = "https://server.hingin.com/login";
+    const body = {
+      mobile: "",
+      email: lpUserName.value,
+      credential: lpPassword.value,
+      code: "",
+    };
+    httpPost(url, JSON.stringify(body), "lpLogin");
+  });
+
+  clickButton("lpUserInfo", () => {
+    const url = "https://server.hingin.com/user/getUserInfo";
+    const body = lpBody.value;
+    httpPost(url, body, "lpUserInfo");
+  });
+
+  clickButton("lpFetchLog", () => {
+    const body = lpBody.value;
+    if (body) {
+      const json = JSON.parse(body);
+      appendOssLogLinks(json.id, json.nickname);
+    }
+  });
+
+  clickButton("lpClearLink", () => {
+    clearLink();
+  });
+
   //---
 
   //接收来自vscode的数据
   // Handle messages sent from the extension to the webview
   window.addEventListener("message", (event) => {
     const message = event.data; // The json data that the extension sent
+    const uuid = message.uuid;
     console.log(`收到来自vscode的消息↓`);
     console.log(message);
 
@@ -80,7 +135,30 @@
         folder.dispatchEvent(inputEvent);
         break;
       case "response":
-        updateResult(message.value);
+        if (uuid === "ossLogLink") {
+          const url = message.url;
+          const link = document.getElementById(url);
+          if (link) {
+            if (message.value) {
+              link.innerText = link.innerText + "✅";
+            } else {
+              link.innerText = link.innerText + "❌";
+            }
+          }
+        } else {
+          updateResult(message.value);
+          if (message.value) {
+            const json = JSON.parse(message.value);
+            if (uuid === "lpLogin") {
+              lpToken = json.data.token;
+              localStorage.setItem("lpToken", lpToken);
+            } else if (uuid === "lpUserInfo") {
+              json.data.forEach((element) => {
+                appendOssLogLinks(element.id, element.nickname);
+              });
+            }
+          }
+        }
         break;
     }
   });
@@ -128,8 +206,8 @@
     result.innerHTML = tryJsonParse(text);
   }
 
-  function nowTimeString() {
-    return formatDate(new Date(), "yyyy-MM-dd HH:mm:ss'SSS");
+  function nowTimeString(fmt) {
+    return formatDate(new Date(), fmt || "yyyy-MM-dd HH:mm:ss'SSS");
   }
 
   //格式化时间
@@ -173,20 +251,72 @@
   }
 
   //进行get请求
-  function httpGet(url) {
+  //[uuid] 消息类型, 用来区分返回值
+  function httpGet(url, uuid) {
     vscode.postMessage({
       command: "request",
+      uuid: uuid,
       url: url,
     });
   }
 
   //进行post请求
-  function httpPost(url, body) {
+  //[uuid] 消息类型, 用来区分返回值
+  function httpPost(url, body, uuid) {
     vscode.postMessage({
       command: "request",
+      uuid: uuid,
       method: "POST",
       url: url,
       body: body,
+      token: lpToken,
+    });
+  }
+
+  //进行head请求, 判断[url]是有有效
+  function httpHead(url, uuid) {
+    vscode.postMessage({
+      command: "request",
+      uuid: uuid,
+      method: "HEAD",
+      url: url,
+    });
+  }
+
+  function clearLink() {
+    linkWrap.innerHTML = "";
+  }
+
+  //向一个div元素中追加a标签
+  function appendLink(url, label) {
+    linkWrap.innerHTML =
+      linkWrap.innerHTML +
+      `<a id="${url}" href="${url}" target="_blank" title="${url}">${label}</a>`;
+    httpHead(url, "ossLogLink");
+    //<a href="http://www.baidu.com" target="_blank">百度</a>
+    //<a href="http://www.google.com" target="_blank">谷歌</a>
+    //<a href="http://www.bing.com" target="_blank">必应</a>
+  }
+
+  function appendOssLogLink(userId, userName, time) {
+    const base = `https://laserpecker-prod.oss-cn-hongkong.aliyuncs.com/log/${time}`;
+    const key1 = userId;
+    const key2 = `${userId}_${userName}`;
+    const key3 = `${userName}`;
+    appendLink(`${base}/${key1}/${time}.zip`, time + "|" + key1);
+    appendLink(`${base}/${key2}/${time}.zip`, time + "|" + key2);
+    appendLink(`${base}/${key3}/${time}.zip`, time + "|" + key3);
+  }
+
+  function appendOssLogLinks(userId, userName) {
+    const time = lpTime.value;
+    //使用空格分割时间
+    const timeArray = time.split(" ");
+    //遍历时间
+    timeArray.forEach((time) => {
+      if (time) {
+        appendOssLogLink(userId, userName, time);
+      }
     });
   }
 })();

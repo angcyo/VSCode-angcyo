@@ -41,10 +41,33 @@
       <label for="httpUrl">http请求地址:</label>
       <input id="httpUrl" type="text" />
 
+      <label for="lpUserName">LP用户名:</label>
+      <input id="lpUserName" type="text" placeholder="登录的用户名" />
+
+      <label for="lpPassword">LP密码:</label>
+      <input id="lpPassword" type="text" placeholder="登录的用户密码" />
+
+      <button type="button" id="lpLogin">LP登录</button>
+
+      <label for="lpTime">LP日志时间:</label>
+      <input id="lpTime" type="text" placeholder="多个时间使用空格隔开" />
+
+      <button type="button" id="lpUserInfo">LP查询用户日志</button>
+      <button type="button" id="lpFetchLog">LP直接查询</button>
+      <button type="button" id="lpClearLink">清除链接</button>
+    </div>
+    <div class="textarea-wrap">
       <textarea
         id="httpBody"
         name="httpBody"
-        placeholder="请求体json数据"
+        placeholder="http请求体json数据"
+        rows="6"
+      ></textarea>
+
+      <textarea
+        id="lpBody"
+        name="lpBody"
+        placeholder="lp请求体json数据"
         rows="6"
       ></textarea>
     </div>
@@ -65,6 +88,8 @@
         disabled
       ></textarea>
     </div>
+
+    <div id="linkWrap" class="link-wrap margin"></div>
 
     <script nonce="{{nonce}}" src="{{spark}}"></script>
     <script nonce="{{nonce}}" src="{{script}}"></script>
