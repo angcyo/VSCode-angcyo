@@ -177,7 +177,14 @@
       const path = selectFile.files[0].path;
       if (path.toLowerCase().endsWith(".lpbin")) {
         readFile(selectFile.files[0], (data) => {
-          result.value = data.join(",");
+          const dataU8 = data.join(",");
+          const dataString = new TextDecoder("utf8").decode(data);
+          //将u8数据转成十六进制
+          const hex = Array.prototype.map
+            .call(data, (x) => ("00" + x.toString(16).toUpperCase()).slice(-2))
+            .join(" ");
+
+          result.value = dataU8 + "\n\n" + hex + "\n\n" + dataString;
 
           const dataLength = data.byteLength;
           const lengthU8Array = data.slice(dataLength - 4);
