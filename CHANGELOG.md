@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-8-24
+
+* lpbin prase
+
 ## 2023-8-23
 
 + oss log link
