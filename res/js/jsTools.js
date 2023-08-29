@@ -339,6 +339,14 @@
     reader.readAsArrayBuffer(file);
   }
 
+  function getSaveFilePath(fileName) {
+    if (selectPath.includes(":") > 0) {
+      return `${targetPath}\\${fileName}`;
+    } else {
+      return `${targetPath}/${fileName}`;
+    }
+  }
+
   function pdfToPng() {
     const file = selectFile.files[0];
     readFile(file, (data) => {
@@ -356,7 +364,7 @@
           for (let i = 1; i <= numPages; i++) {
             //获取文件名
             const fileName = file.name.substring(0, file.name.lastIndexOf("."));
-            const saveFilePath = `${targetPath}\\${fileName}_${i}.png`;
+            const saveFilePath = getSaveFilePath(`${fileName}_${i}.png`);
 
             const pdfPage = await pdfDocument.getPage(i);
             // Display page on the existing canvas with 100% scale.
@@ -412,9 +420,9 @@
       const dataURL = canvas.toDataURL("image/png");
       appendImage(dataURL);
 
-      const saveFilePath = `${targetPath}\\${nowTimeString(
-        "yyyy-MM-dd_HH-mm-ss"
-      )}.png`;
+      const saveFilePath = getSaveFilePath(
+        `${nowTimeString("yyyy-MM-dd_HH-mm-ss")}.png`
+      );
       vscode.postMessage({
         command: "save",
         path: saveFilePath,
