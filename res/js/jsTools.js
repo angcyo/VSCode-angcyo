@@ -14,6 +14,8 @@
   const sendLoopCount = document.getElementById("sendLoopCount");
   const result = document.getElementById("result");
   const imageWrap = document.getElementById("imageWrap");
+  const width = document.getElementById("width");
+  const height = document.getElementById("height");
 
   //选中的文件全路径
   var selectPath = localStorage.getItem("selectPath") || "";
@@ -24,6 +26,8 @@
   initTextInput("content");
   initTextInput("sendSize");
   initTextInput("sendLoopCount");
+  initTextInput("width");
+  initTextInput("height");
 
   clickButton("uuid", async () => {
     const uuid = crypto.randomUUID();
@@ -159,10 +163,21 @@
   //pdf2png
   clickButton("pdf2png", () => {
     if (selectPath) {
-      pdfToPng(selectPath);
+      pdfToPng();
     } else {
       vscode.postMessage({
         text: "请先选择pdf文件!",
+      });
+    }
+  });
+
+  //调整图片宽高
+  clickButton("adjustImage", () => {
+    if (selectPath) {
+      adjustImage();
+    } else {
+      vscode.postMessage({
+        text: "请先选择图片文件!",
       });
     }
   });
@@ -242,8 +257,8 @@
     input.value = localStorage.getItem(id) || def;
   }
 
-  function nowTimeString() {
-    return formatDate(new Date(), "yyyy-MM-dd HH:mm:ss'SSS");
+  function nowTimeString(fmt) {
+    return formatDate(new Date(), fmt || "yyyy-MM-dd HH:mm:ss'SSS");
   }
 
   //格式化时间
@@ -333,7 +348,9 @@
 
           //循环
           for (let i = 1; i <= numPages; i++) {
-            const saveFilePath = `${targetPath}\\${file.name}_${i}.png`;
+            //获取文件名
+            const fileName = file.name.substring(0, file.name.lastIndexOf("."));
+            const saveFilePath = `${targetPath}\\${fileName}_${i}.png`;
 
             const pdfPage = await pdfDocument.getPage(i);
             // Display page on the existing canvas with 100% scale.
@@ -362,8 +379,44 @@
         })
         .catch(function (reason) {
           console.error("Error: " + reason);
+          vscode.postMessage({
+            text: reason,
+          });
         });
     });
+  }
+
+  //通过canvas调整图片大小
+  function adjustImage() {
+    const w = width.value;
+    const h = height.value;
+    const file = selectFile.files[0];
+
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+
+    //使用cavas绘制图片
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0, w, h);
+      // Convert canvas to PNG
+      const dataURL = canvas.toDataURL("image/png");
+      appendImage(dataURL);
+
+      const saveFilePath = `${targetPath}\\${nowTimeString(
+        "yyyy-MM-dd_HH-mm-ss"
+      )}.png`;
+      vscode.postMessage({
+        command: "save",
+        path: saveFilePath,
+        data: dataURL,
+        reveal: true, //打开保存的文件所在目录
+      });
+      URL.revokeObjectURL(img.src);
+    };
   }
 
   //添加一个base64图片展示

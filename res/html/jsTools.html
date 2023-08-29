@@ -74,14 +74,21 @@
 
     <label class="padding margin">选择文件↓</label>
 
-    <div class="margin">
+    <div class="input-wrap">
       <input id="selectFile" type="file" placeholder="请选择文件..." />
+
+      <label for="width">宽:</label>
+      <input id="width" type="number" />
+      <label for="height">高:</label>
+      <input id="height" type="number" />
+
       <label id="fileLabel" style="cursor: pointer"></label>
     </div>
 
     <div class="button-wrap margin">
       <button type="button" id="clearPng">清除图片结果</button>
-      <button type="button" id="pdf2png">Pdf文件转Png</button>
+      <button type="button" id="pdf2png">Pdf转Png</button>
+      <button type="button" id="adjustImage">调整图片宽高</button>
     </div>
 
     <div id="imageWrap" class="image-wrap"></div>
