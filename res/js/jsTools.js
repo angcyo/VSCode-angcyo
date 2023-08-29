@@ -206,7 +206,13 @@
       localStorage.setItem("selectPath", selectPath);
       console.log(selectPath);
 
-      const path = selectPath.substring(0, selectPath.lastIndexOf("\\"));
+      let path;
+      if (selectPath.includes(":") > 0) {
+        path = selectPath.substring(0, selectPath.lastIndexOf("\\"));
+      } else {
+        path = selectPath.substring(0, selectPath.lastIndexOf("/"));
+      }
+
       targetPath = path;
       localStorage.setItem("targetPath", targetPath);
       console.log(targetPath);
