@@ -17,8 +17,8 @@
   const deviceButtonWrap = document.getElementById("deviceButtonWrap");
 
   //2个路径
-  var selectPath = "";
-  var targetPath = "";
+  var selectPath = localStorage.getItem("selectPath") || "";
+  var targetPath = localStorage.getItem("targetPath") || "";
 
   const jsonStr =
     localStorage.getItem("createBinJson") ||
@@ -78,11 +78,12 @@
 
   //选择文件监听
   selectFile.addEventListener(`change`, () => {
-    console.log("...");
+    console.log("选择文件...↓");
     console.log(selectFile.files);
 
     if (selectFile.files?.length > 0) {
       selectPath = selectFile.files[0].path;
+      localStorage.setItem("selectPath", selectPath);
       console.log(selectPath);
 
       const path = selectPath.substring(0, selectPath.lastIndexOf("."));
@@ -232,6 +233,8 @@
 
   //读取文件二进制数据
   function readFile(file, callback) {
+    console.log("读取文件↓");
+    console.log(file);
     const reader = new FileReader();
     reader.onload = function fileReadCompleted() {
       // 当读取完成时，内容只在`reader.result`中

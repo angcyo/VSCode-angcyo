@@ -7,11 +7,18 @@
 (function () {
   const vscode = acquireVsCodeApi();
 
+  const selectFile = document.getElementById("selectFile");
   const host = document.getElementById("host");
   const content = document.getElementById("content");
   const sendSize = document.getElementById("sendSize");
   const sendLoopCount = document.getElementById("sendLoopCount");
   const result = document.getElementById("result");
+  const imageWrap = document.getElementById("imageWrap");
+
+  //选中的文件全路径
+  var selectPath = localStorage.getItem("selectPath") || "";
+  //生成的文件路径
+  var targetPath = localStorage.getItem("targetPath") || "";
 
   initTextInput("host", "ws://192.168.2.109:9301");
   initTextInput("content");
@@ -145,6 +152,21 @@
     });
   });
 
+  clickButton("clearPng", () => {
+    clearAllImage();
+  });
+
+  //pdf2png
+  clickButton("pdf2png", () => {
+    if (selectPath) {
+      pdfToPng(selectPath);
+    } else {
+      vscode.postMessage({
+        text: "请先选择pdf文件!",
+      });
+    }
+  });
+
   //---
 
   window.addEventListener("message", (event) => {
@@ -157,6 +179,23 @@
     vscode.postMessage({
       text: event.message,
     });
+  });
+
+  //选择文件监听
+  selectFile.addEventListener(`change`, () => {
+    console.log("选择文件...↓");
+    console.log(selectFile.files);
+
+    if (selectFile.files?.length > 0) {
+      selectPath = selectFile.files[0].path;
+      localStorage.setItem("selectPath", selectPath);
+      console.log(selectPath);
+
+      const path = selectPath.substring(0, selectPath.lastIndexOf("\\"));
+      targetPath = path;
+      localStorage.setItem("targetPath", targetPath);
+      console.log(targetPath);
+    }
   });
 
   //---
@@ -263,5 +302,98 @@
   function appendTime(tag) {
     const time = new Date().getTime();
     appendResult((tag || "") + "耗时:" + (time - tickTime) + "ms");
+  }
+
+  //读取文件二进制数据
+  function readFile(file, callback) {
+    console.log("读取文件↓");
+    console.log(file);
+    const reader = new FileReader();
+    reader.onload = function fileReadCompleted() {
+      // 当读取完成时，内容只在`reader.result`中
+      const data = new Uint8Array(reader.result);
+      //const data = reader.result;
+      callback(data);
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function pdfToPng() {
+    const file = selectFile.files[0];
+    readFile(file, (data) => {
+      // Loading a document.
+      const loadingTask = pdfjsLib.getDocument(data);
+      console.log(loadingTask);
+
+      loadingTask.promise
+        .then(async function (pdfDocument) {
+          // Request a first page
+          console.log(pdfDocument);
+          const numPages = pdfDocument._pdfInfo.numPages;
+
+          //循环
+          for (let i = 1; i <= numPages; i++) {
+            const saveFilePath = `${targetPath}\\${file.name}_${i}.png`;
+
+            const pdfPage = await pdfDocument.getPage(i);
+            // Display page on the existing canvas with 100% scale.
+            const viewport = pdfPage.getViewport({ scale: 2.0 });
+            //创建Canvas元素
+            const canvas = document.createElement("canvas");
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext("2d");
+            const renderTask = pdfPage.render({
+              canvasContext: ctx,
+              viewport,
+            });
+            await renderTask.promise;
+            // Convert canvas to PNG
+            const dataURL = canvas.toDataURL("image/png");
+            appendImage(dataURL);
+
+            vscode.postMessage({
+              command: "save",
+              path: saveFilePath,
+              data: dataURL,
+              reveal: i == numPages, //打开保存的文件所在目录
+            });
+          }
+        })
+        .catch(function (reason) {
+          console.error("Error: " + reason);
+        });
+    });
+  }
+
+  //添加一个base64图片展示
+  function appendImage(base64, des) {
+    if (base64) {
+      //创建img容器
+      const img = new Image();
+      //给img容器引入base64的图片
+      img.src = base64;
+      //img.alt = JSON.stringify(des, null, 4);
+      img.title = JSON.stringify(des, null, 4);
+
+      //将img容器添加到html的节点中。
+      imageWrap.appendChild(img);
+
+      scrollToBottom();
+    }
+  }
+
+  //清空所有图片
+  function clearAllImage() {
+    while (imageWrap.hasChildNodes()) {
+      imageWrap.removeChild(imageWrap.firstChild);
+    }
+  }
+
+  //滚动到底部
+  function scrollToBottom() {
+    setTimeout(() => {
+      window.scrollTo(0, document.documentElement.clientHeight);
+    }, 300);
   }
 })();

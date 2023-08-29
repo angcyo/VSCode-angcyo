@@ -153,6 +153,19 @@ class WebviewPanel {
     const sparkUri = webview.asWebviewUri(sparkPath);
     htmlString = this.replaceHtmlString(htmlString, "spark", sparkUri);
 
+    //pdf 的js
+    const pdfPath = uri.joinPath(extensionUri, "res/js/pdf.min.js");
+    const pdfUri = webview.asWebviewUri(pdfPath);
+    htmlString = this.replaceHtmlString(htmlString, "pdf", pdfUri);
+
+    //pdfWorker 的js
+    const pdfWorkerPath = uri.joinPath(
+      extensionUri,
+      "res/js/pdf.worker.min.js"
+    );
+    const pdfWorkerUri = webview.asWebviewUri(pdfWorkerPath);
+    htmlString = this.replaceHtmlString(htmlString, "pdfWorker", pdfWorkerUri);
+
     return htmlString;
   }
 
@@ -204,11 +217,20 @@ class WebviewPanel {
       const path = message.path;
       const uri = vscode.Uri.file(path);
       //await vscode.workspace.fs.writeFile(uri, new Uint8Array(message.data));
-      vscode.workspace.fs.writeFile(
-        uri,
-        new Uint8Array(message.data.split(","))
-        //new TextEncoder("ISO-8859-1").encode(message.data)
-      );
+
+      const isBase64 = message.data.startsWith("data:");
+      if (isBase64) {
+        //base64
+        const base64 = message.data.split(",")[1];
+        const buffer = Buffer.from(base64, "base64");
+        vscode.workspace.fs.writeFile(uri, buffer);
+      } else {
+        vscode.workspace.fs.writeFile(
+          uri,
+          new Uint8Array(message.data.split(","))
+          //new TextEncoder("ISO-8859-1").encode(message.data)
+        );
+      }
       vscode.window.showInformationMessage(`已保存至:${path}`);
 
       if (message.reveal) {
