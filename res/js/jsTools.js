@@ -18,7 +18,7 @@
   const height = document.getElementById("height");
 
   //选中的文件全路径
-  var selectPath = localStorage.getItem("selectPath") || "";
+  var selectPath = "";
   //生成的文件路径
   var targetPath = localStorage.getItem("targetPath") || "";
 
@@ -180,6 +180,23 @@
         text: "请先选择图片文件!",
       });
     }
+  });
+  clickButton("base642Png", () => {
+    base642Png(content.value);
+  });
+  clickButton("png2Base64", () => {
+    if (selectPath) {
+      png2Base64();
+    } else {
+      vscode.postMessage({
+        text: "请先选择图片文件!",
+      });
+    }
+  });
+
+  //---
+  clickButton("numberSum", () => {
+    numberSum(content.value);
   });
 
   //---
@@ -420,9 +437,11 @@
       const dataURL = canvas.toDataURL("image/png");
       appendImage(dataURL);
 
-      const saveFilePath = getSaveFilePath(
-        `${nowTimeString("yyyy-MM-dd_HH-mm-ss")}.png`
-      );
+      const fileName = file.name.substring(0, file.name.lastIndexOf("."));
+      const saveFilePath = getSaveFilePath(`${fileName}_${w}_${h}.png`);
+      // const saveFilePath = getSaveFilePath(
+      //   `${nowTimeString("yyyy-MM-dd_HH-mm-ss")}.png`
+      // );
       vscode.postMessage({
         command: "save",
         path: saveFilePath,
@@ -434,6 +453,8 @@
   }
 
   //添加一个base64图片展示
+  //@param base64 图片的base64
+  //@param des 图片的描述
   function appendImage(base64, des) {
     if (base64) {
       //创建img容器
@@ -462,5 +483,60 @@
     setTimeout(() => {
       window.scrollTo(0, document.documentElement.clientHeight);
     }, 300);
+  }
+
+  //将选中的png文件转base64
+  function png2Base64() {
+    const file = selectFile.files[0];
+    readFile(file, (data) => {
+      const base64 = arrayBufferToBase64(data);
+      result.innerHTML = "data:image/png;base64," + base64;
+    });
+  }
+
+  function arrayBufferToBase64(buffer) {
+    var binary = "";
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  function base642Png(base64) {
+    if (base64) {
+      appendImage(base64);
+    } else {
+      vscode.postMessage({
+        text: "base64 内容为空!",
+      });
+    }
+  }
+
+  //数字求和, 将文本中的正负小数数字, 求和
+  function numberSum(text) {
+    if (text) {
+      const regex = /[-+]?[0-9]+\.?[0-9]*/g;
+      const match = text.match(regex);
+      if (match) {
+        let sum = 0;
+        for (let i = 0; i < match.length; i++) {
+          const element = match[i];
+          sum += parseFloat(element);
+        }
+        //保留2位小数
+        sum = Math.round(sum * 100) / 100;
+        appendResult("求和: " + sum);
+      } else {
+        vscode.postMessage({
+          text: "没有匹配到数字!",
+        });
+      }
+    } else {
+      vscode.postMessage({
+        text: "内容为空!",
+      });
+    }
   }
 })();

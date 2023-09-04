@@ -17,7 +17,7 @@
   const deviceButtonWrap = document.getElementById("deviceButtonWrap");
 
   //2个路径
-  var selectPath = localStorage.getItem("selectPath") || "";
+  var selectPath = "";
   var targetPath = localStorage.getItem("targetPath") || "";
 
   const jsonStr =
