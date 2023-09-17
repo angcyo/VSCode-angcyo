@@ -28,17 +28,23 @@
       autofocus
       rows="2"
     ></textarea>
+    <label for="data" class="mt">指令数据生成,进制数据转换:</label>
     <div class="input-wrap">
       <input
         id="inputCommandData"
         type="text"
-        placeholder="请输入指令数据,空格隔开"
+        placeholder="请输入指令数据,自动输出十六进制指令命令,空格隔开"
       />
       <input id="inputStringData" type="text" placeholder="字符串转十六进制" />
       <input
         id="inputNumberData"
         type="text"
         placeholder="十进制转十六进制,空格隔开多个"
+      />
+      <input
+        id="inputHexNumberData"
+        type="text"
+        placeholder="十六进制转十进制,空格隔开多个"
       />
     </div>
     <div class="button-wrap margin">

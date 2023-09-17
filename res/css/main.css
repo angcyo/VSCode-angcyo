@@ -234,7 +234,7 @@ textarea {
 }
 
 .input-wrap input {
-  width: 30rem;
+  width: 28rem;
 }
 
 .input-wrap *:not(:last-child) {
@@ -242,7 +242,7 @@ textarea {
 }
 
 #inputCommandData {
-  width: 57rem;
+  width: 42rem;
 }
 
 .textarea-wrap {

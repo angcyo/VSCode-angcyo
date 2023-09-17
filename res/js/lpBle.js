@@ -170,6 +170,13 @@
     }
   });
 
+  inputChangeElement("inputHexNumberData", (value) => {
+    if (value) {
+      //设置
+      updateResultHexValue(hexNumberToNumberString(value));
+    }
+  });
+
   //保存记录的值
   inputChangeElement("record");
 
@@ -277,6 +284,7 @@
     return result;
   }
 
+  ///将数字转成十六进制字符串
   function numberToHexString(value) {
     //使用空格分隔value
     const values = value.split(" ");
@@ -292,6 +300,26 @@
       });
     //拼接
     const result = hexValues.join(" ");
+    return result;
+  }
+
+  ///将十六进制数字转成十六进制字符串
+  function hexNumberToNumberString(value) {
+    //使用空格分隔value
+    const values = value.split(" ");
+    //过滤掉空值, 并转成十进制
+    const numberValues = values
+      .filter((item) => item)
+      .map((item) => {
+        if (item) {
+          //十六进制字符串转成十进制数字
+          return parseInt(item, 16).toString();
+        } else {
+          return "";
+        }
+      });
+    //拼接
+    const result = numberValues.join(" ");
     return result;
   }
 
