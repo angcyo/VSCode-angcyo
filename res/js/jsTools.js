@@ -198,6 +198,12 @@
   clickButton("numberSum", () => {
     numberSum(content.value);
   });
+  clickButton("uriEncode", () => {
+    appendResult("UriEncode: " + encodeURI(content.value));
+  });
+  clickButton("uriDecode", () => {
+    appendResult("UriEncode: " + decodeURI(content.value));
+  });
 
   //---
 
