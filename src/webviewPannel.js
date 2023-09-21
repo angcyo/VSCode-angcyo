@@ -275,6 +275,10 @@ class WebviewPanel {
       const data = message.data;
       vscode.env.clipboard.writeText(data);
       vscode.window.showInformationMessage(`已复制!`);
+    } else if (message.command === "httpPostFile") {
+      //群发文件
+      console.log(`群发文件↓`);
+      this.httpPostFile(message.port, message.path);
     } else if (message.command === "request") {
       //网络请求
       const url = message.url;
@@ -308,6 +312,67 @@ class WebviewPanel {
           url: url,
         });
       }
+    }
+  }
+
+  //局域网内, 群发发送文件
+  //[path] 文件路径
+  //[portAndIpRange] 端口号 和ip范围~分割. `9200 100~200`
+  async httpPostFile(portAndIpRange, path) {
+    //使用fetch发送文件
+    const port = portAndIpRange.split(" ")[0] || 9200;
+    const ipRange = portAndIpRange.split(" ")[1];
+
+    let ipRangeStart = 1;
+    let ipRangeEnd = 255;
+    if (ipRange) {
+      ipRangeStart = parseInt(ipRange.split("~")[0]);
+      ipRangeEnd = parseInt(ipRange.split("~")[1]);
+    }
+
+    const ip = Api.getLocalIp();
+
+    //await vscode.workspace.fs.writeFile(uri, data);
+    //vscode.Uri.file;
+
+    //从path路径中读取文件数据
+    const uri = vscode.Uri.file(path);
+    const data = await vscode.workspace.fs.readFile(uri);
+
+    //blob类型
+    const blob = new Blob([data], { type: "application/octet-stream" });
+
+    //从路径中获取文件名
+    const fileNameWin = path.split("\\").pop();
+    //兼容mac/window
+    const fileNameMac = path.split("/").pop();
+    const fileName = fileNameWin || fileNameMac;
+
+    //获取ip最后一个.前面的部分
+    const ipPrefix = ip.split(".").slice(0, 3).join(".");
+    //遍历局域网ip
+    for (let i = ipRangeStart; i <= ipRangeEnd; i++) {
+      const url = `http://${ipPrefix}.${i}:${port}/uploadFile`;
+
+      this.postMessage({
+        type: "message",
+        value: `发送文件: ${decodeURI(path)} -> ${url}`,
+      });
+
+      Api.postFile(url, blob, fileName)
+        .then((result) => {
+          this.postMessage({
+            type: "message",
+            value: `${url} <- ${result}`,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          this.postMessage({
+            type: "message",
+            value: `${url} <- ${error}`,
+          });
+        });
     }
   }
 }

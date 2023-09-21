@@ -1,5 +1,6 @@
 const path = require("path");
 const vscode = require("vscode");
+const os = require("os");
 require("isomorphic-fetch");
 
 class Api {
@@ -119,6 +120,48 @@ class Api {
     } catch (error) {
       return false;
     }
+  }
+
+  // blob 类型, file也是一种blob类型
+  async postFile(url, blob, fileName) {
+    //使用fetch发送文件
+    const formData = new FormData();
+    formData.append("file", blob, fileName || "unknown.temp");
+    const req = await fetch(url, {
+      method: "POST",
+      body: formData,
+      // headers: {
+      //   "Content-Type": "multipart/form-data",
+      // },
+    });
+    const result = await req.text();
+    return result;
+  }
+
+  /**
+   * 获取本机ip
+   */
+  getLocalIp() {
+    const networkInterfaces = os.networkInterfaces();
+
+    let ip = "";
+    for (const name in networkInterfaces) {
+      const iface = networkInterfaces[name];
+      for (let i = 0; i < iface.length; i++) {
+        const alias = iface[i];
+        if (
+          alias.family === "IPv4" &&
+          alias.address !== "127.0.0.1" &&
+          alias.address.startsWith("192") &&
+          !alias.internal
+        ) {
+          ip = alias.address;
+          break;
+        }
+      }
+      if (ip) break;
+    }
+    return ip;
   }
 }
 

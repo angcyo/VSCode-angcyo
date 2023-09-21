@@ -287,3 +287,7 @@ textarea {
 #lpPassword {
   width: 10rem !important;
 }
+
+#httpPostPort {
+  width: 20rem;
+}

@@ -72,11 +72,29 @@
       ></textarea>
     </div>
 
-    <div class="button-wrap margin">
+    <label class="padding margin">选择文件↓</label>
+
+    <div class="input-wrap">
+      <input
+        id="selectFile"
+        type="file"
+        placeholder="请选择文件..."
+        accept=".*"
+      />
+      <label for="httpPostPort">群发端口和ip范围:</label>
+      <input
+        id="httpPostPort"
+        type="text"
+        placeholder="群发端口和ip范围 例如:9200 10~250"
+      />
+    </div>
+
+    <div class="button-wrap">
       <button type="button" id="clear">清屏</button>
       <button type="button" id="startServer">启动服务</button>
       <button type="button" id="httpGet">get</button>
       <button type="button" id="httpPost">post</button>
+      <button type="button" id="httpPostFile">群发文件</button>
     </div>
 
     <div id="content" class="margin">

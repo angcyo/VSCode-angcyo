@@ -1,6 +1,7 @@
 const vscode = require("vscode");
 const os = require("os");
 const { WebviewPanel } = require("./webviewPannel");
+const { Api } = require("./api");
 
 //http服务
 class HttpServerWebviewPanel extends WebviewPanel {
@@ -112,26 +113,7 @@ class HttpServerWebviewPanel extends WebviewPanel {
    * 获取本机ip
    */
   getLocalIp() {
-    const networkInterfaces = os.networkInterfaces();
-
-    let ip = "";
-    for (const name in networkInterfaces) {
-      const iface = networkInterfaces[name];
-      for (let i = 0; i < iface.length; i++) {
-        const alias = iface[i];
-        if (
-          alias.family === "IPv4" &&
-          alias.address !== "127.0.0.1" &&
-          alias.address.startsWith("192") &&
-          !alias.internal
-        ) {
-          ip = alias.address;
-          break;
-        }
-      }
-      if (ip) break;
-    }
-    return ip;
+    return Api.getLocalIp();
   }
 
   dispose() {

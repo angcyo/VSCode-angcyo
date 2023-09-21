@@ -17,8 +17,11 @@
   const lpBody = document.getElementById("lpBody");
   const linkWrap = document.getElementById("linkWrap");
   const lpTime = document.getElementById("lpTime");
+  const selectFile = document.getElementById("selectFile");
+  const httpPostPort = document.getElementById("httpPostPort");
 
   let lpToken = localStorage.getItem("lpToken");
+  let selectFileObj = null; //选择的文件对象
 
   initTextInput("host", "http://192.168.31.192:9200");
   initTextInput("folder", "E:/uploadFiles");
@@ -40,6 +43,7 @@
     )
   );
   initTextInput("lpTime", nowTimeString("yyyy-MM-dd"));
+  initTextInput("httpPostPort", "9200 10~250");
 
   clickButton("clear", () => {
     result.innerHTML = "";
@@ -111,6 +115,25 @@
     clearLink();
   });
 
+  clickButton("httpPostFile", () => {
+    //群发文件
+    if (selectFileObj) {
+      //单个文件
+      readFile(selectFileObj, (data) => {
+        vscode.postMessage({
+          command: "httpPostFile",
+          port: httpPostPort.value,
+          path: selectFileObj.path, //使用文件路径在vscode层重新读取文件
+          //data: data.join(","),//文件太大传输很慢甚至崩溃
+        });
+      });
+    } else {
+      vscode.postMessage({
+        text: "请先选择文件",
+      });
+    }
+  });
+
   //---
 
   //接收来自vscode的数据
@@ -160,6 +183,21 @@
           }
         }
         break;
+    }
+  });
+
+  //选择文件监听
+  selectFile.addEventListener(`change`, () => {
+    console.log("选择文件...↓");
+    console.log(selectFile.files);
+
+    if (selectFile.files?.length > 0) {
+      selectFileObj = selectFile.files[0];
+      const selectPath = selectFileObj.path;
+      appendResult(selectPath);
+      readFileMd5(selectFile.files[0], (md5) => {
+        appendResult(md5);
+      });
     }
   });
 
@@ -318,5 +356,29 @@
         appendOssLogLink(userId, userName, time);
       }
     });
+  }
+
+  function readFileMd5(file, callback) {
+    const reader = new FileReader();
+    reader.onload = function fileReadCompleted() {
+      // 当读取完成时，内容只在`reader.result`中
+      const md5 = SparkMD5.hashBinary(reader.result);
+      callback(md5);
+    };
+    reader.readAsBinaryString(file);
+  }
+
+  //读取文件二进制数据
+  function readFile(file, callback) {
+    console.log("读取文件↓");
+    console.log(file);
+    const reader = new FileReader();
+    reader.onload = function fileReadCompleted() {
+      // 当读取完成时，内容只在`reader.result`中
+      const data = new Uint8Array(reader.result);
+      //const data = reader.result;
+      callback(data);
+    };
+    reader.readAsArrayBuffer(file);
   }
 })();
