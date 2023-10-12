@@ -415,9 +415,10 @@
           }
         })
         .catch(function (reason) {
-          console.error("Error: " + reason);
+          const error = "Error: " + reason;
+          console.error(error);
           vscode.postMessage({
-            text: reason,
+            text: error,
           });
         });
     });
