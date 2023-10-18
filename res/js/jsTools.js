@@ -204,6 +204,25 @@
   clickButton("uriDecode", () => {
     appendResult("UriEncode: " + decodeURI(content.value));
   });
+  clickButton("toDateTime", () => {
+    //将时间戳转成日期时间
+    const str = content.value || new Date().getTime();
+    const time = parseInt(str);
+    const date = new Date(time);
+    //格式化时间 YYYY-MM-DD HH:mm:ss
+    const fmt = "yyyy-MM-dd HH:mm:ss.SSS";
+    const text = formatDate(date, fmt);
+    appendResult(str + "->" + text);
+  });
+  clickButton("toTimestamp", () => {
+    //将日期时间转成时间戳
+    const nowDateTime = new Date();
+    const fmt = "yyyy-MM-dd HH:mm:ss.SSS";
+    const text = content.value || formatDate(nowDateTime, fmt);
+    const date = new Date(text);
+    const time = date.getTime();
+    appendResult(text + "->" + time);
+  });
 
   //---
 
@@ -314,6 +333,8 @@
           RegExp.$1,
           RegExp.$1.length == 1
             ? o[k]
+            : k === "S+"
+            ? ("000" + o[k]).substring(3)
             : ("00" + o[k]).substring(("" + o[k]).length)
         );
       }
