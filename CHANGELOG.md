@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-10-30
+
++ conversion of number systems
+
 ## 2023-10-19
 
 - fix base time
