@@ -223,6 +223,30 @@
     const time = date.getTime();
     appendResult(text + "->" + time);
   });
+  clickButton("toHex", () => {
+    //将内容的值转换成16进制
+    const text = content.value || 0;
+    const result = parseInt(text).toString(16).toUpperCase();
+    appendResult(text + "->" + result);
+  });
+  clickButton("toDec", () => {
+    //将内容的值转换成10进制
+    const text = content.value || 0;
+    const result = parseInt(text, 16).toString(10).toUpperCase();
+    appendResult(text + "->" + result);
+  });
+  clickButton("toOct", () => {
+    //将内容的值转换成8进制
+    const text = content.value || 0;
+    const result = parseInt(text).toString(8).toUpperCase();
+    appendResult(text + "->" + result);
+  });
+  clickButton("toBin", () => {
+    //将内容的值转换成2进制
+    const text = content.value || 0;
+    const result = parseInt(text).toString(2).toUpperCase();
+    appendResult(text + "->" + result);
+  });
 
   //---
 
