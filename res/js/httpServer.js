@@ -272,6 +272,8 @@
           RegExp.$1,
           RegExp.$1.length == 1
             ? o[k]
+            : k === "S+"
+            ? ("000" + o[k]).substring(3)
             : ("00" + o[k]).substring(("" + o[k]).length)
         );
       }
@@ -347,7 +349,11 @@
   }
 
   function appendOssLogLinks(userId, userName) {
-    const time = lpTime.value;
+    var time = lpTime.value;
+    //如果时间为空, 则使用当前的时间
+    if (!time) {
+      time = nowTimeString("yyyy-MM-dd");
+    }
     //使用空格分割时间
     const timeArray = time.split(" ");
     //遍历时间
