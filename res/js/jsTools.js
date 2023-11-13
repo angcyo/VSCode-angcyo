@@ -247,6 +247,24 @@
     const result = parseInt(text).toString(2).toUpperCase();
     appendResult(text + "->" + result);
   });
+  clickButton("distance", () => {
+    //求两点之间的距离
+    const text = content.value || 0;
+    const list = getNumberList(text);
+    if (list.length >= 4) {
+      const x1 = list[0];
+      const y1 = list[1];
+      const x2 = list[2];
+      const y2 = list[3];
+      const distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+      appendResult(`x1:(${x1}, ${y1}) x2:(${x2}, ${y2})`);
+      appendResult("距离:" + distance);
+    } else {
+      vscode.postMessage({
+        text: "至少需要4个数字!",
+      });
+    }
+  });
 
   //---
 
@@ -590,5 +608,21 @@
         text: "内容为空!",
       });
     }
+  }
+
+  // 从文本中获取所有数字
+  function getNumberList(text) {
+    const result = [];
+    if (text) {
+      const regex = /[-+]?[0-9]+\.?[0-9]*/g;
+      const match = text.match(regex);
+      if (match) {
+        for (let i = 0; i < match.length; i++) {
+          const element = match[i];
+          result.push(parseFloat(element));
+        }
+      }
+    }
+    return result;
   }
 })();
