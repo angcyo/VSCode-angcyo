@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-11-13
+
++ the Pythagorean proposition
+
 ## 2023-10-30
 
 + conversion of number systems
