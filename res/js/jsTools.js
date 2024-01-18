@@ -49,6 +49,9 @@
     const text = content.value;
     result.innerHTML = nowTimeString() + "\n" + btoa(text); //加密
   });
+  clickButton("svg2AndroidVector", () => {
+    parseSvg(content.value);
+  });
   clickButton("base64Decode", () => {
     const text = content.value;
     result.innerHTML = nowTimeString() + "\n" + atob(text); //解密
@@ -624,5 +627,241 @@
       }
     }
     return result;
+  }
+
+  // 解析svg字符串
+  function parseSvg(data) {
+    if (data) {
+      //使用svg xml数据创建dom
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(data, "image/svg+xml");
+      //获取svg节点
+      const svg = doc.getElementsByTagName("svg")[0];
+      const viewBox = svg.getAttribute("viewBox");
+      //转成Android Svg xml
+      const w = svg.getAttribute("width");
+      const h = svg.getAttribute("height");
+      //枚举svg节点下的所有child
+      const paths = tagToAndroidPath(svg);
+
+      var vw = w;
+      var vh = h;
+      if (viewBox) {
+        vw = viewBox.split(" ")[2];
+        vh = viewBox.split(" ")[3];
+      }
+
+      var start = `<vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="${vw}dp"
+              android:height="${vh}dp"
+              android:viewportWidth="${vw}"
+              android:viewportHeight="${vh}">`;
+      var end = `</vector>`;
+      result.value = start + paths.join("") + end;
+
+      //释放内存
+      doc = null;
+      parser = null;
+    } else {
+      vscode.postMessage({ text: "no data" });
+    }
+  }
+
+  //将常用的颜色字符串转成hex颜色值
+  function colorToHex(color) {
+    if (color === null || color === undefined) {
+      return undefined;
+    }
+    if (color === "transparent" || color === "none") {
+      return "#00000000";
+    }
+    if (color === "black") {
+      return "#000000";
+    }
+    if (color === "white") {
+      return "#ffffff";
+    }
+    if (color === "red") {
+      return "#ff0000";
+    }
+    if (color === "green") {
+      return "#00ff00";
+    }
+    if (color === "blue") {
+      return "#0000ff";
+    }
+    if (color === "yellow") {
+      return "#ffff00";
+    }
+    if (color === "cyan") {
+      return "#00ffff";
+    }
+    if (color === "magenta") {
+      return "#ff00ff";
+    }
+    if (color === "gray") {
+      return "#808080";
+    }
+    if (color === "lightgray") {
+      return "#d3d3d3";
+    }
+    if (color === "darkgray") {
+      return "#a9a9a9";
+    }
+    if (color === "grey") {
+      return "#808080";
+    }
+    if (color === "lightgrey") {
+      return "#d3d3d3";
+    }
+    if (color === "darkgrey") {
+      return "#a9a9a9";
+    }
+
+    if (color.indexOf("#") === 0) {
+      return color;
+    }
+    var digits = /(.*?)rgb\((\d+), (\d+), (\d+)\)/.exec(color);
+    var red = parseInt(digits[2]);
+    var green = parseInt(digits[3]);
+    var blue = parseInt(digits[4]);
+    var rgb = blue | (green << 8) | (red << 16);
+    return digits[1] + "#" + rgb.toString(16);
+  }
+
+  //将数字字符串转换成浮点型数字
+  function parseFloatStr(str, def = undefined) {
+    if (str === null || str === undefined) {
+      return def;
+    }
+    return parseFloat(str);
+  }
+
+  //将svg标签转成Android的path标签
+  function tagToAndroidPath(tag) {
+    var paths = [];
+    const child = tag;
+
+    //标准属性
+    const fillRule = child.getAttribute("fill-rule");
+    const x = parseFloatStr(child.getAttribute("x"), 0);
+    const y = parseFloatStr(child.getAttribute("y"), 0);
+    const r = parseFloatStr(child.getAttribute("r"));
+    var cx = parseFloatStr(child.getAttribute("cx"));
+    var cy = parseFloatStr(child.getAttribute("cy"));
+    const width = parseFloatStr(child.getAttribute("width"));
+    const height = parseFloatStr(child.getAttribute("height"));
+    const rx = parseFloatStr(child.getAttribute("rx")) || r;
+    const ry = parseFloatStr(child.getAttribute("ry")) || rx;
+    const fill = colorToHex(child.getAttribute("fill"));
+    const stroke = colorToHex(child.getAttribute("stroke"));
+
+    var fillSvg = "";
+    if (fill) {
+      var fillType = "nonZero";
+      if (fillRule && fillRule === "evenodd") {
+        fillType = "evenOdd";
+      }
+      fillSvg = `android:fillColor="${fill}" android:fillType="${fillType}"`;
+    }
+    var strokeSvg = "";
+    if (stroke) {
+      strokeSvg = `android:strokeColor="${stroke}" android:strokeWidth="1"`;
+    } else if (!fillSvg) {
+      //没有描边, 又没有填充的情况下, 默认黑色填充
+      fillSvg = `android:fillColor="#333333" android:fillType="evenOdd"`;
+    }
+
+    if (child.tagName === "line") {
+      const x1 = parseFloatStr(child.getAttribute("x1"), 0);
+      const x2 = parseFloatStr(child.getAttribute("x2"), 0);
+      const y1 = parseFloatStr(child.getAttribute("y1"), 0);
+      const y2 = parseFloatStr(child.getAttribute("y2"), 0);
+      var pathSvg = `android:pathData="M${x1},${y1}L${x2},${y2}"`;
+      paths.push(`
+                <path ${fillSvg} ${strokeSvg} ${pathSvg} />`);
+    } else if (child.tagName === "path") {
+      //获取path的d属性
+      console.log(child);
+      const d = child.getAttribute("d");
+
+      var fillType = "nonZero";
+      if (fillRule && fillRule === "evenodd") {
+        fillType = "evenOdd";
+      }
+
+      var pathSvg = `android:pathData="${d}"`;
+
+      paths.push(`
+                <path ${fillSvg} ${strokeSvg} ${pathSvg} /> `);
+    } else if (child.tagName === "rect" && !rx && !ry) {
+      //获取path的d属性
+      console.log(child);
+
+      var pathSvg = "";
+      if (rx && ry) {
+        const r = x + width;
+        const b = y + height;
+        pathSvg = `android:pathData="M${x + rx},${y}h${
+          width - rx * 2
+        }Q${r},${y} ${r},${y + ry}v${height - ry * 2}Q${r},${b} ${
+          r - rx
+        },${b}h-${width - rx * 2}Q${x},${b} ${x},${b - ry}v-${
+          height - ry * 2
+        }Q${x},${y} ${x + rx},${y}z"`;
+      } else {
+        pathSvg = `android:pathData="M${x},${y}h${width}v${height}h-${width}z"`;
+      }
+
+      paths.push(`
+                <path ${fillSvg} ${strokeSvg} ${pathSvg} />`);
+    } else if (
+      child.tagName === "ellipse" ||
+      child.tagName === "circle" ||
+      child.tagName === "rect"
+    ) {
+      const width = rx * 2;
+      const height = ry * 2;
+      const kappa = 0.5522848; // 4 * ((√(2) - 1) / 3)
+      const ox = (width / 2.0) * kappa; // control point offset horizontal
+      const oy = (height / 2.0) * kappa; // control point offset vertical
+      //const xe = cx + width / 2.0; // x-end
+      //const ye = cy + height / 2.0; // y-end
+
+      if (child.tagName === "rect") {
+        cx = x + width / 2.0;
+        cy = y + height / 2.0;
+      }
+
+      var pathSvg = "";
+      pathSvg = `android:pathData="M${cx - width / 2},${cy}C${cx - width / 2},${
+        cy - oy
+      } ${cx - ox},${cy - height / 2} ${cx},${cy - height / 2}C${cx + ox},${
+        cy - height / 2
+      } ${cx + width / 2},${cy - oy} ${cx + width / 2},${cy}C${
+        cx + width / 2
+      },${cy + oy} ${cx + ox},${cy + height / 2} ${cx},${cy + height / 2}C${
+        cx - ox
+      },${cy + height / 2} ${cx - width / 2},${cy + oy} ${cx - width / 2},${cy}"
+              `;
+
+      paths.push(`
+              <path ${fillSvg} ${strokeSvg} ${pathSvg} />`);
+    } else if (child.tagName === "g" || child.tagName === "svg") {
+      const children = child.children;
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        const array = tagToAndroidPath(child);
+        if (array) {
+          paths = paths.concat(array);
+        }
+      }
+    } else if (child.tagName === "defs") {
+    } else {
+      const msg = "不支持的SVG标签: " + child.tagName;
+      console.log(msg);
+      vscode.postMessage({ text: msg });
+    }
+    return paths;
   }
 })();
