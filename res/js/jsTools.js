@@ -49,6 +49,10 @@
     const text = content.value;
     result.innerHTML = nowTimeString() + "\n" + btoa(text); //加密
   });
+  clickButton("base642String", () => {
+    const text = content.value;
+    appendResult(atob(text)); //解密
+  });
   clickButton("svg2AndroidVector", () => {
     parseSvg(content.value);
   });
