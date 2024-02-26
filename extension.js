@@ -157,6 +157,17 @@ function activate(context) {
     console.log(`JS工具`);
     jsToolsPanel.createOrShow(context);
   });
+  //爬虫工具
+  const crawlerToolsPanel = new WebviewPanel(
+    "angcyo.crawlerTools",
+    "爬虫工具",
+    "res/js/crawlerTools.js",
+    "res/html/crawlerTools.html"
+  );
+  vscode.commands.registerCommand("angcyo.crawlerTools", () => {
+    console.log(`爬虫工具`);
+    crawlerToolsPanel.createOrShow(context);
+  });
   //httpServer
   const httpServerWebviewPanel = new HttpServerWebviewPanel();
   vscode.commands.registerCommand("angcyo.httpServer", () => {

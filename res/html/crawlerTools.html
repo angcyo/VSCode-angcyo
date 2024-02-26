@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
+    /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="{{reset}}" rel="stylesheet" />
+    <link href="{{vscode}}" rel="stylesheet" />
+    <link href="{{main}}" rel="stylesheet" />
+
+    <title>{{title}}</title>
+  </head>
+  <body>
+    <div class="title-wrap">
+      <img src="{{angcyo}}" width="25" title="angcyo" />
+      <h1>{{title}}</h1>
+    </div>
+
+    <div class="button-wrap">
+      <label for="host">url:</label>
+      <input id="host" type="text" />
+    </div>
+
+    <div class="button-wrap margin">
+      <button type="button" id="uuid">获取网页内容</button>
+    </div>
+
+    <div id="content" class="margin">
+      <textarea
+        id="result"
+        name="result"
+        placeholder="结果输出..."
+        rows="28"
+        disabled
+      ></textarea>
+    </div>
+
+    <script nonce="{{nonce}}" src="{{spark}}"></script>
+    <script nonce="{{nonce}}" src="{{pdf}}"></script>
+    <script nonce="{{nonce}}">
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "{{pdfWorker}}";
+    </script>
+    <script nonce="{{nonce}}" src="{{script}}"></script>
+  </body>
+</html>
