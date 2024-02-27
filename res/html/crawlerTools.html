@@ -22,12 +22,34 @@
     </div>
 
     <div class="button-wrap">
-      <label for="host">url:</label>
-      <input id="host" type="text" />
+      <label for="url">url:</label>
+      <input id="url" type="text" />
+      <label for="sleep">休眠(ms):</label>
+      <input id="sleep" type="text" />
+      <label for="level">区划等级:</label>
+      <input id="level" type="text" placeholder="省/市/区/乡镇/村庄" />
+    </div>
+
+    <div class="button-wrap">
+      <label for="head">请求头json格式:</label>
+      <textarea
+        id="headers"
+        name="headers"
+        placeholder="请求头json格式字符串"
+        rows="5"
+      ></textarea>
     </div>
 
     <div class="button-wrap margin">
-      <button type="button" id="uuid">获取网页内容</button>
+      <button type="button" id="get">获取网页内容</button>
+      <button type="button" id="getProvinceList">获取省份列表</button>
+      <button type="button" id="getCityList">单独获取城市列表</button>
+      <button type="button" id="getCountyList">单独获取城市区域列表</button>
+      <button type="button" id="getTownList">单独获取城镇列表</button>
+      <button type="button" id="getVillageList">单独获取村庄列表</button>
+      <button type="button" id="getLevelList">获取区划等级列表</button>
+      <button type="button" id="getFullList">获取所有区划信息</button>
+      <button type="button" id="getPCCList">获取省市区信息</button>
     </div>
 
     <div id="content" class="margin">
@@ -35,7 +57,7 @@
         id="result"
         name="result"
         placeholder="结果输出..."
-        rows="28"
+        rows="38"
         disabled
       ></textarea>
     </div>

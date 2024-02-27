@@ -286,9 +286,16 @@ class WebviewPanel {
       const body = message.body;
       const uuid = message.uuid;
       const token = message.token;
+      const headersStr = message.headers;
+      let headers = {};
+      if (headersStr) {
+        try {
+          headers = JSON.parse(headersStr);
+        } catch (error) {}
+      }
 
       if (method && method.toLowerCase() === "post") {
-        const data = await Api.httpPost(url, body, token);
+        const data = await Api.httpPost(url, body, token, headers);
         this.postMessage({
           type: "response",
           value: data,
@@ -296,7 +303,7 @@ class WebviewPanel {
           url: url,
         });
       } else if (method && method.toLowerCase() === "head") {
-        const data = await Api.httpHead(url);
+        const data = await Api.httpHead(url, headers);
         this.postMessage({
           type: "response",
           value: data,
@@ -304,13 +311,24 @@ class WebviewPanel {
           url: url,
         });
       } else {
-        const data = await Api.httpGet(url);
-        this.postMessage({
-          type: "response",
-          value: data,
-          uuid: uuid,
-          url: url,
-        });
+        //捕捉异常
+        try {
+          const data = await Api.httpGet(url, headers);
+          this.postMessage({
+            type: "response",
+            value: data,
+            uuid: uuid,
+            url: url,
+          });
+        } catch (error) {
+          console.log(error);
+          this.postMessage({
+            type: "response",
+            error: error,
+            uuid: uuid,
+            url: url,
+          });
+        }
       }
     }
   }

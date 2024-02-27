@@ -77,14 +77,26 @@ class Api {
   }
 
   //进行get请求
-  async httpGet(url) {
-    const req = await fetch(url);
+  async httpGet(url, headers) {
+    console.log(`httpGet:${url}`);
+    const req = await fetch(url, {
+      method: "GET",
+      headers: {
+        ...(headers || {}),
+      },
+    });
+    console.log(`httpGet:${req.status}`);
+    // //判断请求是否成功
+    // if (req.status === 200) {
+    //   return "";
+    // }
     const data = await req.text();
     return data;
   }
 
   //进行post请求
-  async httpPost(url, body, token) {
+  async httpPost(url, body, token, headers) {
+    console.log(`httpPost:${url}`);
     //判断body是否是json类型
     let isJsonBody = false;
 
@@ -106,6 +118,7 @@ class Api {
       headers: {
         "Content-Type": contentType,
         token: token,
+        ...(headers || {}),
       },
     });
     const data = await req.text();
@@ -113,9 +126,14 @@ class Api {
   }
 
   //进行head请求, 判断[url]是有有效
-  async httpHead(url) {
+  async httpHead(url, headers) {
     try {
-      const req = await fetch(url);
+      const req = await fetch(url, {
+        method: "HEAD",
+        headers: {
+          ...(headers || {}),
+        },
+      });
       return req.status === 200;
     } catch (error) {
       return false;
@@ -162,6 +180,20 @@ class Api {
       if (ip) break;
     }
     return ip;
+  }
+
+  // 从html文本中, 解析出数据
+  parseHtmlText(text) {
+    //通过css选择器, 选择元素
+    const cheerio = require("cheerio");
+    const $ = cheerio.load(text);
+    const list = [];
+    $("a").each((index, element) => {
+      const $element = $(element);
+      const href = $element.attr("href");
+      const title = $element.text();
+      list.push({ title, href });
+    });
   }
 }
 
