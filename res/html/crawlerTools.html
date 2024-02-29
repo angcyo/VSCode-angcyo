@@ -31,13 +31,24 @@
     </div>
 
     <div class="button-wrap">
-      <label for="head">请求头json格式:</label>
-      <textarea
-        id="headers"
-        name="headers"
-        placeholder="请求头json格式字符串"
-        rows="5"
-      ></textarea>
+      <div class="width30p">
+        <label for="headers">请求头json格式:</label>
+        <textarea
+          id="headers"
+          name="headers"
+          placeholder="请求头json格式字符串"
+          rows="5"
+        ></textarea>
+      </div>
+      <div class="width30p">
+        <label for="province">指定省份json格式:</label>
+        <textarea
+          id="province"
+          name="province"
+          placeholder="json格式字符串"
+          rows="5"
+        ></textarea>
+      </div>
     </div>
 
     <div class="button-wrap margin">
@@ -47,9 +58,12 @@
       <button type="button" id="getCountyList">单独获取城市区域列表</button>
       <button type="button" id="getTownList">单独获取城镇列表</button>
       <button type="button" id="getVillageList">单独获取村庄列表</button>
-      <button type="button" id="getLevelList">获取区划等级列表</button>
       <button type="button" id="getFullList">获取所有区划信息</button>
       <button type="button" id="getPCCList">获取省市区信息</button>
+      <button type="button" id="getLevelList">获取区划等级列表</button>
+      <button type="button" id="getProvinceLevelList">
+        获取区划等级列表(指定省份)
+      </button>
     </div>
 
     <div id="content" class="margin">

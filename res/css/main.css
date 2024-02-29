@@ -23,11 +23,12 @@ textarea {
   display: flex;
   flex-flow: wrap;
   align-items: center;
+  gap: 10px;
 }
 
-.button-wrap button {
+/* .button-wrap button {
   margin-right: 1rem;
-}
+} */
 
 .button-wrap input {
   width: auto;
@@ -37,9 +38,9 @@ textarea {
   margin-top: 0.5rem;
 }
 
-.button-wrap label {
+/* .button-wrap label {
   margin-right: 1rem;
-}
+} */
 
 .file-select-wrap {
   display: flex;
@@ -294,4 +295,16 @@ textarea {
 
 #httpPostPort {
   width: 20rem;
+}
+
+.width30p {
+  width: 30%;
+}
+
+.width40p {
+  width: 40%;
+}
+
+.width50p {
+  width: 50%;
 }

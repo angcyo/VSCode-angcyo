@@ -11,18 +11,25 @@
   const headersElement = document.getElementById("headers");
   const sleepElement = document.getElementById("sleep");
   const levelElement = document.getElementById("level");
+  const provinceElement = document.getElementById("province");
 
   initTextInput(
     "url",
     "https://www.stats.gov.cn/sj/tjbz/tjyqhdmhcxhfdm/2023/index.html"
   );
   initTextInput("headers");
-  initTextInput("sleep", "100");
+  initTextInput("sleep", "10");
   initTextInput("level", "3");
+  initTextInput("province");
 
   //监听header输入改变, 自动json格式化
   headersElement.addEventListener("input", () => {
     headersElement.value = tryJsonParse(headersElement.value);
+  });
+
+  //监听文本输入改变, 自动json格式化
+  provinceElement.addEventListener("input", () => {
+    provinceElement.value = tryJsonParse(provinceElement.value);
   });
 
   //接收来自vscode的数据
@@ -44,7 +51,7 @@
         if (text) {
           if (uuid === "getProvinceList") {
             resultElement.innerHTML = tryJsonFormat(
-              removeArrayObjKey(parseProvinceList(url, text), "href")
+              parseProvinceList(url, text)
             );
           } else if (uuid === "getCityList") {
             resultElement.innerHTML = tryJsonFormat(parseCityList(url, text));
@@ -94,6 +101,9 @@
   clickButton("getLevelList", () => {
     getFullList(getLevel());
   });
+  clickButton("getProvinceLevelList", () => {
+    getProvinceLevelList();
+  });
 
   function getSleepTime() {
     return parseInt(sleepElement.value) || 100;
@@ -101,6 +111,45 @@
 
   function getLevel() {
     return parseInt(levelElement.value) || 3;
+  }
+
+  // 获取请求头对象数据
+  function getHeaderData() {
+    try {
+      return JSON.parse(headersElement.value);
+    } catch (e) {
+      return undefined;
+    }
+  }
+  // 获取指定的省份对象数据
+  function getProvinceData() {
+    try {
+      return JSON.parse(provinceElement.value);
+    } catch (e) {
+      return undefined;
+    }
+  }
+
+  async function getProvinceLevelList() {
+    const province = getProvinceData();
+    if (province) {
+      if (province.href) {
+        const level = getLevel();
+        const msg = `正在请求[${province.name}]\n解析会很耗时, 请稍后...`;
+        notify(msg);
+        resultElement.innerHTML = "";
+        appendResult(msg);
+        const uuid = "getFullList";
+        await getProvinceList(province, level, uuid);
+        removeArrayObjKey([province], "href");
+        resultElement.innerHTML = tryJsonFormat(province);
+        notify(`[${province.name}]请求完成`);
+      } else {
+        notify("省份信息的href属性未指定");
+      }
+    } else {
+      notify("未指定省份信息");
+    }
   }
 
   // ------网页内容解析提取---
@@ -118,45 +167,57 @@
     const provinceList = parseProvinceList(url, htmlText);
     for (let i = 0; i < provinceList.length; i++) {
       const province = provinceList[i]; //省份
-      if (level > 1 && province.href) {
-        appendResult(`正在请求:${province.href}`);
-        httpGet(province.href, uuid);
-        htmlText = await asyncAction();
-        const cityList = parseCityList(province.href, htmlText); //城市
-        province.children = cityList;
+      getProvinceList(province, level, uuid);
+    }
+    resultElement.innerHTML = tryJsonFormat(
+      removeArrayObjKey(provinceList, "href")
+    );
+    notify("请求完成");
+  }
 
-        await sleep(getSleepTime());
-        for (let j = 0; j < cityList.length; j++) {
-          const city = cityList[j];
-          if (level > 2 && city.href) {
-            appendResult(`正在请求:${city.href}`);
-            httpGet(city.href, uuid);
-            htmlText = await asyncAction();
-            const countyList = parseCountyList(city.href, htmlText); //区县
-            city.children = countyList;
+  //获取指定省份下所有区划信息
+  // [province] 省份信息
+  // [level] 区划级别
+  async function getProvinceList(province, level, uuid) {
+    let htmlText;
+    if (level > 1 && province.href) {
+      appendResult(`正在请求:${province.href}`);
+      httpGet(province.href, uuid);
+      htmlText = await asyncAction();
+      const cityList = parseCityList(province.href, htmlText); //城市
+      province.children = cityList;
 
-            await sleep(getSleepTime());
-            for (let k = 0; k < countyList.length; k++) {
-              const county = countyList[k];
-              if (level > 3 && county.href) {
-                appendResult(`正在请求:${county.href}`);
-                httpGet(county.href, uuid);
-                htmlText = await asyncAction();
-                const townList = parseTownList(county.href, htmlText); //乡镇
-                county.children = townList;
+      await sleep(getSleepTime());
+      for (let j = 0; j < cityList.length; j++) {
+        const city = cityList[j];
+        if (level > 2 && city.href) {
+          appendResult(`正在请求:${city.href}`);
+          httpGet(city.href, uuid);
+          htmlText = await asyncAction();
+          const countyList = parseCountyList(city.href, htmlText); //区县
+          city.children = countyList;
 
-                await sleep(getSleepTime());
-                for (let l = 0; l < townList.length; l++) {
-                  const town = townList[l];
-                  if (level > 4 && town.href) {
-                    appendResult(`正在请求:${town.href}`);
-                    httpGet(town.href, uuid);
-                    htmlText = await asyncAction();
-                    const villageList = parseVillageList(town.href, htmlText); //村庄
-                    town.children = villageList;
+          await sleep(getSleepTime());
+          for (let k = 0; k < countyList.length; k++) {
+            const county = countyList[k];
+            if (level > 3 && county.href) {
+              appendResult(`正在请求:${county.href}`);
+              httpGet(county.href, uuid);
+              htmlText = await asyncAction();
+              const townList = parseTownList(county.href, htmlText); //乡镇
+              county.children = townList;
 
-                    await sleep(getSleepTime());
-                  }
+              await sleep(getSleepTime());
+              for (let l = 0; l < townList.length; l++) {
+                const town = townList[l];
+                if (level > 4 && town.href) {
+                  appendResult(`正在请求:${town.href}`);
+                  httpGet(town.href, uuid);
+                  htmlText = await asyncAction();
+                  const villageList = parseVillageList(town.href, htmlText); //村庄
+                  town.children = villageList;
+
+                  await sleep(getSleepTime());
                 }
               }
             }
@@ -164,9 +225,6 @@
         }
       }
     }
-    resultElement.innerHTML = tryJsonFormat(
-      removeArrayObjKey(provinceList, "href")
-    );
   }
 
   //休眠
@@ -196,10 +254,12 @@
           if (href) {
             href = baseUrl + "/" + href;
           }
-          result.push({
-            text: aElement.innerText,
+          const province = {
+            name: aElement.innerText,
             href: href,
-          });
+          };
+          padProvinceProperty(province);
+          result.push(province);
         });
       }
     });
@@ -418,5 +478,83 @@
       }
     }
     return fmt;
+  }
+
+  //补齐省份code
+  function padProvinceProperty(province) {
+    const code = province.code;
+    if (code) {
+      return;
+    }
+    const text = province.name;
+    if (text === "北京市") {
+      province["code"] = "11";
+    } else if (text === "天津市") {
+      province["code"] = "12";
+    } else if (text === "河北省") {
+      province["code"] = "13";
+    } else if (text === "山西省") {
+      province["code"] = "14";
+    } else if (text === "内蒙古自治区") {
+      province["code"] = "15";
+    } else if (text === "辽宁省") {
+      province["code"] = "21";
+    } else if (text === "吉林省") {
+      province["code"] = "22";
+    } else if (text === "黑龙江省") {
+      province["code"] = "23";
+    } else if (text === "上海市") {
+      province["code"] = "31";
+    } else if (text === "江苏省") {
+      province["code"] = "32";
+    } else if (text === "浙江省") {
+      province["code"] = "33";
+    } else if (text === "安徽省") {
+      province["code"] = "34";
+    } else if (text === "福建省") {
+      province["code"] = "35";
+    } else if (text === "江西省") {
+      province["code"] = "36";
+    } else if (text === "山东省") {
+      province["code"] = "37";
+    } else if (text === "河南省") {
+      province["code"] = "41";
+    } else if (text === "湖北省") {
+      province["code"] = "42";
+    } else if (text === "湖南省") {
+      province["code"] = "43";
+    } else if (text === "广东省") {
+      province["code"] = "44";
+    } else if (text === "广西壮族自治区") {
+      province["code"] = "45";
+    } else if (text === "海南省") {
+      province["code"] = "46";
+    } else if (text === "重庆市") {
+      province["code"] = "50";
+    } else if (text === "四川省") {
+      province["code"] = "51";
+    } else if (text === "贵州省") {
+      province["code"] = "52";
+    } else if (text === "云南省") {
+      province["code"] = "53";
+    } else if (text === "西藏自治区") {
+      province["code"] = "54";
+    } else if (text === "陕西省") {
+      province["code"] = "61";
+    } else if (text === "甘肃省") {
+      province["code"] = "62";
+    } else if (text === "青海省") {
+      province["code"] = "63";
+    } else if (text === "宁夏回族自治区") {
+      province["code"] = "64";
+    } else if (text === "新疆维吾尔自治区") {
+      province["code"] = "65";
+    } else if (text === "台湾省") {
+      province["code"] = "71";
+    } else if (text === "香港特别行政区") {
+      province["code"] = "81";
+    } else if (text === "澳门特别行政区") {
+      province["code"] = "82";
+    }
   }
 })();
