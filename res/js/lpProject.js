@@ -11,6 +11,8 @@
   const formatOptionsButton = document.getElementById("formatOptions");
   const formatJsonStringButton = document.getElementById("formatJsonString");
   const formatDataButton = document.getElementById("formatData");
+  const formatStringButton = document.getElementById("formatString");
+  const formatCavnasButton = document.getElementById("formatCavnas");
   const removeImageButton = document.getElementById("removeImage");
   const extractImageButton = document.getElementById("extractImage");
   const base64ImageButton = document.getElementById("base64Image");
@@ -39,10 +41,22 @@
     clearAllImage();
     localStorage.setItem("result", resultText.value);
   });
+  formatStringButton.addEventListener("click", (event) => {
+    const string = JSON.parse(dataText.value);
+    const obj = JSON.parse(string);
+    resultText.value = JSON.stringify(obj, null, 4);
+    localStorage.setItem("result", resultText.value);
+  });
   formatDataButton.addEventListener("click", (event) => {
     const dataString = JSON.parse(dataText.value).data;
     const data = JSON.parse(dataString);
     resultText.value = JSON.stringify(data, null, 4);
+    localStorage.setItem("result", resultText.value);
+  });
+  formatCavnasButton.addEventListener("click", (event) => {
+    const canvasString = JSON.parse(dataText.value).canvas;
+    const canvas = JSON.parse(canvasString);
+    resultText.value = JSON.stringify(canvas, null, 4);
     localStorage.setItem("result", resultText.value);
   });
   formatOptionsButton.addEventListener("click", (event) => {
