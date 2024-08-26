@@ -1,5 +1,9 @@
 # Change Log
 
+## 2024-8-26
+
++ canvas parse
+
 ## 2024-2-27
 
 + html parse

@@ -4,7 +4,7 @@
 
 https://code.visualstudio.com/api
 
-## 发布扩展
+## 发布扩展文档
 
 https://code.visualstudio.com/api/working-with-extensions/publishing-extension
 
