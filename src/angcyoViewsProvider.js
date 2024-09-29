@@ -2,8 +2,8 @@ const vscode = require("vscode");
 const path = require("path");
 const { TreeDataProvider } = require("./treeDataProvider");
 class AngcyoViewsProvider extends TreeDataProvider {
-  constructor() {
-    super("https://gitcode.net/angcyo/json/-/raw/master/angcyoUrl.json");
+  constructor(url) {
+    super(url);
   }
 
   async getTopChildren() {

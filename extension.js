@@ -31,24 +31,35 @@ function activate(context) {
   //显示欢迎页
   vscode.commands.executeCommand("setContext", "angcyo.showWelcome", true);
 
+  //读取本地配置
+  const config = vscode.workspace.getConfiguration("angcyo-config");
+  console.log("配置↓");
+  console.log(config);
+  //const defHost = "https://gitcode.net/angcyo/json/-/raw/master";
+  const defHost = "https://gitlab.com/angcyo/json/-/raw/master";
+  let host = config.get("host", defHost);
+  //如果host为空或空字符串, 则使用默认值
+  if (!host || host.length === 0) {
+    host = defHost;
+  }
+  console.log("host->" + host);
+
   //
   const welcomViewsProvider = new TreeDataProvider();
   vscode.window.registerTreeDataProvider("welcomeViews", welcomViewsProvider);
 
   //
-  const angcyoViewsProvider = new AngcyoViewsProvider();
+  const angcyoViewsProvider = new AngcyoViewsProvider(`${host}/angcyoUrl.json`);
   vscode.window.registerTreeDataProvider("angcyoViews", angcyoViewsProvider);
 
   //
-  const httpViewsProvider = new TreeDataProvider(
-    "https://gitcode.net/angcyo/json/-/raw/master/recommendUrl.json"
-  );
+  const httpViewsProvider = new TreeDataProvider(`${host}/recommendUrl.json`);
   vscode.window.registerTreeDataProvider("httpViews", httpViewsProvider);
 
   //
   const parseSvgIconPath = path.join(__filename, "..", "res", "parse.svg");
   const laserPeckerViewsProvider = new TreeDataProvider(
-    `https://gitcode.net/angcyo/json/-/raw/master/laserPeckerUrl.json`,
+    `${host}/laserPeckerUrl.json`,
     [
       {
         label: "lp工程文件数据解析",
