@@ -2,7 +2,7 @@
   "name": "angcyo",
   "displayName": "angcyo",
   "description": "还能这么玩, `骚年`我在群里等你! 一个能把Idea写崩溃的蓝神.",
-  "version": "1.9.2",
+  "version": "1.9.3",
   "license": "MIT",
   "publisher": "angcyo",
   "repository": {
@@ -87,6 +87,11 @@
       "type": "object",
       "title": "angcyo configuration",
       "properties": {
+        "angcyo-config.host": {
+          "type": "string",
+          "description": "服务器地址",
+          "default": ""
+        },
         "angcyo-memo.memo": {
           "type": "string",
           "description": "备忘录",
