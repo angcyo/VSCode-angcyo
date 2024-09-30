@@ -102,6 +102,10 @@ textarea {
   margin-bottom: 1rem;
 }
 
+.ml {
+  margin-left: 1rem;
+}
+
 .timestamp {
   display: flex;
   align-items: center;

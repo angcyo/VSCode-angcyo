@@ -57,6 +57,14 @@ class AngcyoViewsProvider extends TreeDataProvider {
         tooltip: "Http服务",
       },
       {
+        label: "图床链接",
+        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        command: {
+          command: "angcyo.bedLink",
+        },
+        tooltip: "图床链接",
+      },
+      {
         label: "记一下",
         iconPath: path.join(__filename, "..", "..", "res", "memo.svg"),
         command: {

@@ -185,6 +185,17 @@ function activate(context) {
     console.log(`httpServer`);
     httpServerWebviewPanel.createOrShow(context);
   });
+  //bedLink
+  const bedLinkPanel = new WebviewPanel(
+    "angcyo.bedLink",
+    "图床链接",
+    "res/js/bedLink.js",
+    "res/html/bedLink.html"
+  );
+  vscode.commands.registerCommand("angcyo.bedLink", () => {
+    console.log(`bedLink`);
+    bedLinkPanel.createOrShow(context);
+  });
 
   //LaserPecker数据解析
   const laserPeckerPanel = new WebviewPanel(
