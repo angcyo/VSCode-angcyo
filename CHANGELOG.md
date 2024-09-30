@@ -1,5 +1,9 @@
 # Change Log
 
+## 2024-9-30
+
++ bed link
+
 ## 2024-9-29
 
 + host config
