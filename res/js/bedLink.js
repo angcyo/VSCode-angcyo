@@ -12,6 +12,7 @@
   const branchName = document.getElementById("branchName");
   const filePath = document.getElementById("filePath");
   const linkResultWrap = document.getElementById("linkResultWrap");
+  const smartUrl = document.getElementById("smartUrl");
 
   initTextInput("userName", "angcyo", (value) => {
     resetBedResultLink();
@@ -31,6 +32,70 @@
   );
   resetBedResultLink();
 
+  // 智能分析
+  initTextInput("smartUrl");
+  clickButton("smartButton", () => {
+    var url = smartUrl.value; //decodeURIComponent
+    url = url.split("?")[0];
+    if (url && url.length > 0) {
+      //使用uri解析, 获取host
+      try {
+        const uri = new URL(url);
+        const host = uri.host.toLowerCase();
+        const path = uri.pathname;
+        const pathArray = path.split("/");
+
+        //定义变量
+        var userNameValue = "";
+        var warehouseNameValue = "";
+        var branchNameValue = "";
+        var filePathValue = "";
+
+        if (host == "gitlab.com" || host == "gitcode.net") {
+          userNameValue = pathArray[1];
+          warehouseNameValue = pathArray[2];
+          branchNameValue = pathArray[5];
+          filePathValue = decodeURIComponent(pathArray.slice(6).join("/"));
+
+          appendBedResultLink(
+            userNameValue,
+            warehouseNameValue,
+            branchNameValue,
+            filePathValue
+          );
+        } else if (
+          host == "github.com" ||
+          host == "gitee.com" ||
+          host == "gitcode.com"
+        ) {
+          userNameValue = pathArray[1];
+          warehouseNameValue = pathArray[2];
+          branchNameValue = pathArray[4];
+          filePathValue = decodeURIComponent(pathArray.slice(5).join("/"));
+
+          appendBedResultLink(
+            userNameValue,
+            warehouseNameValue,
+            branchNameValue,
+            filePathValue
+          );
+        } else {
+          vscode.postMessage({
+            text: "不支持的host:" + host,
+          });
+        }
+
+        // console.log(url);
+        // console.log(uri);
+        // console.log(pathArray);
+      } catch (error) {
+        vscode.postMessage({
+          text: error.message,
+        });
+      }
+    }
+  });
+
   // 重置图床结果的链接
   function resetBedResultLink() {
     clearResultLink();
@@ -40,6 +105,21 @@
     const branchNameValue = branchName.value;
     const filePathValue = filePath.value;
 
+    appendBedResultLink(
+      userNameValue,
+      warehouseNameValue,
+      branchNameValue,
+      filePathValue
+    );
+  }
+
+  // 追加图床链接
+  function appendBedResultLink(
+    userNameValue,
+    warehouseNameValue,
+    branchNameValue,
+    filePathValue
+  ) {
     //2024-9-30 可以上传大文件, 但是无法下载10MB以上大文件.
     appendResultLink(
       `https://gitee.com/${userNameValue}/${warehouseNameValue}/raw/${branchNameValue}/${filePathValue}`
