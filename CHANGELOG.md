@@ -1,5 +1,9 @@
 # Change Log
 
+## 2024-12-20
+
++ time calculate
+
 ## 2024-10-23
 
 + bed link smart analysis
