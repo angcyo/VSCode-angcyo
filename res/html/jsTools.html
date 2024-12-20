@@ -43,6 +43,21 @@
         class="input"
         placeholder="次数"
       />
+
+      <label for="dateText" class="label">日期文本:</label>
+      <input
+        id="dateText"
+        type="text"
+        class="input"
+        placeholder="12-01_12-02"
+      />
+      <label for="timeText" class="label">时间文本:</label>
+      <input
+        id="timeText"
+        type="text"
+        class="input"
+        placeholder="12-01_12-02"
+      />
     </div>
 
     <div class="button-wrap margin">
@@ -75,6 +90,9 @@
       <button type="button" id="toDec">转10进制</button>
       <button type="button" id="toOct">转8进制</button>
       <button type="button" id="toBin">转2进制</button>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <button type="button" id="diffDate">计算日期差</button>
+      <button type="button" id="diffTime">计算时间差</button>
     </div>
 
     <div id="content" class="margin">

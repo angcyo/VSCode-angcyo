@@ -16,6 +16,8 @@
   const imageWrap = document.getElementById("imageWrap");
   const width = document.getElementById("width");
   const height = document.getElementById("height");
+  const dateText = document.getElementById("dateText");
+  const timeText = document.getElementById("timeText");
 
   //选中的文件全路径
   var selectPath = "";
@@ -28,6 +30,8 @@
   initTextInput("sendLoopCount");
   initTextInput("width");
   initTextInput("height");
+  initTextInput("dateText");
+  initTextInput("timeText");
 
   clickButton("uuid", async () => {
     const uuid = crypto.randomUUID();
@@ -270,6 +274,74 @@
       vscode.postMessage({
         text: "至少需要4个数字!",
       });
+    }
+  });
+  clickButton("diffDate", () => {
+    const dateTextStr = dateText.value;
+    //如果文本中包含_则使用_分割
+    var dateTextArray = undefined;
+    if (dateTextStr.includes("_")) {
+      dateTextArray = dateTextStr.split("_");
+    } else if (dateTextStr.includes(" ")) {
+      dateTextArray = dateTextStr.split(" ");
+    }
+
+    if (dateTextArray == undefined || dateTextArray.length < 2) {
+      vscode.postMessage({
+        text: "日期格式错误!, 请使用`_`或`空格`分割日期",
+      });
+      return;
+    } else {
+      const date1 = new Date(dateTextArray[0]);
+      const date2 = new Date(dateTextArray[1]);
+      const diff = date2.getTime() - date1.getTime();
+      appendResult("时间差:" + diff + "ms");
+      //计算天数
+      const day = diff / (1000 * 60 * 60 * 24);
+      appendResult("天数:" + day + "天");
+    }
+  });
+  clickButton("diffTime", () => {
+    const timeTextStr = timeText.value;
+    //如果文本中包含_则使用_分割
+    var timeTextArray = undefined;
+    if (timeTextStr.includes("_")) {
+      timeTextArray = timeTextStr.split("_");
+    } else if (timeTextStr.includes(" ")) {
+      timeTextArray = timeTextStr.split(" ");
+    }
+
+    if (timeTextArray == undefined || timeTextArray.length < 2) {
+      vscode.postMessage({
+        text: "时间格式错误!, 请使用`_`或`空格`分割时间",
+      });
+      return;
+    } else if (timeTextStr.includes("-")) {
+      //包含年月日
+      const date1 = new Date(timeTextArray[0]);
+      const date2 = new Date(timeTextArray[1]);
+      const diff = date2.getTime() - date1.getTime();
+      appendResult("时间差:" + diff + "ms");
+      //计算天数
+      const day = diff / (1000 * 60 * 60 * 24);
+      appendResult("天数:" + day + "天");
+    } else {
+      //不包含年月日
+      const now = new Date();
+
+      // 提取当前的年、月、日
+      const year = now.getFullYear();
+      const month = now.getMonth(); // 注意：月份是从0开始的
+      const day = now.getDate();
+
+      const time1 = new Date(`${year}-${month + 1}-${day} ${timeTextArray[0]}`);
+      const time2 = new Date(`${year}-${month + 1}-${day} ${timeTextArray[1]}`);
+
+      const diff = time2.getTime() - time1.getTime();
+      appendResult("时间差:" + diff + "ms");
+      //计算秒
+      const second = diff / 1000;
+      appendResult("秒数:" + second + "s");
     }
   });
 
