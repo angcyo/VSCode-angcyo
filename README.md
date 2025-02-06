@@ -1,3 +1,9 @@
+[![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/angcyo.angcyo?style=for-the-badge&label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=angcyo.angcyo)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/angcyo.angcyo?style=for-the-badge&logo=microsoft)](https://marketplace.visualstudio.com/items?itemName=angcyo.angcyo)
+[![License](https://img.shields.io/github/license/angcyo/VSCode-angcyo?style=for-the-badge)](https://github.com/angcyo/VSCode-angcyo/blob/master/LICENSE)
+[![OpenVSX Registry](https://img.shields.io/open-vsx/dt/angcyo/angcyo?color=purple&label=OpenVSX%20Downloads&style=for-the-badge)](https://open-vsx.org/extension/angcyo/angcyo)
+
+
 # angcyo
 
 还能这么玩!
