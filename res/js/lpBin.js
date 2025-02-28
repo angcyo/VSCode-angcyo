@@ -77,27 +77,34 @@
   });
 
   //选择文件监听
-  selectFile.addEventListener(`change`, () => {
+  selectFile.addEventListener(`change`, (event) => {
     console.log("选择文件...↓");
     console.log(selectFile.files);
 
     if (selectFile.files?.length > 0) {
-      selectPath = selectFile.files[0].path;
+      const file = selectFile.files[0];
+      //获取文件路径
+      selectPath = file.path;
       localStorage.setItem("selectPath", selectPath);
       console.log(selectPath);
 
-      const path = selectPath.substring(0, selectPath.lastIndexOf("."));
-      targetPath = `${path}.lpbin`;
+      const name = file.path || file.name;
+      const newName = name.substring(0, name.lastIndexOf("."));
+      targetPath = `${newName}.lpbin`;
       console.log(targetPath);
 
-      readFileMd5(selectFile.files[0], (md5) => {
+      readFileMd5(file, (md5) => {
         console.log(md5);
 
-        fileLabel.innerHTML = `文件路径: ${selectPath}<br>生成路径: ${targetPath} (会覆盖同名文件)`;
+        if (selectPath) {
+          fileLabel.innerHTML = `文件路径: ${selectPath}<br>生成路径: ${targetPath} (会覆盖同名文件)`;
+        } else {
+          fileLabel.innerHTML = `文件名: ${name}<br>生成名: ${targetPath}`;
+        }
 
         try {
           const json = JSON.parse(dataElement.value);
-          if (selectPath.toLowerCase().endsWith(".bin")) {
+          if (name.toLowerCase().endsWith(".bin")) {
             json.t = new Date().getTime();
             json.md5 = md5;
           } else {
@@ -117,8 +124,10 @@
   //生成lpbin文件
   create.addEventListener("click", (event) => {
     if (selectFile.files?.length > 0) {
-      const path = selectFile.files[0].path;
-      if (path.toLowerCase().endsWith(".lpbin")) {
+      const file = selectFile.files[0];
+      const name = file.path || file.name;
+      //debugger;
+      if (name.toLowerCase().endsWith(".lpbin")) {
         vscode.postMessage({
           text: "已经是lpbin格式文件!",
         });
@@ -128,7 +137,7 @@
       let data = undefined;
       try {
         data = JSON.parse(dataElement.value);
-      } catch {}
+      } catch { }
 
       if (data) {
         //格式化json
@@ -148,12 +157,21 @@
 
           result.value = resultU8Array.join(",");
 
-          vscode.postMessage({
-            command: "save",
-            path: targetPath,
-            data: result.value,
-            reveal: true, //打开保存的文件所在目录
-          });
+          if (selectPath) {
+            vscode.postMessage({
+              command: "save",
+              path: targetPath,
+              data: result.value,
+              reveal: true, //打开保存的文件所在目录
+            });
+          } else {
+            vscode.postMessage({
+              command: "saveAs",
+              name: targetPath,
+              data: result.value,
+              reveal: true, //打开保存的文件所在目录
+            });
+          }
         });
         //持久化
         delete data.t;

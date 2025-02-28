@@ -90,7 +90,7 @@ class WebviewPanel {
   /**
    * 创建之后的初始化操作
    */
-  onInitWebviewPanel() {}
+  onInitWebviewPanel() { }
 
   /**
    * 获取webview的内容
@@ -257,10 +257,21 @@ class WebviewPanel {
       //let uri = this._context.extensionUri;
       //let doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
       //await vscode.window.showTextDocument(doc, { preview: false });
+
+
+      let path = message.path;
+      if (!path) {
+        if (message.name) {
+          const uri = lastSaveUri || this._context.extensionUri;
+          path = uri?.path + "/" + message.name;
+        }
+      }
+      const pathUri = path ? vscode.Uri.file(path) : null;
+
       const uri = await vscode.window.showSaveDialog({
-        defaultUri: lastSaveUri || this._context.extensionUri,
+        defaultUri: pathUri || lastSaveUri || this._context.extensionUri,
         //saveLabel: "...saveLabel...", //保存按钮的文本
-        //title: "...title...", //对话框的标题
+        title: message.title, //对话框的标题
       });
       if (uri) {
         //console.log(uri.path);
@@ -269,6 +280,13 @@ class WebviewPanel {
         vscode.workspace.fs.writeFile(uri, encode.encode(data));
         vscode.window.showInformationMessage(`已保存至:${uri.fsPath}`);
         lastSaveUri = uri;
+
+        if (message.reveal) {
+          //打开文件所在目录
+          vscode.commands.executeCommand("revealFileInOS", uri);
+          //__filename
+          //command:revealFileInOS
+        }
       }
     } else if (message.command === "copy") {
       //复制内容
@@ -291,7 +309,7 @@ class WebviewPanel {
       if (headersStr) {
         try {
           headers = JSON.parse(headersStr);
-        } catch (error) {}
+        } catch (error) { }
       }
 
       if (method && method.toLowerCase() === "post") {
