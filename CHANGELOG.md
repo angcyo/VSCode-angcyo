@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-02-28
+
++ lpbin support vscode 1.90.+
+
 ## 2024-12-20
 
 + time calculate
