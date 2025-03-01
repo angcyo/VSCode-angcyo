@@ -9,6 +9,9 @@ const {TextEncoder} = require("util");
 const vscode = require("vscode");
 const {Api} = require("./api");
 const figlet = require("figlet");
+const QRCode = require('qrcode')
+const QrCode = require('qrcode-reader');
+const {Jimp} = require("jimp");
 
 /**
  * 最后一次保存的uri
@@ -214,6 +217,7 @@ class WebviewPanel {
     console.log(message);
 
     const command = message.command;
+    const type = message.type;
     if (command === undefined || command === "message") {
       vscode.window.showInformationMessage(`${message.text}`);
     } else if (command === "reveal") {
@@ -358,7 +362,7 @@ class WebviewPanel {
         }
       }
     } else if (command === "figfont") {
-      if (message.type === "fonts") {
+      if (type === "fonts") {
         await figlet.fonts((err, fonts) => {
           if (err) {
             vscode.window.showInformationMessage(`${err}`);
@@ -366,8 +370,8 @@ class WebviewPanel {
           }
           this.postMessage({
             command: command,
+            type: type,
             data: fonts,
-            type: message.type,
           });
         });
       } else {
@@ -403,6 +407,46 @@ class WebviewPanel {
         );
       }
       //console.log(`figfont...↑`);
+    } else if (command === "qrcode") {
+      //二维码
+      if (type === "decoder") {
+        //解码base64的二维码图片
+        const qr = new QrCode();
+        qr.callback = (err, value) => {
+          if (err) {
+            vscode.window.showInformationMessage(`${err}`);
+            return;
+          }
+          this.postMessage({
+            command: command,
+            type: type,
+            data: value.result,
+          });
+        };
+        // 去掉 Base64 前缀
+        const base64Data = message.data.split(',')[1];
+        // 将 Base64 编码的字符串转换为 Buffer
+        const buffer = Buffer.from(base64Data, 'base64');
+
+        // 使用 Jimp 处理图像
+        Jimp.read(buffer)
+          .then(image => {
+            // 解析二维码
+            qr.decode(image.bitmap);
+          })
+          .catch(err => {
+            vscode.window.showInformationMessage(`${err}`);
+          });
+      } else {
+        QRCode.toDataURL(message.data, {errorCorrectionLevel: 'H'}, (err, url) => {
+          //data:image/png;base64,xxx
+          this.postMessage({
+            command: command,
+            type: type,
+            data: url,
+          });
+        });
+      }
     } else {
       console.log(`未知的命令↑`);
     }

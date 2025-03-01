@@ -413,6 +413,35 @@
     });
   });
 
+  /**生成二维码*/
+  clickButton("qrcodeCreate", () => {
+    listenerOnce("qrcode", "create", (data) => {
+      appendResult(data);
+      appendImage(data);
+    });
+
+    const text = content.value;
+    vscode.postMessage({
+      command: "qrcode",
+      type: "create",
+      data: text,
+    });
+  });
+
+  /**base64图片二维码解析*/
+  clickButton("qrcodeDecoder", () => {
+    listenerOnce("qrcode", "decoder", (data) => {
+      appendResult(data);
+    });
+
+    const text = content.value;
+    vscode.postMessage({
+      command: "qrcode",
+      type: "decoder",
+      data: text,
+    });
+  });
+
   //---
 
   window.addEventListener("message", (event) => {
@@ -426,6 +455,20 @@
       text: event.message,
     });
   });
+
+  /**监听一次*/
+  function listenerOnce(command, type, callback) {
+    const listener = function (event) {
+      if (event.data?.command === command) {
+        if (type === undefined || type && event.data.type === type) {
+          const data = event.data.data;
+          callback(data);
+        }
+      }
+      window.removeEventListener("message", listener);
+    };
+    window.addEventListener("message", listener);
+  }
 
   //选择文件监听
   selectFile.addEventListener(`change`, () => {
@@ -678,8 +721,11 @@
       const img = new Image();
       //给img容器引入base64的图片
       img.src = base64;
-      //img.alt = JSON.stringify(des, null, 4);
-      img.title = JSON.stringify(des, null, 4);
+
+      if (des) {
+        //img.alt = JSON.stringify(des, null, 4);
+        img.title = JSON.stringify(des, null, 4);
+      }
 
       //将img容器添加到html的节点中。
       imageWrap.appendChild(img);
