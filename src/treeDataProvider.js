@@ -12,15 +12,15 @@ class TreeDataProvider {
   /**
    * 构造函数
    * @param {*} url 请求的服务器地址
-   * @param {*} headrItems 顶级的头部item
-   * @param {*} footreItems 顶级的尾部item
+   * @param {*} headerItems 顶级的头部item
+   * @param {*} footerItems 顶级的尾部item
    */
-  constructor(url, headrItems, footreItems) {
+  constructor(url, headerItems, footerItems) {
     this._onDidChangeTreeData = new vscode.EventEmitter();
     this.onDidChangeTreeData = this._onDidChangeTreeData.event;
     this.url = url;
-    this.headrItems = headrItems;
-    this.footreItems = footreItems;
+    this.headrItems = headerItems;
+    this.footreItems = footerItems;
   }
 
   refresh() {
@@ -28,7 +28,7 @@ class TreeDataProvider {
   }
 
   async getChildren(element) {
-    if (element == undefined) {
+    if (element === undefined) {
       return Promise.resolve(this.getTopChildren());
     } else if (element.childList) {
       return Promise.resolve(Api.buildTreeItem(element.childList));

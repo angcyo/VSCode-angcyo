@@ -45,8 +45,8 @@ function activate(context) {
   console.log("host->" + host);
 
   //
-  const welcomViewsProvider = new TreeDataProvider();
-  vscode.window.registerTreeDataProvider("welcomeViews", welcomViewsProvider);
+  const welcomeViewsProvider = new TreeDataProvider();
+  vscode.window.registerTreeDataProvider("welcomeViews", welcomeViewsProvider);
 
   //
   const angcyoViewsProvider = new AngcyoViewsProvider(`${host}/angcyoUrl.json`);
@@ -116,7 +116,7 @@ function activate(context) {
 
   //注册一个刷新数据的指令
   vscode.commands.registerCommand("angcyo.refresh", () => {
-    welcomViewsProvider.refresh();
+    welcomeViewsProvider.refresh();
     angcyoViewsProvider.refresh();
     httpViewsProvider.refresh();
     laserPeckerViewsProvider.refresh();

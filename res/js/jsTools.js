@@ -20,9 +20,9 @@
   const timeText = document.getElementById("timeText");
 
   //选中的文件全路径
-  var selectPath = "";
+  let selectPath = "";
   //生成的文件路径
-  var targetPath = localStorage.getItem("targetPath") || "";
+  let targetPath = localStorage.getItem("targetPath") || "";
 
   initTextInput("host", "ws://192.168.2.109:9301");
   initTextInput("content");
@@ -135,7 +135,7 @@
     }
   });
   clickButton("send5", () => {
-    var binary = new Uint8Array(5 * 1024 * 1024);
+    const binary = new Uint8Array(5 * 1024 * 1024);
     appendResult("发送5MB");
 
     wrapTime("", () => {
@@ -143,7 +143,7 @@
     });
   });
   clickButton("send10", () => {
-    var binary = new Uint8Array(10 * 1024 * 1024);
+    const binary = new Uint8Array(10 * 1024 * 1024);
     appendResult("发送10MB");
 
     wrapTime("", () => {
@@ -151,7 +151,7 @@
     });
   });
   clickButton("send20", () => {
-    var binary = new Uint8Array(20 * 1024 * 1024);
+    const binary = new Uint8Array(20 * 1024 * 1024);
     appendResult("发送20MB");
 
     wrapTime("", () => {
@@ -159,7 +159,7 @@
     });
   });
   clickButton("send100", () => {
-    var binary = new Uint8Array(100 * 1024 * 1024);
+    const binary = new Uint8Array(100 * 1024 * 1024);
     appendResult("发送100MB");
 
     wrapTime("", () => {
@@ -279,14 +279,14 @@
   clickButton("diffDate", () => {
     const dateTextStr = dateText.value;
     //如果文本中包含_则使用_分割
-    var dateTextArray = undefined;
+    let dateTextArray = undefined;
     if (dateTextStr.includes("_")) {
       dateTextArray = dateTextStr.split("_");
     } else if (dateTextStr.includes(" ")) {
       dateTextArray = dateTextStr.split(" ");
     }
 
-    if (dateTextArray == undefined || dateTextArray.length < 2) {
+    if (dateTextArray === undefined || dateTextArray.length < 2) {
       vscode.postMessage({
         text: "日期格式错误!, 请使用`_`或`空格`分割日期",
       });
@@ -304,18 +304,17 @@
   clickButton("diffTime", () => {
     const timeTextStr = timeText.value;
     //如果文本中包含_则使用_分割
-    var timeTextArray = undefined;
+    let timeTextArray = undefined;
     if (timeTextStr.includes("_")) {
       timeTextArray = timeTextStr.split("_");
     } else if (timeTextStr.includes(" ")) {
       timeTextArray = timeTextStr.split(" ");
     }
 
-    if (timeTextArray == undefined || timeTextArray.length < 2) {
+    if (timeTextArray === undefined || timeTextArray.length < 2) {
       vscode.postMessage({
         text: "时间格式错误!, 请使用`_`或`空格`分割时间",
       });
-      return;
     } else if (timeTextStr.includes("-")) {
       //包含年月日
       const date1 = new Date(timeTextArray[0]);
@@ -343,6 +342,75 @@
       const second = diff / 1000;
       appendResult("秒数:" + second + "s");
     }
+  });
+
+  //--
+
+  /**获取字体列表*/
+  function getFigFontList() {
+    //监听处理结果
+    const listener = function (event) {
+      if (event.data?.command === "figfont" && event.data?.type === "fonts") {
+        if (event.data.data) {
+          const figfonts = document.getElementById("figfonts");
+          figfonts.innerHTML = event.data.data.map(function (item) {
+            return `<option value="${item}">${item}</option>`;
+          })
+          const font = localStorage.getItem("figfonts") || "Standard";
+          figfonts.value = font;
+        }
+        //const text = event.data.data;
+        //appendResult(text);
+        //<option value="">请选择水果</option>
+      }
+      window.removeEventListener("message", listener);
+    };
+    window.addEventListener("message", listener);
+
+    //发送数据到node层处理
+    vscode.postMessage({
+      command: "figfont",
+      type: "fonts",
+    });
+  }
+
+  getFigFontList();
+  clickButton("figfont", () => {
+    const text = content.value;
+    if (text) {
+      //监听处理结果
+      const listener = function (event) {
+        if (event.data?.command === "figfont") {
+          const text = event.data.data;
+          appendResult(text);
+          vscode.postMessage({
+            command: "copy",
+            data: text,
+          });
+        }
+        window.removeEventListener("message", listener);
+      };
+      window.addEventListener("message", listener);
+
+      //发送数据到node层处理
+      const font = document.getElementById("figfonts")?.value || "Standard";
+      localStorage.setItem("figfonts", font);
+      vscode.postMessage({
+        command: "figfont",
+        data: text,
+        font: font,
+      });
+    } else {
+      vscode.postMessage({
+        text: "请输入字符串内容",
+      });
+    }
+  });
+  clickButton("figfonts-label", () => {
+    vscode.postMessage({
+      command: "open",
+      url: "https://dtools.ddlyt.top/taag",
+    });
   });
 
   //---
@@ -455,8 +523,8 @@
           RegExp.$1.length == 1
             ? o[k]
             : k === "S+"
-            ? ("000" + o[k]).substring(3)
-            : ("00" + o[k]).substring(("" + o[k]).length)
+              ? ("000" + o[k]).substring(3)
+              : ("00" + o[k]).substring(("" + o[k]).length)
         );
       }
     }
@@ -533,7 +601,7 @@
 
             const pdfPage = await pdfDocument.getPage(i);
             // Display page on the existing canvas with 100% scale.
-            const viewport = pdfPage.getViewport({ scale: 2.0 });
+            const viewport = pdfPage.getViewport({scale: 2.0});
             //创建Canvas元素
             const canvas = document.createElement("canvas");
             canvas.width = viewport.width;
@@ -552,7 +620,7 @@
               command: "save",
               path: saveFilePath,
               data: dataURL,
-              reveal: i == numPages, //打开保存的文件所在目录
+              reveal: i === numPages, //打开保存的文件所在目录
             });
           }
         })
@@ -739,7 +807,7 @@
       doc = null;
       parser = null;
     } else {
-      vscode.postMessage({ text: "no data" });
+      vscode.postMessage({text: "no data"});
     }
   }
 
@@ -815,6 +883,7 @@
 
   //将svg标签转成Android的path标签
   function tagToAndroidPath(tag) {
+    let pathSvg;
     var paths = [];
     const child = tag;
 
@@ -853,7 +922,7 @@
       const x2 = parseFloatStr(child.getAttribute("x2"), 0);
       const y1 = parseFloatStr(child.getAttribute("y1"), 0);
       const y2 = parseFloatStr(child.getAttribute("y2"), 0);
-      var pathSvg = `android:pathData="M${x1},${y1}L${x2},${y2}"`;
+      pathSvg = `android:pathData="M${x1},${y1}L${x2},${y2}"`;
       paths.push(`
                 <path ${fillSvg} ${strokeSvg} ${pathSvg} />`);
     } else if (child.tagName === "path") {
@@ -866,7 +935,7 @@
         fillType = "evenOdd";
       }
 
-      var pathSvg = `android:pathData="${d}"`;
+      pathSvg = `android:pathData="${d}"`;
 
       paths.push(`
                 <path ${fillSvg} ${strokeSvg} ${pathSvg} /> `);
@@ -874,16 +943,13 @@
       //获取path的d属性
       console.log(child);
 
-      var pathSvg = "";
+      pathSvg = "";
       if (rx && ry) {
         const r = x + width;
         const b = y + height;
-        pathSvg = `android:pathData="M${x + rx},${y}h${
-          width - rx * 2
-        }Q${r},${y} ${r},${y + ry}v${height - ry * 2}Q${r},${b} ${
-          r - rx
-        },${b}h-${width - rx * 2}Q${x},${b} ${x},${b - ry}v-${
-          height - ry * 2
+        pathSvg = `android:pathData="M${x + rx},${y}h${width - rx * 2
+        }Q${r},${y} ${r},${y + ry}v${height - ry * 2}Q${r},${b} ${r - rx
+        },${b}h-${width - rx * 2}Q${x},${b} ${x},${b - ry}v-${height - ry * 2
         }Q${x},${y} ${x + rx},${y}z"`;
       } else {
         pathSvg = `android:pathData="M${x},${y}h${width}v${height}h-${width}z"`;
@@ -909,15 +975,11 @@
         cy = y + height / 2.0;
       }
 
-      var pathSvg = "";
-      pathSvg = `android:pathData="M${cx - width / 2},${cy}C${cx - width / 2},${
-        cy - oy
-      } ${cx - ox},${cy - height / 2} ${cx},${cy - height / 2}C${cx + ox},${
-        cy - height / 2
-      } ${cx + width / 2},${cy - oy} ${cx + width / 2},${cy}C${
-        cx + width / 2
-      },${cy + oy} ${cx + ox},${cy + height / 2} ${cx},${cy + height / 2}C${
-        cx - ox
+      pathSvg = "";
+      pathSvg = `android:pathData="M${cx - width / 2},${cy}C${cx - width / 2},${cy - oy
+      } ${cx - ox},${cy - height / 2} ${cx},${cy - height / 2}C${cx + ox},${cy - height / 2
+      } ${cx + width / 2},${cy - oy} ${cx + width / 2},${cy}C${cx + width / 2
+      },${cy + oy} ${cx + ox},${cy + height / 2} ${cx},${cy + height / 2}C${cx - ox
       },${cy + height / 2} ${cx - width / 2},${cy + oy} ${cx - width / 2},${cy}"
               `;
 
@@ -936,7 +998,7 @@
     } else {
       const msg = "不支持的SVG标签: " + child.tagName;
       console.log(msg);
-      vscode.postMessage({ text: msg });
+      vscode.postMessage({text: msg});
     }
     return paths;
   }

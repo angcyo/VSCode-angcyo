@@ -5,14 +5,15 @@
  * 2022-11-8
  */
 
-const { TextEncoder } = require("util");
+const {TextEncoder} = require("util");
 const vscode = require("vscode");
-const { Api } = require("./api");
+const {Api} = require("./api");
+const figlet = require("figlet");
 
 /**
  * 最后一次保存的uri
  */
-var lastSaveUri = null;
+let lastSaveUri = null;
 
 class WebviewPanel {
   /**
@@ -90,7 +91,8 @@ class WebviewPanel {
   /**
    * 创建之后的初始化操作
    */
-  onInitWebviewPanel() { }
+  onInitWebviewPanel() {
+  }
 
   /**
    * 获取webview的内容
@@ -166,6 +168,11 @@ class WebviewPanel {
     const pdfWorkerUri = webview.asWebviewUri(pdfWorkerPath);
     htmlString = this.replaceHtmlString(htmlString, "pdfWorker", pdfWorkerUri);
 
+    //figlet.min.js
+    const figletPath = uri.joinPath(extensionUri, "res/js/figlet.min.js");
+    const figletUri = webview.asWebviewUri(figletPath);
+    htmlString = this.replaceHtmlString(htmlString, "figlet", figletUri);
+
     return htmlString;
   }
 
@@ -206,13 +213,14 @@ class WebviewPanel {
     console.log(`收到来自webview的消息↓`);
     console.log(message);
 
-    if (message.command === undefined || message.command === "message") {
+    const command = message.command;
+    if (command === undefined || command === "message") {
       vscode.window.showInformationMessage(`${message.text}`);
-    } else if (message.command === "reveal") {
+    } else if (command === "reveal") {
       const path = message.path;
       const uri = vscode.Uri.file(path);
       vscode.commands.executeCommand("revealFileInOS", uri);
-    } else if (message.command === "save") {
+    } else if (command === "save") {
       //writeFileSync(message.path, message.data);
       const path = message.path;
       const uri = vscode.Uri.file(path);
@@ -239,15 +247,15 @@ class WebviewPanel {
         //__filename
         //command:revealFileInOS
       }
-    } else if (message.command === "open") {
+    } else if (command === "open") {
       const url = message.url;
       vscode.window.showInformationMessage(`准备打开:${url}`);
       vscode.commands.executeCommand("angcyo.openUrl", url);
-    } else if (message.command === "app") {
+    } else if (command === "app") {
       const url = message.url;
       vscode.window.showInformationMessage(`准备打开:${url}`);
       vscode.env.openExternal(vscode.Uri.parse(url));
-    } else if (message.command === "saveAs") {
+    } else if (command === "saveAs") {
       const data = message.data;
       //console.log("保存:" + data);
       //vscode.window.showInformationMessage(`准备打开:${url}`);
@@ -288,16 +296,16 @@ class WebviewPanel {
           //command:revealFileInOS
         }
       }
-    } else if (message.command === "copy") {
+    } else if (command === "copy") {
       //复制内容
       const data = message.data;
       vscode.env.clipboard.writeText(data);
       vscode.window.showInformationMessage(`已复制!`);
-    } else if (message.command === "httpPostFile") {
+    } else if (command === "httpPostFile") {
       //群发文件
       console.log(`群发文件↓`);
-      this.httpPostFile(message.port, message.path);
-    } else if (message.command === "request") {
+      await this.httpPostFile(message.port, message.path);
+    } else if (command === "request") {
       //网络请求
       const url = message.url;
       const method = message.method;
@@ -309,7 +317,8 @@ class WebviewPanel {
       if (headersStr) {
         try {
           headers = JSON.parse(headersStr);
-        } catch (error) { }
+        } catch (error) {
+        }
       }
 
       if (method && method.toLowerCase() === "post") {
@@ -348,6 +357,54 @@ class WebviewPanel {
           });
         }
       }
+    } else if (command === "figfont") {
+      if (message.type === "fonts") {
+        await figlet.fonts((err, fonts) => {
+          if (err) {
+            vscode.window.showInformationMessage(`${err}`);
+            return;
+          }
+          this.postMessage({
+            command: command,
+            data: fonts,
+            type: message.type,
+          });
+        });
+      } else {
+        /*figlet(message.data || message.text, (err, data) => {
+          if (err) {
+            vscode.window.showInformationMessage(`${err}`);
+            return;
+          }
+          this.postMessage({
+            command: command,
+            data: data,
+          });
+        });*/
+        figlet.text(
+          message.data || message.text,
+          {
+            font: message.font || "Standard",
+            horizontalLayout: "default",
+            verticalLayout: "default",
+            width: undefined,
+            whitespaceBreak: false,
+          },
+          (err, data) => {
+            if (err) {
+              vscode.window.showInformationMessage(`${err}`);
+              return;
+            }
+            this.postMessage({
+              command: command,
+              data: data,
+            });
+          }
+        );
+      }
+      //console.log(`figfont...↑`);
+    } else {
+      console.log(`未知的命令↑`);
     }
   }
 
@@ -376,7 +433,7 @@ class WebviewPanel {
     const data = await vscode.workspace.fs.readFile(uri);
 
     //blob类型
-    const blob = new Blob([data], { type: "application/octet-stream" });
+    const blob = new Blob([data], {type: "application/octet-stream"});
 
     //从路径中获取文件名
     const fileNameWin = path.split("\\").pop();
