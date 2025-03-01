@@ -1,5 +1,10 @@
 # Change Log
 
+## 2025-03-01
+
++ figfonts
++ qrcode encoder/decoder
+
 ## 2025-02-28
 
 + lpbin support vscode 1.90.+

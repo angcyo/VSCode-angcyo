@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Turn off echo 关闭回显
+set +x
+
+vsce package
