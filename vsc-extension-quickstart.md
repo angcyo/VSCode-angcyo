@@ -10,6 +10,7 @@ https://code.visualstudio.com/api/working-with-extensions/publishing-extension
 
 ```
 $ cd myExtension
+$ npm install -g @vscode/vsce
 $ vsce package
 # myExtension.vsix generated
 $ vsce publish
