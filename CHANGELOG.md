@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-03-05
+
+- fix lpbin support vscode 1.90.+
+
 ## 2025-03-01
 
 + figfonts
