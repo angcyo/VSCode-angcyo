@@ -5,13 +5,13 @@
  * 2022-11-8
  */
 
-const {TextEncoder} = require("util");
+const { TextEncoder } = require("util");
 const vscode = require("vscode");
-const {Api} = require("./api");
+const { Api } = require("./api");
 const figlet = require("figlet");
 const QRCode = require('qrcode')
 const QrCode = require('qrcode-reader');
-const {Jimp} = require("jimp");
+const { Jimp } = require("jimp");
 
 /**
  * 最后一次保存的uri
@@ -230,19 +230,7 @@ class WebviewPanel {
       const uri = vscode.Uri.file(path);
       //await vscode.workspace.fs.writeFile(uri, new Uint8Array(message.data));
 
-      const isBase64 = message.data.startsWith("data:");
-      if (isBase64) {
-        //base64
-        const base64 = message.data.split(",")[1];
-        const buffer = Buffer.from(base64, "base64");
-        vscode.workspace.fs.writeFile(uri, buffer);
-      } else {
-        vscode.workspace.fs.writeFile(
-          uri,
-          new Uint8Array(message.data.split(","))
-          //new TextEncoder("ISO-8859-1").encode(message.data)
-        );
-      }
+      this.writeDataToFile(uri, type, message.data);
       vscode.window.showInformationMessage(`已保存至:${path}`);
 
       if (message.reveal) {
@@ -288,8 +276,7 @@ class WebviewPanel {
       if (uri) {
         //console.log(uri.path);
         //console.log(uri.fsPath);
-        const encode = new TextEncoder("utf-8");
-        vscode.workspace.fs.writeFile(uri, encode.encode(data));
+        this.writeDataToFile(uri, type, data);
         vscode.window.showInformationMessage(`已保存至:${uri.fsPath}`);
         lastSaveUri = uri;
 
@@ -438,7 +425,7 @@ class WebviewPanel {
             vscode.window.showInformationMessage(`${err}`);
           });
       } else {
-        QRCode.toDataURL(message.data, {errorCorrectionLevel: 'H'}, (err, url) => {
+        QRCode.toDataURL(message.data, { errorCorrectionLevel: 'H' }, (err, url) => {
           //data:image/png;base64,xxx
           this.postMessage({
             command: command,
@@ -450,6 +437,34 @@ class WebviewPanel {
     } else {
       console.log(`未知的命令↑`);
     }
+  }
+
+  //写入数据到文件
+  writeDataToFile(uri, type, data) {
+    if (typeof data !== "string") {
+      console.log(`数据不是字符串类型`);
+      return;
+    }
+    if (type === "u8s") {
+      //数据类型是uint8,uint8,uint8,...组成的字符串
+      vscode.workspace.fs.writeFile(
+        uri,
+        new Uint8Array(data.split(","))
+        //new TextEncoder("ISO-8859-1").encode(message.data)
+      );
+    } else {
+      const isBase64 = data.startsWith("data:");
+      if (type === "base64" || isBase64) {
+        //base64
+        const base64 = data.split(",")[1];
+        const buffer = Buffer.from(base64, "base64");
+        vscode.workspace.fs.writeFile(uri, buffer);
+      } else {
+        const encode = new TextEncoder("utf-8");
+        vscode.workspace.fs.writeFile(uri, encode.encode(data));
+      }
+    }
+
   }
 
   //局域网内, 群发发送文件
@@ -477,7 +492,7 @@ class WebviewPanel {
     const data = await vscode.workspace.fs.readFile(uri);
 
     //blob类型
-    const blob = new Blob([data], {type: "application/octet-stream"});
+    const blob = new Blob([data], { type: "application/octet-stream" });
 
     //从路径中获取文件名
     const fileNameWin = path.split("\\").pop();

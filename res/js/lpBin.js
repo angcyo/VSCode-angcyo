@@ -137,12 +137,13 @@
       let data = undefined;
       try {
         data = JSON.parse(dataElement.value);
-      } catch { }
+      } catch {
+      }
 
       if (data) {
         //格式化json
         dataElement.value = JSON.stringify(data, null, 4);
-        readFile(selectFile.files[0], (data) => {
+        readFile(file, (data) => {
           //result.value = data.join(",");
           //const dataString = new TextDecoder("ISO-8859-1").decode(data);
 
@@ -160,6 +161,7 @@
           if (selectPath) {
             vscode.postMessage({
               command: "save",
+              type: "u8s",//数据类型是uint8,uint8,uint8,...组成的字符串
               path: targetPath,
               data: result.value,
               reveal: true, //打开保存的文件所在目录
@@ -167,6 +169,7 @@
           } else {
             vscode.postMessage({
               command: "saveAs",
+              type: "u8s",
               name: targetPath,
               data: result.value,
               reveal: true, //打开保存的文件所在目录
@@ -193,9 +196,10 @@
   //解析lpbin文件
   parse.addEventListener("click", (event) => {
     if (selectFile.files?.length > 0) {
-      const path = selectFile.files[0].path;
-      if (path.toLowerCase().endsWith(".lpbin")) {
-        readFile(selectFile.files[0], (data) => {
+      const file = selectFile.files[0];
+      const name = file.path || file.name;
+      if (name.toLowerCase().endsWith(".lpbin")) {
+        readFile(file, (data) => {
           const dataU8 = data.join(",");
           const dataString = new TextDecoder("utf8").decode(data);
           //将u8数据转成十六进制
