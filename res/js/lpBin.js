@@ -17,8 +17,9 @@
   const deviceButtonWrap = document.getElementById("deviceButtonWrap");
 
   //2个路径
-  var selectPath = "";
-  var targetPath = localStorage.getItem("targetPath") || "";
+  let selectPath = "";
+  let targetPath = localStorage.getItem("targetPath") || "";
+  let createVerifyCode = undefined
 
   const jsonStr =
     localStorage.getItem("createBinJson") ||
@@ -36,8 +37,11 @@
     const message = event.data; // The json data that the extension sent
     switch (message.type) {
       case "device":
-        const deviceList = JSON.parse(message.value);
-        console.log(deviceList);
+        const jsonObj = JSON.parse(message.value);
+        console.log(jsonObj);
+        //--
+        createVerifyCode = jsonObj.createVerifyCode;
+        const deviceList = jsonObj.deviceVersionConfig;
 
         deviceList?.forEach((item) => {
           const button = document.createElement("button");
@@ -134,55 +138,78 @@
         return;
       }
 
-      let data = undefined;
-      try {
-        data = JSON.parse(dataElement.value);
-      } catch {
+      //fn
+      function createFn() {
+        let data = undefined;
+        try {
+          data = JSON.parse(dataElement.value);
+        } catch {
+        }
+
+        if (data) {
+          //格式化json
+          dataElement.value = JSON.stringify(data, null, 4);
+          readFile(file, (data) => {
+            //result.value = data.join(",");
+            //const dataString = new TextDecoder("ISO-8859-1").decode(data);
+
+            let dataU8Array = data;
+            let newDataU8Array = createData();
+            let resultU8Array = [];
+
+            dataU8Array = Array.prototype.slice.call(dataU8Array);
+            newDataU8Array = Array.prototype.slice.call(newDataU8Array);
+
+            resultU8Array = dataU8Array.concat(newDataU8Array);
+
+            result.value = resultU8Array.join(",");
+
+            if (selectPath) {
+              vscode.postMessage({
+                command: "save",
+                type: "u8s",//数据类型是uint8,uint8,uint8,...组成的字符串
+                path: targetPath,
+                data: result.value,
+                reveal: true, //打开保存的文件所在目录
+              });
+            } else {
+              vscode.postMessage({
+                command: "saveAs",
+                type: "u8s",
+                name: targetPath,
+                data: result.value,
+                reveal: true, //打开保存的文件所在目录
+              });
+            }
+          });
+          //持久化
+          delete data.t;
+          delete data.md5;
+          localStorage.setItem("createBinJson", JSON.stringify(data, null, 4));
+        } else {
+          vscode.postMessage({
+            text: "Json数据格式异常,请检查输入...",
+          });
+        }
       }
 
-      if (data) {
-        //格式化json
-        dataElement.value = JSON.stringify(data, null, 4);
-        readFile(file, (data) => {
-          //result.value = data.join(",");
-          //const dataString = new TextDecoder("ISO-8859-1").decode(data);
-
-          let dataU8Array = data;
-          let newDataU8Array = createData();
-          let resultU8Array = [];
-
-          dataU8Array = Array.prototype.slice.call(dataU8Array);
-          newDataU8Array = Array.prototype.slice.call(newDataU8Array);
-
-          resultU8Array = dataU8Array.concat(newDataU8Array);
-
-          result.value = resultU8Array.join(",");
-
-          if (selectPath) {
-            vscode.postMessage({
-              command: "save",
-              type: "u8s",//数据类型是uint8,uint8,uint8,...组成的字符串
-              path: targetPath,
-              data: result.value,
-              reveal: true, //打开保存的文件所在目录
-            });
+      //
+      if (createVerifyCode === undefined || !createVerifyCode.value) {
+        createFn();
+      } else {
+        listenerOnce("input", undefined, (inputValue) => {
+          if (inputValue === createVerifyCode.value) {
+            createFn();
           } else {
             vscode.postMessage({
-              command: "saveAs",
-              type: "u8s",
-              name: targetPath,
-              data: result.value,
-              reveal: true, //打开保存的文件所在目录
+              text: "输入有误, 已终止!",
             });
           }
-        });
-        //持久化
-        delete data.t;
-        delete data.md5;
-        localStorage.setItem("createBinJson", JSON.stringify(data, null, 4));
-      } else {
+        })
         vscode.postMessage({
-          text: "Json数据格式异常,请检查输入...",
+          command: "input",
+          ...createVerifyCode,
+          value: undefined,
         });
       }
     } else {
@@ -396,6 +423,20 @@
       }
     }
     return fmt;
+  }
+
+  /**监听一次*/
+  function listenerOnce(command, type, callback) {
+    const listener = function (event) {
+      if (event.data?.command === command) {
+        if (type === undefined || type && event.data.type === type) {
+          const data = event.data.data;
+          callback(data);
+        }
+      }
+      window.removeEventListener("message", listener);
+    };
+    window.addEventListener("message", listener);
   }
 
   // 创建事件对象

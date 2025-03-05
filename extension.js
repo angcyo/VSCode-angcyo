@@ -2,15 +2,16 @@
 // Import the module and reference it with the alias vscode in your code below
 const path = require("path");
 const vscode = require("vscode");
-const { AngcyoViewsProvider } = require("./src/angcyoViewsProvider");
-const { MemoWebviewPanel } = require("./src/memoWebviewPanel");
-const { LpbinWebviewPanel } = require("./src/lpbinWebviewPanel");
-const { HttpServerWebviewPanel } = require("./src/httpServerWebviewPanel");
-const { TreeDataProvider } = require("./src/treeDataProvider");
-const { WebviewPanel } = require("./src/webviewPannel");
+const {AngcyoViewsProvider} = require("./src/angcyoViewsProvider");
+const {MemoWebviewPanel} = require("./src/memoWebviewPanel");
+const {LpbinWebviewPanel} = require("./src/lpbinWebviewPanel");
+const {HttpServerWebviewPanel} = require("./src/httpServerWebviewPanel");
+const {TreeDataProvider} = require("./src/treeDataProvider");
+const {WebviewPanel} = require("./src/webviewPannel");
 const {
   laserPeckerAddQuotationMark,
 } = require("./src/addQuotationMarkLaserPecker.js");
+const {showInputBox} = require("vscode");
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -268,6 +269,16 @@ function activate(context) {
       laserPeckerAddQuotationMark.addQuotationMark();
     }
   );
+
+  //test
+  /*vscode.window.showInputBox({
+    title: "请输入...",
+    value: "value",
+    prompt: "请输入后继续操作...",
+    placeHolder: "placeHolder",
+  }).then(value => {
+    console.log(value);
+  });*/
 }
 
 // this method is called when your extension is deactivated

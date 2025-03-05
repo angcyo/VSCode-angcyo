@@ -5,13 +5,13 @@
  * 2022-11-8
  */
 
-const { TextEncoder } = require("util");
+const {TextEncoder} = require("util");
 const vscode = require("vscode");
-const { Api } = require("./api");
+const {Api} = require("./api");
 const figlet = require("figlet");
 const QRCode = require('qrcode')
 const QrCode = require('qrcode-reader');
-const { Jimp } = require("jimp");
+const {Jimp} = require("jimp");
 
 /**
  * 最后一次保存的uri
@@ -349,6 +349,7 @@ class WebviewPanel {
         }
       }
     } else if (command === "figfont") {
+      //fig font 字符
       if (type === "fonts") {
         await figlet.fonts((err, fonts) => {
           if (err) {
@@ -425,7 +426,7 @@ class WebviewPanel {
             vscode.window.showInformationMessage(`${err}`);
           });
       } else {
-        QRCode.toDataURL(message.data, { errorCorrectionLevel: 'H' }, (err, url) => {
+        QRCode.toDataURL(message.data, {errorCorrectionLevel: 'H'}, (err, url) => {
           //data:image/png;base64,xxx
           this.postMessage({
             command: command,
@@ -434,6 +435,20 @@ class WebviewPanel {
           });
         });
       }
+    } else if (command === "input") {
+      //请求一个输入框, 并返回值
+      vscode.window.showInputBox({
+        title: message.title,
+        value: message.value,
+        prompt: message.prompt,
+        placeHolder: message.placeHolder,
+      }).then(value => {
+        this.postMessage({
+          command: command,
+          type: type,
+          data: value,
+        });
+      });
     } else {
       console.log(`未知的命令↑`);
     }
@@ -492,7 +507,7 @@ class WebviewPanel {
     const data = await vscode.workspace.fs.readFile(uri);
 
     //blob类型
-    const blob = new Blob([data], { type: "application/octet-stream" });
+    const blob = new Blob([data], {type: "application/octet-stream"});
 
     //从路径中获取文件名
     const fileNameWin = path.split("\\").pop();
