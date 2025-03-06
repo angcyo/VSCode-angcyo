@@ -64,6 +64,10 @@
     const text = content.value;
     result.innerHTML = nowTimeString() + "\n" + atob(text); //解密
   });
+  clickButton("md5Encode", () => {
+    const text = content.value;
+    appendResult(md5(text));
+  });
 
   clickButton("clear", () => {
     result.innerHTML = "";
@@ -1047,5 +1051,10 @@
       vscode.postMessage({text: msg});
     }
     return paths;
+  }
+
+  /**将数据使用md5进行加密*/
+  function md5(data) {
+    return SparkMD5.hash(data);
   }
 })();
