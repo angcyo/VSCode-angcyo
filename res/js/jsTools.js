@@ -16,11 +16,14 @@
   const imageWrap = document.getElementById("imageWrap");
   const width = document.getElementById("width");
   const height = document.getElementById("height");
+  const headerSize = document.getElementById("headerSize");
   const dateText = document.getElementById("dateText");
   const timeText = document.getElementById("timeText");
 
   //选中的文件全路径
   let selectPath = "";
+  //选中的文件对象
+  let selectFileObj;
   //生成的文件路径
   let targetPath = localStorage.getItem("targetPath") || "";
 
@@ -32,6 +35,7 @@
   initTextInput("height");
   initTextInput("dateText");
   initTextInput("timeText");
+  initTextInput("headerSize", "16");
 
   clickButton("uuid", async () => {
     const uuid = crypto.randomUUID();
@@ -177,7 +181,7 @@
 
   //pdf2png
   clickButton("pdf2png", () => {
-    if (selectPath) {
+    if (selectFileObj) {
       pdfToPng();
     } else {
       vscode.postMessage({
@@ -188,7 +192,7 @@
 
   //调整图片宽高
   clickButton("adjustImage", () => {
-    if (selectPath) {
+    if (selectFileObj) {
       adjustImage();
     } else {
       vscode.postMessage({
@@ -347,6 +351,28 @@
       appendResult("秒数:" + second + "s");
     }
   });
+  clickButton("readFileHeader", () => {
+    if (selectFileObj) {
+      readFile(selectFileObj, (data) => {
+        const count = headerSize.value;
+        const bytes = new Uint8Array(data);
+        let hexResult = '';
+        let asciiResult = '';
+        for (let i = 0; i < Math.min(count, bytes.length); i++) {
+          const byte = bytes[i];
+          const ascii = String.fromCharCode(bytes[i]);
+          const hex = byte.toString(16).padStart(2, "0").toUpperCase();
+          hexResult += hex + " ";
+          asciiResult += ascii + " ";
+        }
+        appendResult(`[${count}/${bytes.length}]↓\n${hexResult}\n${asciiResult}`);
+      });
+    } else {
+      vscode.postMessage({
+        text: "请先选择文件!",
+      });
+    }
+  });
 
   //--
 
@@ -478,22 +504,25 @@
   selectFile.addEventListener(`change`, () => {
     console.log("选择文件...↓");
     console.log(selectFile.files);
-
+    selectFileObj = undefined;
     if (selectFile.files?.length > 0) {
-      selectPath = selectFile.files[0].path;
+      selectFileObj = selectFile.files[0];
+      selectPath = selectFileObj?.path;
       localStorage.setItem("selectPath", selectPath);
-      console.log(selectPath);
+      if (selectPath) {
+        console.log(selectPath);
 
-      let path;
-      if (selectPath.includes(":") > 0) {
-        path = selectPath.substring(0, selectPath.lastIndexOf("\\"));
-      } else {
-        path = selectPath.substring(0, selectPath.lastIndexOf("/"));
+        let path;
+        if (selectPath.includes(":") > 0) {
+          path = selectPath.substring(0, selectPath.lastIndexOf("\\"));
+        } else {
+          path = selectPath.substring(0, selectPath.lastIndexOf("/"));
+        }
+
+        targetPath = path;
+        localStorage.setItem("targetPath", targetPath);
+        console.log(targetPath);
       }
-
-      targetPath = path;
-      localStorage.setItem("targetPath", targetPath);
-      console.log(targetPath);
     }
   });
 
@@ -628,7 +657,7 @@
   }
 
   function pdfToPng() {
-    const file = selectFile.files[0];
+    const file = selectFileObj;
     readFile(file, (data) => {
       // Loading a document.
       const loadingTask = pdfjsLib.getDocument(data);
@@ -664,7 +693,8 @@
             appendImage(dataURL);
 
             vscode.postMessage({
-              command: "save",
+              command: selectPath !== undefined ? "save" : "saveAs",
+              type: "u8s",
               path: saveFilePath,
               data: dataURL,
               reveal: i === numPages, //打开保存的文件所在目录
@@ -707,7 +737,8 @@
       //   `${nowTimeString("yyyy-MM-dd_HH-mm-ss")}.png`
       // );
       vscode.postMessage({
-        command: "save",
+        command: selectPath !== undefined ? "save" : "saveAs",
+        type: "u8s",
         path: saveFilePath,
         data: dataURL,
         reveal: true, //打开保存的文件所在目录
@@ -754,18 +785,23 @@
 
   //将选中的png文件转base64
   function png2Base64() {
-    const file = selectFile.files[0];
-    readFile(file, (data) => {
-      const base64 = arrayBufferToBase64(data);
-      result.innerHTML = "data:image/png;base64," + base64;
-    });
+    if (selectFileObj) {
+      readFile(selectFileObj, (data) => {
+        const base64 = arrayBufferToBase64(data);
+        result.innerHTML = "data:image/png;base64," + base64;
+      });
+    } else {
+      vscode.postMessage({
+        text: "请先选择文件!",
+      });
+    }
   }
 
   function arrayBufferToBase64(buffer) {
-    var binary = "";
-    var bytes = new Uint8Array(buffer);
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
       binary += String.fromCharCode(bytes[i]);
     }
     return btoa(binary);

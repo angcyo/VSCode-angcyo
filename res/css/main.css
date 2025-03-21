@@ -81,6 +81,10 @@ textarea {
   width: 80px;
 }
 
+#headerSize {
+  width: 80px;
+}
+
 #showBorder {
   width: auto;
 }
