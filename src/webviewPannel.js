@@ -449,6 +449,34 @@ class WebviewPanel {
           data: value,
         });
       });
+    } else if (command === "createFile") {
+      //创建指定kb大小的文件
+      const size = message.data; //kb
+      const uri = await vscode.window.showSaveDialog({
+        defaultUri: lastSaveUri || this._context.extensionUri,
+        //saveLabel: "...saveLabel...", //保存按钮的文本
+        title: message.title || "创建文件", //对话框的标题
+      });
+      if (uri) {
+        //console.log(uri.path);
+        //console.log(uri.fsPath);
+        try {
+          const data = this.createUint8Array(size * 1024);
+          this.writeDataToFile(uri, undefined, data);
+          vscode.window.showInformationMessage(`已保存至:${uri.fsPath}`);
+          lastSaveUri = uri;
+
+          if (message.reveal) {
+            //打开文件所在目录
+            vscode.commands.executeCommand("revealFileInOS", uri);
+            //__filename
+            //command:revealFileInOS
+          }
+        } catch (e) {
+          console.log(e);
+          vscode.window.showInformationMessage(`创建文件失败!`);
+        }
+      }
     } else {
       console.log(`未知的命令↑`);
     }
@@ -456,30 +484,45 @@ class WebviewPanel {
 
   //写入数据到文件
   writeDataToFile(uri, type, data) {
-    if (typeof data !== "string") {
-      console.log(`数据不是字符串类型`);
-      return;
-    }
-    if (type === "u8s") {
-      //数据类型是uint8,uint8,uint8,...组成的字符串
-      vscode.workspace.fs.writeFile(
-        uri,
-        new Uint8Array(data.split(","))
-        //new TextEncoder("ISO-8859-1").encode(message.data)
-      );
+    if (type === "u8" || data instanceof Uint8Array) {
+      //判断data 是否是 Uint8Array
+      //console.log(`data instanceof Uint8Array`);
+      vscode.workspace.fs.writeFile(uri, data);
     } else {
-      const isBase64 = data.startsWith("data:");
-      if (type === "base64" || isBase64) {
-        //base64
-        const base64 = data.split(",")[1];
-        const buffer = Buffer.from(base64, "base64");
-        vscode.workspace.fs.writeFile(uri, buffer);
+      if (typeof data !== "string") {
+        console.log(`数据不是字符串类型`);
+        return;
+      }
+      if (type === "u8s") {
+        //数据类型是uint8,uint8,uint8,...组成的字符串
+        vscode.workspace.fs.writeFile(
+          uri,
+          new Uint8Array(data.split(","))
+          //new TextEncoder("ISO-8859-1").encode(message.data)
+        );
       } else {
-        const encode = new TextEncoder("utf-8");
-        vscode.workspace.fs.writeFile(uri, encode.encode(data));
+        const isBase64 = data.startsWith("data:");
+        if (type === "base64" || isBase64) {
+          //base64
+          const base64 = data.split(",")[1];
+          const buffer = Buffer.from(base64, "base64");
+          vscode.workspace.fs.writeFile(uri, buffer);
+        } else {
+          const encode = new TextEncoder("utf-8");
+          vscode.workspace.fs.writeFile(uri, encode.encode(data));
+        }
       }
     }
+  }
 
+  //创建指定大小的字节数组
+  createUint8Array(size) {
+    const arr = new Uint8Array(size);
+    for (let i = 0; i < size; i++) {
+      //arr[i] = Math.floor(Math.random() * 256);
+      arr[i] = i % 2;
+    }
+    return arr;
   }
 
   //局域网内, 群发发送文件

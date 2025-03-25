@@ -55,7 +55,8 @@
   });
   clickButton("base64Encode", () => {
     const text = content.value;
-    result.innerHTML = nowTimeString() + "\n" + btoa(text); //加密
+    appendResult(btoa(text))
+    //result.innerHTML = nowTimeString() + "\n" + btoa(text); //加密
   });
   clickButton("base642String", () => {
     const text = content.value;
@@ -71,6 +72,15 @@
   clickButton("md5Encode", () => {
     const text = content.value;
     appendResult(md5(text));
+  });
+  clickButton("createFile", () => {
+    //创建指定kb大小的文件
+    const size = sendSize.value || 1;
+    vscode.postMessage({
+      command: "createFile",
+      data: size,
+      reveal: true, //打开保存的文件所在目录
+    });
   });
 
   clickButton("clear", () => {
