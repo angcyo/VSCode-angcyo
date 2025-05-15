@@ -19,7 +19,8 @@ $ vsce publish
 
 ### 插件发布地址
 
-https://marketplace.visualstudio.com/manage/publishers/angcyo
+- https://marketplace.visualstudio.com/manage/publishers/angcyo
+- https://open-vsx.org/user-settings/extensions
 
 ### 打包
 
