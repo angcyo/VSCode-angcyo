@@ -819,6 +819,13 @@
 
   function base642Png(base64) {
     if (base64) {
+      //移除所有空格和;和#
+      base64 = base64.replace(/[\s#;]/g, "");
+      //如果不包含协议头, 则补上
+      if (!base64.startsWith("data:image")) {
+        base64 = "data:image/png;base64," + base64;
+      }
+      //debugger;
       appendImage(base64);
     } else {
       vscode.postMessage({
