@@ -228,10 +228,10 @@
     numberSum(content.value);
   });
   clickButton("uriEncode", () => {
-    appendResult("UriEncode: " + encodeURI(content.value));
+    appendResult("UriEncode: " + encodeURIComponent(content.value));
   });
   clickButton("uriDecode", () => {
-    appendResult("UriEncode: " + decodeURI(content.value));
+    appendResult("UriEncode: " + decodeURIComponent(content.value));
   });
   clickButton("toDateTime", () => {
     //将时间戳转成日期时间
