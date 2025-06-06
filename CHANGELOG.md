@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-06-06
+
+* fix uri encode / decode
+
 ## 2025-05-15
 
 * fix base64 to png
