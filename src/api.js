@@ -15,8 +15,8 @@ class Api {
   //构建vs treeItem
   buildTreeItem(beanList) {
     if (beanList) {
-      const childrenList = beanList
-        .filter((item) => item.enable == undefined || item.enable)
+      return beanList
+        .filter((item) => item.enable === undefined || item.enable)
         .map((item) => {
           const treeItem = {
             label: item.label,
@@ -59,7 +59,6 @@ class Api {
           }
           return treeItem;
         });
-      return childrenList;
     }
   }
 
@@ -90,8 +89,7 @@ class Api {
     // if (req.status === 200) {
     //   return "";
     // }
-    const data = await req.text();
-    return data;
+    return await req.text();
   }
 
   //进行post请求
@@ -121,8 +119,7 @@ class Api {
         ...(headers || {}),
       },
     });
-    const data = await req.text();
-    return data;
+    return await req.text();
   }
 
   //进行head请求, 判断[url]是有有效
@@ -152,8 +149,7 @@ class Api {
       //   "Content-Type": "multipart/form-data",
       // },
     });
-    const result = await req.text();
-    return result;
+    return await req.text();
   }
 
   /**
@@ -192,7 +188,7 @@ class Api {
       const $element = $(element);
       const href = $element.attr("href");
       const title = $element.text();
-      list.push({ title, href });
+      list.push({title, href});
     });
   }
 }

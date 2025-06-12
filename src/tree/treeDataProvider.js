@@ -6,7 +6,7 @@
  */
 
 const vscode = require("vscode");
-const { Api } = require("./api");
+const { Api } = require("../api");
 
 class TreeDataProvider {
   /**

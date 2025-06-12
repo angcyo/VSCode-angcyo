@@ -1,7 +1,7 @@
 const vscode = require("vscode");
 const os = require("os");
 const { WebviewPanel } = require("./webviewPannel");
-const { Api } = require("./api");
+const { Api } = require("../api");
 
 //http服务
 class HttpServerWebviewPanel extends WebviewPanel {

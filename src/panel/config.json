@@ -1,0 +1,63 @@
+[
+  {
+    "des": "注册[WebviewPanel]类型",
+    "viewType": "angcyo.bedLink",
+    "title": "图床链接",
+    "scriptPath": "res/js/bedLink.js",
+    "htmlPath": "res/html/bedLink.html"
+  },
+  {
+    "viewType": "angcyo.deviceConnect",
+    "title": "设备直连",
+    "scriptPath": "res/js/deviceConnect.js",
+    "htmlPath": "res/html/deviceConnect.html"
+  },
+  {
+    "viewType": "angcyo.logParse",
+    "title": "日志分析",
+    "scriptPath": "res/js/logParse.js",
+    "htmlPath": "res/html/logParse.html"
+  },
+  {
+    "viewType": "angcyo.jsTools",
+    "title": "JS工具",
+    "scriptPath": "res/js/jsTools.js",
+    "htmlPath": "res/html/jsTools.html"
+  },
+  {
+    "viewType": "angcyo.crawlerTools",
+    "title": "爬虫工具",
+    "scriptPath": "res/js/crawlerTools.js",
+    "htmlPath": "res/html/crawlerTools.html"
+  },
+  {
+    "viewType": "angcyo.laserPeckerParse",
+    "title": "LaserPecker工程文件数据解析",
+    "scriptPath": "res/js/lpProject.js",
+    "htmlPath": "res/html/lpProject.html"
+  },
+  {
+    "viewType": "angcyo.laserPeckerBleParse",
+    "title": "LaserPecker蓝牙指令解析",
+    "scriptPath": "res/js/lpBle.js",
+    "htmlPath": "res/html/lpBle.html"
+  },
+  {
+    "viewType": "angcyo.svgParse",
+    "title": "Svg解析",
+    "scriptPath": "res/js/svgParse.js",
+    "htmlPath": "res/html/svgParse.html"
+  },
+  {
+    "viewType": "angcyo.binParse",
+    "title": "lpbin文件创建及解析",
+    "scriptPath": "res/js/lpBin.js",
+    "htmlPath": "res/html/lpBin.html"
+  },
+  {
+    "viewType": "angcyo.autoEngrave",
+    "title": "lp自动雕刻",
+    "scriptPath": "res/js/autoEngrave.js",
+    "htmlPath": "res/html/autoEngrave.html"
+  }
+]

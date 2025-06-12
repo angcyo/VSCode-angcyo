@@ -7,7 +7,7 @@
 
 const {TextEncoder} = require("util");
 const vscode = require("vscode");
-const {Api} = require("./api");
+const {Api} = require("../api");
 const figlet = require("figlet");
 const QRCode = require('qrcode')
 const QrCode = require('qrcode-reader');

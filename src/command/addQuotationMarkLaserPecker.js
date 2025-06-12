@@ -7,13 +7,13 @@ const vscode = require("vscode");
 
 class LaserPeckerAddQuotationMark {
   addQuotationMark() {
-    const { document, selection, edit } = vscode.window.activeTextEditor;
+    const {document, selection, edit} = vscode.window.activeTextEditor;
 
     //获取操作的文本, 选中的文本
     const text = document.getText(selection);
 
     if (text) {
-      var newText = "";
+      let newText = "";
       text.split("\n").forEach((value) => {
         value = value.replace("\r", "");
         if (value) {
