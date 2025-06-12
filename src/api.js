@@ -22,7 +22,7 @@ class Api {
   buildTreeItem(beanList) {
     if (beanList) {
       return beanList
-        .filter((item) => item.enable === undefined || item.enable)
+        .filter((item) => item.enable === undefined || item.enable === true)
         .map((item) => {
           const treeItem = {
             label: item.label,

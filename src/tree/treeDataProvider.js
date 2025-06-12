@@ -58,13 +58,9 @@ class TreeDataProvider {
   async getTopChildren() {
     if (this.url) {
       const urlItems = await this.getUrlItems();
-      return [
-        ...(this.headrItems || []),
-        ...urlItems,
-        ...(this.footreItems || []),
-      ];
+      return [...(this.headrItems || []), ...urlItems, ...(this.footreItems || []),].filter((item) => item.enable === undefined || item.enable === true);
     } else {
-      return [...(this.headrItems || []), ...(this.footreItems || [])];
+      return [...(this.headrItems || []), ...(this.footreItems || [])].filter((item) => item.enable === undefined || item.enable === true);
     }
   }
   

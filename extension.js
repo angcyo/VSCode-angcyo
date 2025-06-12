@@ -66,27 +66,7 @@ function activate(context) {
   vscode.window.registerTreeDataProvider("laserABCViews", laserABCViewsProvider);
   
   //
-  const laserPeckerViewsProvider = new TreeDataProvider(`${host}/laserPeckerUrl.json`, [{
-    label: "lp工程文件数据解析", iconPath: parseSvgIconPath, command: {
-      command: "angcyo.laserPeckerParse",
-    }, tooltip: "LaserPecker工程文件数据解析", //description: item.url,
-  }, {
-    label: "lp蓝牙指令数据解析", iconPath: parseSvgIconPath, command: {
-      command: "angcyo.laserPeckerBleParse",
-    }, tooltip: "LaserPecker蓝牙指令数据解析", //description: item.url,
-  }, {
-    label: "Svg解析", iconPath: parseSvgIconPath, command: {
-      command: "angcyo.svgParse",
-    }, tooltip: "Svg数据解析", //description: item.url,
-  }, {
-    label: "lpbin文件创建及解析", iconPath: parseSvgIconPath, command: {
-      command: "angcyo.binParse",
-    }, tooltip: "lpbin文件创建及解析", //description: item.url,
-  }, {
-    label: "lp自动雕刻", iconPath: parseSvgIconPath, command: {
-      command: "angcyo.autoEngrave",
-    }, tooltip: "LaserPecker自动雕刻", //description: item.url,
-  },]);
+  const laserPeckerViewsProvider = new TreeDataProvider(`${host}/laserPeckerUrl.json`, []);
   //console.log(parseSvgIconPath);//e:\VSCodeProjects\angcyoJs\res\parse.svg
   vscode.window.registerTreeDataProvider("laserPeckerViews", laserPeckerViewsProvider);
   
