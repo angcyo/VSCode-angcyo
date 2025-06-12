@@ -1,11 +1,12 @@
 const vscode = require("vscode");
 const path = require("path");
-const { TreeDataProvider } = require("./treeDataProvider");
+const {TreeDataProvider} = require("./treeDataProvider");
+
 class AngcyoViewsProvider extends TreeDataProvider {
   constructor(url) {
     super(url);
   }
-
+  
   async getTopChildren() {
     //总共的数量
     const count = this.getMemoCount();
@@ -18,7 +19,7 @@ class AngcyoViewsProvider extends TreeDataProvider {
     const last = [
       {
         label: "设备直连",
-        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        iconPath: path.join(__filename, "..", "..", "..", "res", "parse.svg"),
         command: {
           command: "angcyo.deviceConnect",
         },
@@ -26,7 +27,7 @@ class AngcyoViewsProvider extends TreeDataProvider {
       },
       {
         label: "日志分析",
-        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        iconPath: path.join(__filename, "..", "..", "..", "res", "parse.svg"),
         command: {
           command: "angcyo.logParse",
         },
@@ -34,7 +35,7 @@ class AngcyoViewsProvider extends TreeDataProvider {
       },
       {
         label: "JS工具",
-        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        iconPath: path.join(__filename, "..", "..", "..", "res", "parse.svg"),
         command: {
           command: "angcyo.jsTools",
         },
@@ -42,7 +43,7 @@ class AngcyoViewsProvider extends TreeDataProvider {
       },
       {
         label: "爬虫工具",
-        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        iconPath: path.join(__filename, "..", "..", "..", "res", "parse.svg"),
         command: {
           command: "angcyo.crawlerTools",
         },
@@ -50,7 +51,7 @@ class AngcyoViewsProvider extends TreeDataProvider {
       },
       {
         label: "Http服务",
-        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        iconPath: path.join(__filename, "..", "..", "..", "res", "parse.svg"),
         command: {
           command: "angcyo.httpServer",
         },
@@ -58,7 +59,7 @@ class AngcyoViewsProvider extends TreeDataProvider {
       },
       {
         label: "图床链接",
-        iconPath: path.join(__filename, "..", "..", "res", "parse.svg"),
+        iconPath: path.join(__filename, "..", "..", "..", "res", "parse.svg"),
         command: {
           command: "angcyo.bedLink",
         },
@@ -66,7 +67,7 @@ class AngcyoViewsProvider extends TreeDataProvider {
       },
       {
         label: "记一下",
-        iconPath: path.join(__filename, "..", "..", "res", "memo.svg"),
+        iconPath: path.join(__filename, "..", "..", "..", "res", "memo.svg"),
         command: {
           command: "angcyo.memo",
         },
@@ -77,7 +78,7 @@ class AngcyoViewsProvider extends TreeDataProvider {
     const urlItems = await this.getUrlItems();
     return [...urlItems, ...last];
   }
-
+  
   //获取有效的备忘录数量
   getMemoCount() {
     //let count = 0;
@@ -85,13 +86,13 @@ class AngcyoViewsProvider extends TreeDataProvider {
     //   const value = vscode.workspace
     //     .getConfiguration("angcyo-memo")
     //     .get(`memo${index + 1}`, "");
-
+    
     //   if (value) {
     //     count++;
     //   }
     // }
     //return count;
-
+    
     const memoJson = vscode.workspace
       .getConfiguration("angcyo-memo")
       .get(`memo`, "");

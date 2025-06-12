@@ -78,6 +78,10 @@
           "name": "Http"
         },
         {
+          "id": "laserABCViews",
+          "name": "LaserABC"
+        },
+        {
           "id": "laserPeckerViews",
           "name": "LaserPecker"
         }

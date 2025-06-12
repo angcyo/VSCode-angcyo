@@ -7,11 +7,17 @@ class Api {
   //获取网址列表
   async fetchUrlChildrenList(api) {
     const req = await fetch(api);
-    const json = await req.json();
-
-    return this.buildTreeItem(json.data);
+    try {
+      const json = await req.json();
+      
+      return this.buildTreeItem(json.data);
+    } catch (e) {
+      console.error(`获取网址列表失败:${api}`, e);
+      //如果获取失败, 返回空数组
+      return [];
+    }
   }
-
+  
   //构建vs treeItem
   buildTreeItem(beanList) {
     if (beanList) {
@@ -21,7 +27,7 @@ class Api {
           const treeItem = {
             label: item.label,
             iconPath: path.join(__filename, "..", "..", "res", "folder.svg"),
-            tooltip: item.url,
+            tooltip: item.tooltip || item.url,
             description: item.description,
             childList: item.childList,
             collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
@@ -61,7 +67,7 @@ class Api {
         });
     }
   }
-
+  
   /**
    * 读取文件内容
    * "res", "main.css"
@@ -74,7 +80,7 @@ class Api {
     console.log(`读取文件:${uri} :${dataStr.length}bytes`);
     return dataStr;
   }
-
+  
   //进行get请求
   async httpGet(url, headers) {
     console.log(`httpGet:${url}`);
@@ -91,25 +97,25 @@ class Api {
     // }
     return await req.text();
   }
-
+  
   //进行post请求
   async httpPost(url, body, token, headers) {
     console.log(`httpPost:${url}`);
     //判断body是否是json类型
     let isJsonBody = false;
-
+    
     try {
       JSON.parse(body);
       isJsonBody = true;
     } catch (error) {
       isJsonBody = false;
     }
-
+    
     let contentType = "text/plain";
     if (isJsonBody) {
       contentType = "application/json";
     }
-
+    
     const req = await fetch(url, {
       method: "POST",
       body: body,
@@ -121,7 +127,7 @@ class Api {
     });
     return await req.text();
   }
-
+  
   //进行head请求, 判断[url]是有有效
   async httpHead(url, headers) {
     try {
@@ -136,7 +142,7 @@ class Api {
       return false;
     }
   }
-
+  
   // blob 类型, file也是一种blob类型
   async postFile(url, blob, fileName) {
     //使用fetch发送文件
@@ -151,13 +157,13 @@ class Api {
     });
     return await req.text();
   }
-
+  
   /**
    * 获取本机ip
    */
   getLocalIp() {
     const networkInterfaces = os.networkInterfaces();
-
+    
     let ip = "";
     for (const name in networkInterfaces) {
       const iface = networkInterfaces[name];
@@ -177,7 +183,7 @@ class Api {
     }
     return ip;
   }
-
+  
   // 从html文本中, 解析出数据
   parseHtmlText(text) {
     //通过css选择器, 选择元素

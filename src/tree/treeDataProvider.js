@@ -6,7 +6,13 @@
  */
 
 const vscode = require("vscode");
-const { Api } = require("../api");
+const {Api} = require("../api");
+const path = require("path");
+
+/**空item*/
+const emptyItem = {
+  label: "暂无数据",
+};
 
 class TreeDataProvider {
   /**
@@ -22,25 +28,30 @@ class TreeDataProvider {
     this.headrItems = headerItems;
     this.footreItems = footerItems;
   }
-
+  
   refresh() {
     this._onDidChangeTreeData.fire();
   }
-
+  
   async getChildren(element) {
     if (element === undefined) {
-      return Promise.resolve(this.getTopChildren());
+      const children = await this.getTopChildren();
+      if (this.url !== undefined && children.length === 0) {
+        //如果没有数据, 返回一个空的item
+        return [emptyItem];
+      }
+      return Promise.resolve(children);
     } else if (element.childList) {
       return Promise.resolve(Api.buildTreeItem(element.childList));
     } else {
       return element;
     }
   }
-
+  
   getTreeItem(element) {
     return element;
   }
-
+  
   /**
    * 获取顶级目录结构
    */
@@ -56,7 +67,7 @@ class TreeDataProvider {
       return [...(this.headrItems || []), ...(this.footreItems || [])];
     }
   }
-
+  
   async getUrlItems() {
     return await Api.fetchUrlChildrenList(this.url);
   }
