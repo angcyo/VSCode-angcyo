@@ -56,6 +56,7 @@ class TreeDataProvider {
    * 获取顶级目录结构
    */
   async getTopChildren() {
+    //debugger;
     if (this.url) {
       const urlItems = await this.getUrlItems();
       return [...(this.headrItems || []), ...urlItems, ...(this.footreItems || []),].filter((item) => item.enable === undefined || item.enable === true);

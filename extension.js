@@ -26,13 +26,13 @@ function activate(context) {
   console.log("插件激活..." + context.extensionUri); //file:///e%3A/VSCodeProjects/angcyoJs
   //console.log("插件激活..." + context.extensionPath); //e:\VSCodeProjects\angcyoJs
   console.log(context);
-  
+
   //__filename
   console.log(__filename); //e:\VSCodeProjects\angcyoJs\extension.js
-  
+
   //显示欢迎页
   vscode.commands.executeCommand("setContext", "angcyo.showWelcome", true);
-  
+
   //读取本地配置
   const config = vscode.workspace.getConfiguration("angcyo-config");
   console.log("配置↓");
@@ -45,86 +45,91 @@ function activate(context) {
     host = defHost;
   }
   console.log("host->" + host);
-  
+
   //
   const welcomeViewsProvider = new TreeDataProvider();
   vscode.window.registerTreeDataProvider("welcomeViews", welcomeViewsProvider);
-  
+
   //
   const angcyoViewsProvider = new AngcyoViewsProvider(`${host}/angcyoUrl.json`);
   vscode.window.registerTreeDataProvider("angcyoViews", angcyoViewsProvider);
-  
+
   //
   const httpViewsProvider = new TreeDataProvider(`${host}/recommendUrl.json`);
   vscode.window.registerTreeDataProvider("httpViews", httpViewsProvider);
-  
+
   //svg
   const parseSvgIconPath = path.join(__filename, "..", "res", "parse.svg");
-  
-  //LaserABCUrl.json
+
+  //LaserABCUrl.json 需要在package.json 的 views 中配置, 才会显示
+  //{
+  //   "id": "laserABCViews",
+  //   "name": "LaserABC"
+  // },
   const laserABCViewsProvider = new TreeDataProvider(`${host}/LaserABCUrl.json`, []);
   vscode.window.registerTreeDataProvider("laserABCViews", laserABCViewsProvider);
-  
+
   //
   const laserPeckerViewsProvider = new TreeDataProvider(`${host}/laserPeckerUrl.json`, []);
   //console.log(parseSvgIconPath);//e:\VSCodeProjects\angcyoJs\res\parse.svg
   vscode.window.registerTreeDataProvider("laserPeckerViews", laserPeckerViewsProvider);
-  
+
   //注册一个刷新数据的指令
   vscode.commands.registerCommand("angcyo.refresh", () => {
     welcomeViewsProvider.refresh();
     angcyoViewsProvider.refresh();
     httpViewsProvider.refresh();
+    laserABCViewsProvider.refresh();
     laserPeckerViewsProvider.refresh();
   });
-  
+
   //单独刷新angcyo
   vscode.commands.registerCommand("angcyo.refresh.angcyo", () => {
     angcyoViewsProvider.refresh();
   });
-  
+
   //打开网页
   vscode.commands.registerCommand("angcyo.openUrl", async (url) => {
     console.log(`命令打开url:${url}`);
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`${url}`));
   });
-  
+
   //httpServer
   const httpServerWebviewPanel = new HttpServerWebviewPanel();
   vscode.commands.registerCommand("angcyo.httpServer", () => {
     console.log(`httpServer`);
     httpServerWebviewPanel.createOrShow(context).then();
   });
-  
+
   //angcyo.memo 备忘录
   const memoPanel = new MemoWebviewPanel();
   vscode.commands.registerCommand("angcyo.memo", () => {
     console.log(`备忘录`);
     memoPanel.createOrShow(context).then();
   });
-  
+
   //Api.readFile(context, "res", "main.css");
-  
+
   //注册一个指令, 用来给选中的文本添加引号, LaserPecker
   vscode.commands.registerCommand("angcyo.command.addQuotationMarkLaserPecker", () => {
     laserPeckerAddQuotationMark.addQuotationMark();
   });
-  
+
   //--
-  
+
   //注册命令用来打开[WebviewPanel]
   panelConfig.forEach((panel) => {
     let webviewPanel = new WebviewPanel(panel.viewType, panel.title, panel.scriptPath, panel.htmlPath,);
     if (panel.viewType === "angcyo.binParse") {
       webviewPanel = new LpbinWebviewPanel();
     }
-    
+
     vscode.commands.registerCommand(panel.viewType, () => {
       console.log(panel.title);
       webviewPanel.createOrShow(context).then();
     });
   });
-  
+
   //test
   /*vscode.window.showInputBox({
     title: "请输入...",
