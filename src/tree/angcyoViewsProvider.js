@@ -34,6 +34,14 @@ class AngcyoViewsProvider extends TreeDataProvider {
         tooltip: "日志数据分析",
       },
       {
+        label: "HEX工具",
+        iconPath: path.join(__filename, "..", "..", "..", "res", "parse.svg"),
+        command: {
+          command: "angcyo.hexTools",
+        },
+        tooltip: "HEX工具",
+      },
+      {
         label: "JS工具",
         iconPath: path.join(__filename, "..", "..", "..", "res", "parse.svg"),
         command: {

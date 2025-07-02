@@ -52,16 +52,14 @@ class Api {
             treeItem.command = item.command;
             treeItem.childList = undefined;
             treeItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
-            if (item.icon) {
-              //有图标
-              treeItem.iconPath = path.join(
-                __filename,
-                "..",
-                "..",
-                "res",
-                item.icon
-              );
-            }
+            treeItem.iconPath = path.join(
+              __filename,
+              "..",
+              "..",
+              "res",
+              item.icon || "parse.svg"
+            );
+            
           }
           return treeItem;
         });

@@ -25,6 +25,12 @@
     "htmlPath": "res/html/jsTools.html"
   },
   {
+    "viewType": "angcyo.hexTools",
+    "title": "HEX工具",
+    "scriptPath": "res/js/hexTools.js",
+    "htmlPath": "res/html/hexTools.html"
+  },
+  {
     "viewType": "angcyo.crawlerTools",
     "title": "爬虫工具",
     "scriptPath": "res/js/crawlerTools.js",

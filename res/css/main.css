@@ -1,29 +1,29 @@
 html {
-  width: 100%;
+    width: 100%;
 }
 
 body {
-  background-color: transparent;
-  width: 100%;
+    background-color: transparent;
+    width: 100%;
 }
 
 textarea {
-  width: 100%;
-  max-width: 100%;
-  min-width: 100%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
 }
 
 .inline-flex {
-  display: inline-flex;
-  flex-flow: wrap;
-  align-items: center;
+    display: inline-flex;
+    flex-flow: wrap;
+    align-items: center;
 }
 
 .button-wrap {
-  display: flex;
-  flex-flow: wrap;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    flex-flow: wrap;
+    align-items: center;
+    gap: 10px;
 }
 
 /* .button-wrap button {
@@ -31,11 +31,11 @@ textarea {
 } */
 
 .button-wrap input {
-  width: auto;
+    width: auto;
 }
 
 .button-wrap * {
-  margin-top: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 /* .button-wrap label {
@@ -43,284 +43,295 @@ textarea {
 } */
 
 .file-select-wrap {
-  display: flex;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  flex-flow: wrap;
+    display: flex;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    flex-flow: wrap;
 }
 
 .file-select-wrap img {
-  width: 33.3%;
-  display: inline;
+    width: 33.3%;
+    display: inline;
 }
 
 .title-wrap {
-  vertical-align: middle;
+    vertical-align: middle;
 }
 
 .title-wrap * {
-  display: inline-block;
+    display: inline-block;
 }
 
 .propertyWrap {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .propertyWrap input {
-  display: inline-block;
-  width: 160px;
-  margin-right: 1rem;
+    display: inline-block;
+    width: 160px;
+    margin-right: 1rem;
 }
 
 #width {
-  width: 80px;
+    width: 80px;
 }
 
 #height {
-  width: 80px;
+    width: 80px;
 }
 
 #headerSize {
-  width: 80px;
+    width: 80px;
 }
 
 #showBorder {
-  width: auto;
+    width: auto;
 }
 
 #svgWrap svg {
-  width: auto;
-  height: auto;
-  border-color: var(--vscode-focusBorder);
-  border-style: hidden;
+    width: auto;
+    height: auto;
+    border-color: var(--vscode-focusBorder);
+    border-style: hidden;
 }
 
 .padding {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .margin {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .ml {
-  margin-left: 1rem;
+    margin-left: 1rem;
 }
 
 .timestamp {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  flex-flow: wrap;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    flex-flow: wrap;
 }
 
 .timestamp input {
-  width: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+    width: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .timestamp label {
-  margin-right: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 .timestamp * {
-  margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .memo-wrap {
-  display: flex;
-  align-items: center;
-  flex-flow: wrap;
+    display: flex;
+    align-items: center;
+    flex-flow: wrap;
 }
 
 .memo-wrap label {
-  padding: 1rem;
+    padding: 1rem;
 }
 
 .memo-wrap textarea {
-  flex: 1;
-  width: auto;
-  max-width: auto;
-  min-width: auto;
+    flex: 1;
+    width: auto;
+    max-width: auto;
+    min-width: auto;
 }
 
 #host {
-  width: 50%;
+    width: 50%;
 }
 
 #url {
-  width: 50%;
+    width: 50%;
 }
 
 .input {
-  width: 50%;
+    width: 50%;
 }
 
 #frame-wrap * {
-  margin-top: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 #frame-wrap label {
-  margin-right: 0.3rem;
+    margin-right: 0.3rem;
 }
 
 #frame-wrap input {
-  width: 6rem;
-  margin-right: 1rem;
+    width: 6rem;
+    margin-right: 1rem;
 }
 
 #engrave-params-wrap label {
-  margin-right: 0.3rem;
+    margin-right: 0.3rem;
 }
 
 #engrave-params-wrap input {
-  width: 4.5rem;
-  margin-right: 1rem;
+    width: 4.5rem;
+    margin-right: 1rem;
 }
 
 .inline-flex input {
-  width: auto !important;
-  margin-right: 0.3rem !important;
-  margin-top: 0px !important;
+    width: auto !important;
+    margin-right: 0.3rem !important;
+    margin-top: 0px !important;
 }
 
 .font-style input {
-  width: 4.5rem !important;
+    width: 4.5rem !important;
 }
 
 .label {
-  margin-left: 0.6rem;
+    margin-left: 0.6rem;
 }
 
 #host {
-  width: 40rem !important;
+    width: 40rem !important;
 }
 
 #scheme,
 #lines {
-  width: 6rem;
+    width: 6rem;
 }
 
 .inputContext {
-  width: 40rem !important;
-  min-width: auto;
-  max-width: auto;
+    width: 40rem !important;
+    min-width: auto;
+    max-width: auto;
 }
 
 #gravity {
-  width: 4rem !important;
+    width: 4rem !important;
 }
 
 .ml {
-  margin-left: 0.6rem;
+    margin-left: 0.6rem;
 }
 
 .mt {
-  margin-top: 0.6rem;
+    margin-top: 0.6rem;
 }
 
 .frame {
-  position: absolute;
+    position: absolute;
 }
 
 .svgFlex {
-  display: flex;
-  gap: 1rem;
+    display: flex;
+    gap: 1rem;
 }
 
 .input-wrap {
-  display: flex;
-  flex-flow: wrap;
-  align-items: center;
+    display: flex;
+    flex-flow: wrap;
+    align-items: center;
 }
 
 .input-wrap * {
-  margin-top: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .input-wrap button {
-  margin-right: 1rem;
+    margin-right: 1rem;
 }
 
 .input-wrap input {
-  width: 28rem;
+    width: 28rem;
 }
 
 .input-wrap *:not(:last-child) {
-  margin-right: 1rem;
+    margin-right: 1rem;
 }
 
 #inputCommandData {
-  width: 42rem;
+    width: 42rem;
 }
 
 .textarea-wrap {
-  display: flex;
-  flex-flow: wrap;
-  align-items: center;
+    display: flex;
+    flex-flow: wrap;
+    align-items: center;
 }
 
 .textarea-wrap * {
-  margin-top: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .textarea-wrap *:not(:last-child) {
-  margin-right: 1rem;
+    margin-right: 1rem;
 }
 
 .textarea-wrap textarea {
-  flex: 1;
-  width: auto;
-  max-width: auto;
-  min-width: auto;
+    flex: 1;
+    width: auto;
+    max-width: auto;
+    min-width: auto;
 }
 
 .link-wrap {
-  display: flex;
-  flex-flow: wrap;
-  align-items: center;
+    display: flex;
+    flex-flow: wrap;
+    align-items: center;
 }
 
 .link-wrap * {
-  margin-top: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .link-wrap *:not(:last-child) {
-  margin-right: 1rem;
+    margin-right: 1rem;
 }
 
 #lpUserName {
-  width: 10rem !important;
+    width: 10rem !important;
 }
 
 #lpPassword {
-  width: 10rem !important;
+    width: 10rem !important;
 }
 
 #httpPostPort {
-  width: 20rem;
+    width: 20rem;
 }
 
 .width30p {
-  width: 30%;
+    width: 30%;
 }
 
 .width40p {
-  width: 40%;
+    width: 40%;
 }
 
 .width50p {
-  width: 50%;
+    width: 50%;
 }
 
 select {
-  min-height: 2.2rem;
-  background-color: transparent;
-  border: 1px solid #d9d9d9;
-  color: white;
-  border-radius: 3px;
+    min-height: 2.2rem;
+    background-color: transparent;
+    border: 1px solid #d9d9d9;
+    color: white;
+    border-radius: 3px;
+}
+
+.single-input-wrap {
+    display: flex;
+    flex-flow: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.single-input-wrap input {
+    flex: 1;
 }

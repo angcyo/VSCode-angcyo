@@ -12,7 +12,9 @@ const {
   laserPeckerAddQuotationMark,
 } = require("./src/command/addQuotationMarkLaserPecker.js");
 const {showInputBox} = require("vscode");
-const panelConfig = require("./src/panel/config.json");
+
+/**指定命令, 跳转指定的web panel*/
+const webPanelConfig = require("./src/panel/web_panel_config.json");
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -66,8 +68,8 @@ function activate(context) {
   //   "id": "laserABCViews",
   //   "name": "LaserABC"
   // },
-  const laserABCViewsProvider = new TreeDataProvider(`${host}/LaserABCUrl.json`, []);
-  vscode.window.registerTreeDataProvider("laserABCViews", laserABCViewsProvider);
+  /*const laserABCViewsProvider = new TreeDataProvider(`${host}/LaserABCUrl.json`, []);
+  vscode.window.registerTreeDataProvider("laserABCViews", laserABCViewsProvider);*/
 
   //
   const laserPeckerViewsProvider = new TreeDataProvider(`${host}/laserPeckerUrl.json`, []);
@@ -79,7 +81,7 @@ function activate(context) {
     welcomeViewsProvider.refresh();
     angcyoViewsProvider.refresh();
     httpViewsProvider.refresh();
-    laserABCViewsProvider.refresh();
+    /*laserABCViewsProvider.refresh();*/
     laserPeckerViewsProvider.refresh();
   });
 
@@ -118,7 +120,7 @@ function activate(context) {
   //--
 
   //注册命令用来打开[WebviewPanel]
-  panelConfig.forEach((panel) => {
+  webPanelConfig.forEach((panel) => {
     let webviewPanel = new WebviewPanel(panel.viewType, panel.title, panel.scriptPath, panel.htmlPath,);
     if (panel.viewType === "angcyo.binParse") {
       webviewPanel = new LpbinWebviewPanel();
