@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-07-03
+
++ hex tools
+
 ## 2025-06-23
 
 + command
