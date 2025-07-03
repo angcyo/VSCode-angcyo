@@ -3,6 +3,7 @@
 ## 2025-07-03
 
 + bin / oct / uri encode / decode
++ md5
 
 ## 2025-07-03
 
