@@ -1105,8 +1105,8 @@
     }
     return paths;
   }
-
-  /**将数据使用md5进行加密*/
+  
+  /**将文本字符数据使用md5进行加密*/
   function md5(data) {
     return SparkMD5.hash(data);
   }
