@@ -2,6 +2,10 @@
 
 ## 2025-07-03
 
++ bin / oct / uri encode / decode
+
+## 2025-07-03
+
 + hex tools
 
 ## 2025-06-23
