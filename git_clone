@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Turn off echo
+set +x
+
+#git remote show origin
+git remote -v
+
+git fetch
+git rebase origin/main
