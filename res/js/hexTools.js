@@ -6,7 +6,7 @@
 
 (function () {
   const vscode = acquireVsCodeApi();
-
+  
   const binInput = document.getElementById("binInput");
   const octInput = document.getElementById("octInput");
   const decInput = document.getElementById("decInput");
@@ -14,13 +14,13 @@
   const utfInput = document.getElementById("utfInput");
   const uriInput = document.getElementById("uriInput");
   const result = document.getElementById("result");
-
+  
   const selectFile = document.getElementById("selectFile");
   const hexResult = document.getElementById("hexResult");
   const bytesStartIndex = document.getElementById("bytesStartIndex");
   const bytesEndIndex = document.getElementById("bytesEndIndex");
   const bytesReadCount = document.getElementById("bytesReadCount");
-
+  
   //-
   const defDec = "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15";
   initTextInput("binInput", decimalStrToHex(defDec, 2), (value) => {
@@ -94,137 +94,144 @@
       calcBytesOutput();
     }
   });
-
+  
   //--
-
+  
   /**当十进制输入框改变时的处理逻辑*/
   function onDecInputChanged(value, ignoreInput = [decInput]) {
     if (!value) {
       return;
     }
-
+    
     if (!ignoreInput.includes(binInput)) {
       binInput.value = decimalStrToHex(value, 2);
       localStorage.setItem("binInput", binInput.value);
     }
-
+    
     if (!ignoreInput.includes(octInput)) {
       octInput.value = decimalStrToHex(value, 8);
       localStorage.setItem("octInput", octInput.value);
     }
-
+    
     if (!ignoreInput.includes(decInput)) {
       decInput.value = value;
       localStorage.setItem("decInput", decInput.value);
     }
-
+    
     if (!ignoreInput.includes(hexInput)) {
       hexInput.value = decimalStrToHex(value, 16);
       localStorage.setItem("hexInput", hexInput.value);
     }
-
+    
     if (!ignoreInput.includes(utfInput)) {
       const bytes = decimalStrToBytes(value);
       onUtfInputChanged(bytesToUtf8(bytes), [decInput, ...ignoreInput])
     }
-
+    
     updateResult(value);
   }
-
+  
   /**当utf文本输入框改变时的处理逻辑*/
   function onUtfInputChanged(value, ignoreInput = [utfInput]) {
     if (!value) {
       return;
     }
-
+    
     const bytes = stringToBytes(value);
     const decStr = bytesToDecimalStr(bytes);
     const hexStr = decimalStrToHex(decStr);
     const uriStr = encodeURIComponent(value);
-
+    
     if (!ignoreInput.includes(decInput)) {
       decInput.value = decStr;
       localStorage.setItem("decInput", decInput.value);
-
+      
       onDecInputChanged(decStr, [utfInput, decInput])
     }
-
+    
     if (!ignoreInput.includes(hexInput)) {
       hexInput.value = hexStr;
       localStorage.setItem("hexInput", hexInput.value);
     }
-
+    
     if (!ignoreInput.includes(utfInput)) {
       utfInput.value = value;
       localStorage.setItem("utfInput", utfInput.value);
     }
-
+    
     if (!ignoreInput.includes(uriInput)) {
       uriInput.value = uriStr;
       localStorage.setItem("uriInput", uriInput.value);
     }
-
+    
     updateResult(decInput.value);
   }
-
+  
   //--
-
+  
   /*clickButton("clear", () => {
     result.innerHTML = "";
   });*/
-
+  
   /**使用十进制字符串值, 更新返回框内容*/
   function updateResult(decimalStr) {
     const bytes = decimalStrToBytes(decimalStr);
-
+    
     let resultStr = "共->" + bytes.length + " B(字节)" + ` ${bytes.length * 8} Bit(位)\n\n`;
-
+    
     const littleHex = decimalStrToLittleEndianHex(decimalStr);
-
+    
     resultStr += "十进制(大端):\n" + decimalStr + "\n\n";
     resultStr += "十进制(小端):\n" + hexStrToDec(littleHex) + "\n\n";
-
+    
     resultStr += "十六进制(大端):\n" + decimalStrToHex(decimalStr) + "\n\n";
     resultStr += "十六进制(小端):\n" + littleHex + "\n\n";
-
+    
+    resultStr += bytesToEncryptLog(bytes) + "\n\n";
+    resultStr += "utf8字符MD5:\n" + textToMd5(utfInput.value) + "\n\n";
+    
+    result.innerHTML = resultStr;
+  }
+  
+  /**将字节数组输出成十六进制字符*/
+  function updateHexContentResult(bytes) {
+    hexResult.innerHTML = bytesToLog(bytes, hexResult.clientWidth > 1024 ? 64 : 32);
+  }
+  
+  /**字节数组转换成加密字符串日志*/
+  function bytesToEncryptLog(bytes) {
+    let resultStr = "";
     const checkSum = calcCheckSum(bytes)
     resultStr += "字节校验和(十进制):\n" + checkSum + "\n\n";
     resultStr += "字节校验和(十六进制):\n" + decimalStrToHex(`${checkSum}`) + "\n\n";
-
+    
     const crc16 = calcCrc16(bytes)
     resultStr += "字节crc16校验和(十进制):\n" + crc16 + "\n\n";
     resultStr += "字节crc16校验和(十六进制):\n" + decimalStrToHex(`${crc16}`) + "\n\n";
-
-    resultStr += "字节MD5:\n" + bytesToMd5(bytes) + "\n\n";
-    resultStr += "utf8字符MD5:\n" + textToMd5(utfInput.value) + "\n\n";
-
-    result.innerHTML = resultStr;
+    
+    resultStr += "字节MD5:\n" + bytesToMd5(bytes);
+    return resultStr;
   }
-
-  /**将字节数组输出成十六进制字符*/
-  function updateHexContentResult(bytes) {
-    hexResult.innerHTML = bytesToLog(bytes);
-  }
-
+  
   /**字节转换成可读日志字符串*/
-  function bytesToLog(bytes) {
+  function bytesToLog(bytes, width) {
     let resultStr = "共->" + bytes.length + " B(字节)" + ` ${bytes.length * 8} Bit(位)\n\n`;
-
+    
     bytes.forEach((item, index) => {
       resultStr += `${item.toString(16).padStart(2, "0").toUpperCase()}  `;
-      if ((index + 1) % 32 === 0) {
+      if ((index + 1) % (width || 32) === 0) {
         resultStr += "\n";
       }
     })
-
+    
     return resultStr;
   }
-
+  
   /**将字节转换成数组日志*/
   function bytesToNumberLog(bytes) {
     //debugger;
     let resultStr = "";
-
+    
     function buffer(fillLength) {
       let fillBytes = [...bytes];
       while (fillBytes.length < fillLength) {
@@ -232,34 +239,36 @@
       }
       return new DataView(Uint8Array.from(fillBytes).buffer);
     }
-
+    
     /*let testBytes = new Uint8Array([0x89]);
     let dView = new DataView(testBytes.buffer);
     let i1 = dView.getInt8(0);
     let i2 = dView.getUint8(0);
 
     debugger;*/
-
-    resultStr += "无符号U8:\n" + buffer(1).getUint8(0) + "\n\n";
-
-    resultStr += "无符号十进制(大端):\n" + buffer(4).getUint32(0, false) + "\n\n";
-    resultStr += "无符号十进制(小端):\n" + buffer(4).getUint32(0, true) + "\n\n";
-
-    resultStr += "无符号Big十进制(大端):\n" + buffer(8).getBigUint64(0, false) + "\n\n";
-    resultStr += "无符号Big十进制(小端):\n" + buffer(8).getBigUint64(0, true) + "\n\n";
-
-    resultStr += "十进制(大端):\n" + buffer(4).getInt32(0, false) + "\n\n";
-    resultStr += "十进制(小端):\n" + buffer(4).getInt32(0, true) + "\n\n";
-
-    resultStr += "Big十进制(大端):\n" + buffer(8).getBigInt64(0, false) + "\n\n";
-    resultStr += "Big十进制(小端):\n" + buffer(8).getBigInt64(0, true) + "\n\n";
-
-    resultStr += "浮点(大端):\n" + buffer(4).getFloat32(0, false) + "\n\n";
-    resultStr += "浮点(小端):\n" + buffer(4).getFloat32(0, true) + "\n\n";
-
+    
+    resultStr += "无符号U8: " + buffer(1).getUint8(0) + "  ";
+    
+    resultStr += "无符号十进制(大端): " + buffer(4).getUint32(0, false) + "  ";
+    resultStr += "无符号十进制(小端): " + buffer(4).getUint32(0, true) + "  ";
+    
+    resultStr += "无符号Big十进制(大端): " + buffer(8).getBigUint64(0, false) + "  ";
+    resultStr += "无符号Big十进制(小端): " + buffer(8).getBigUint64(0, true) + "\n\n";
+    
+    resultStr += "十进制(大端): " + buffer(4).getInt32(0, false) + "  ";
+    resultStr += "十进制(小端): " + buffer(4).getInt32(0, true) + "  ";
+    
+    resultStr += "Big十进制(大端): " + buffer(8).getBigInt64(0, false) + "  ";
+    resultStr += "Big十进制(小端): " + buffer(8).getBigInt64(0, true) + "\n\n";
+    
+    resultStr += "浮点(大端): " + buffer(4).getFloat32(0, false) + "  ";
+    resultStr += "浮点(小端): " + buffer(4).getFloat32(0, true) + "\n\n";
+    
+    resultStr += bytesToEncryptLog(bytes) + "\n\n";
+    
     return resultStr;
   }
-
+  
   /**十进制字符串转换成十六进制字符串*/
   function decimalStrToHex(value, radix, numRadix) {
     let rdx = radix || 16;
@@ -284,7 +293,7 @@
     }
     return "";
   }
-
+  
   /**十进制字符串转换成小端十六进制字符串*/
   function decimalStrToLittleEndianHex(value) {
     if (value) {
@@ -307,9 +316,9 @@
     }
     return "";
   }
-
+  
   //--
-
+  
   /**十六进制字符串转换成十进制字符串*/
   function hexStrToDec(value, radix) {
     if (value) {
@@ -331,9 +340,9 @@
     }
     return "";
   }
-
+  
   //--
-
+  
   /**十进制转十六进制*/
   function decimalToHex(decimal, radix) {
     let rdx = radix || 16;
@@ -343,12 +352,12 @@
     }
     return hex.padStart(hex.length + 1, "0"); // 转换为十六进制
   }
-
+  
   /**十六进制转十进制*/
   function hexToDecimal(hex, radix) {
     return parseInt(hex, radix || 16); // 转换为十进制
   }
-
+  
   /**将十进制转换成小端序十六进制*/
   function decimalToLittleEndianHex(decimal, radix) {
     let rdx = radix || 16;
@@ -360,7 +369,7 @@
     }
     return littleEndianHex;
   }
-
+  
   /**十进制字符串转换成字节数组*/
   function decimalStrToBytes(decimalStr) {
     if (!decimalStr) {
@@ -380,25 +389,25 @@
     }
     return bytes;
   }
-
+  
   /**字节数组转换成utf8字符串*/
   function bytesToUtf8(bytes) {
     return new TextDecoder().decode(new Uint8Array(bytes));
   }
-
+  
   /**字符串转换成字节数组*/
   function stringToBytes(str) {
     const encoder = new TextEncoder();
     return Array.from(encoder.encode(str));
   }
-
+  
   /**字节数组转换成十进制数字字符串*/
   function bytesToDecimalStr(bytes) {
     return bytes.map((byte) => byte.toString()).join(" ");
   }
-
+  
   //--
-
+  
   /**字节数组计算校验和*/
   function calcCheckSum(bytes) {
     let sum = 0;
@@ -407,26 +416,26 @@
     }
     return sum;
   }
-
+  
   //---
-
+  
   window.addEventListener("message", (event) => {
     const message = event.data; // The json data that the extension sent
     console.log(message);
   });
-
+  
   //
   window.addEventListener("error", (event) => {
     showMessage(event.message);
   });
-
+  
   /**在vscode上显示一个消息通知*/
   function showMessage(text) {
     vscode.postMessage({
       text: text,
     });
   }
-
+  
   /**监听一次*/
   function listenerOnce(command, type, callback) {
     const listener = function (event) {
@@ -440,9 +449,9 @@
     };
     window.addEventListener("message", listener);
   }
-
+  
   //---
-
+  
   /**
    * 点击一个按钮
    * @param {string} id
@@ -454,7 +463,7 @@
       action();
     });
   }
-
+  
   /**
    * 自动持久化输入控件
    * @param {string} id 控件的id, 也是持久化的key
@@ -472,7 +481,7 @@
     });
     input.value = localStorage.getItem(id) || def;
   }
-
+  
   /**选中文件回调, 回调第一个文件对象
    * @param {string} id 控件的id
    * @param {function} callback 选中回调第一个文件对象, 否则undefined
@@ -491,13 +500,13 @@
       }
     });
   }
-
+  
   //---
-
+  
   function nowTimeString(fmt) {
     return formatDate(new Date(), fmt || "yyyy-MM-dd HH:mm:ss'SSS");
   }
-
+  
   //格式化时间
   function formatDate(date, fmt) {
     const o = {
@@ -520,7 +529,7 @@
     }
     return fmt;
   }
-
+  
   /**拼接返回值*/
   function appendResult(text) {
     if (result.innerHTML) {
@@ -529,31 +538,31 @@
       result.innerHTML = nowTimeString() + "\n" + text;
     }
   }
-
+  
   function wrapTime(tag, action) {
     tick();
     action();
     appendTime(tag);
   }
-
+  
   var tickTime = 0;
-
+  
   function tick() {
     tickTime = new Date().getTime();
   }
-
+  
   function appendTime(tag) {
     const time = new Date().getTime();
     appendResult((tag || "") + "耗时:" + (time - tickTime) + "ms");
   }
-
+  
   /**滚动到底部*/
   function scrollToBottom() {
     setTimeout(() => {
       window.scrollTo(0, document.documentElement.clientHeight);
     }, 300);
   }
-
+  
   /**向指定的目标发送input事件*/
   function sendInputEvent(target) {
     // 创建事件对象
@@ -563,7 +572,7 @@
     // 触发事件
     target.dispatchEvent(inputEvent);
   }
-
+  
   /**可见或者隐藏控件*/
   function visible(id, visible) {
     const element = document.getElementById(id);
@@ -573,21 +582,21 @@
       element.style.display = "none";
     }
   }
-
+  
   //--
-
+  
   /**将文本字符数据使用md5进行加密*/
   function textToMd5(text) {
     return SparkMD5.hash(text).toUpperCase();
   }
-
+  
   /**将字节数组数据使用md5进行加密*/
   function bytesToMd5(bytes) {
     return SparkMD5.ArrayBuffer.hash(new Uint8Array(bytes)).toUpperCase();
   }
-
+  
   //--crc16
-
+  
   const _crc16table = [
     0x0000,
     0xC0C1,
@@ -846,7 +855,7 @@
     0x8081,
     0x4040
   ];
-
+  
   /**字节数组计算crc16*/
   function calcCrc16(bytes) {
     let crc = 0;
@@ -855,9 +864,9 @@
     }
     return crc;
   }
-
+  
   //--
-
+  
   /**
    * 读取文件字节数据
    * @param {File} file 文件对象
@@ -875,18 +884,18 @@
     };
     reader.readAsArrayBuffer(file);
   }
-
+  
   //--
-
+  
   /**计算字节输出内容*/
   function calcBytesOutput(priorityEndIndex) {
     let start = bytesStartInt();
     let end = bytesEndInt();
     let count = bytesCountInt();
-
+    
     //读取到的字节数组
     let bytes;
-
+    
     //debugger;
     if (selectFileBytes && start !== undefined) {
       //开始读取的字节索引
@@ -899,25 +908,25 @@
       }
       bytes = selectFileBytes.subarray(start, end);
     }
-
+    
     //读取字节
     if (bytes) {
       result.innerHTML = bytesToLog(bytes) + "\n\n" + bytesToNumberLog(bytes);
     }
   }
-
+  
   function bytesStartInt() {
     return strToIntOrNull(bytesStartIndex.value);
   }
-
+  
   function bytesEndInt() {
     return strToIntOrNull(bytesEndIndex.value);
   }
-
+  
   function bytesCountInt() {
     return strToIntOrNull(bytesReadCount.value);
   }
-
+  
   function strToIntOrNull(value) {
     if (value) {
       try {
@@ -928,6 +937,6 @@
     }
     return undefined;
   }
-
-
+  
+  
 })();
