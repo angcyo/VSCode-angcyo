@@ -51,11 +51,41 @@
   <input id="uriInput" type="text" placeholder="uri编码内容"/>
 </div>
 
+<div class="hex-input-wrap">
+  <input
+    id="selectFile"
+    type="file"
+    placeholder="请选择文件..."
+    accept="*"
+  />
+  <div id="bytesStartIndexWrap" class="hex-input-wrap ml" style="display: none">
+    <label for="bytesStartIndex">起始:</label>
+    <input id="bytesStartIndex" type="number" placeholder="读取字节的起始位置"/>
+  </div>
+  <div id="bytesEndIndexWrap" class="hex-input-wrap ml" style="display: none">
+    <label for="bytesEndIndex">结束:</label>
+    <input id="bytesEndIndex" type="number" placeholder="结束位置"/>
+  </div>
+  <div id="bytesReadCountWrap" class="hex-input-wrap ml" style="display: none">
+    <label for="bytesReadCount">个数:</label>
+    <input id="bytesReadCount" type="number" placeholder="读取字节个数"/>
+  </div>
+</div>
+
 <div id="content" class="margin">
       <textarea
         id="result"
         name="result"
         placeholder="结果输出..."
+        rows="40"
+        disabled></textarea>
+</div>
+
+<div id="hexResultWrap" class="margin" style="display: none">
+      <textarea
+        id="hexResult"
+        name="hexResult"
+        placeholder="字节HEX内容"
         rows="40"
         disabled></textarea>
 </div>
