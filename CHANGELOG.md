@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-07-05
+
++ hex data view
+
 ## 2025-07-03
 
 + bin / oct / uri encode / decode
