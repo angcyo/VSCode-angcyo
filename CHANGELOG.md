@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-07-08
+
++ hex to bytes
+
 ## 2025-07-05
 
 + hex data view
