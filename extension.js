@@ -132,6 +132,11 @@ function activate(context) {
     });
   });
 
+  //注册一个指令, 用来随机打开网页
+  vscode.commands.registerCommand("angcyo.angcyo", () => {
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://visitarandomwebsite.com/`));
+  });
+
   //test
   /*vscode.window.showInputBox({
     title: "请输入...",
