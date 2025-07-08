@@ -4,6 +4,7 @@
  * @date 2025-07-02
  */
 
+/**16位CRC校验表*/
 const _crc16table = [
   0x0000,
   0xC0C1,
@@ -269,6 +270,7 @@ const _crc16table = [
   const binInput = document.getElementById("binInput");
   const octInput = document.getElementById("octInput");
   const decInput = document.getElementById("decInput");
+  const decInput2 = document.getElementById("decInput2");
   const hexInput = document.getElementById("hexInput");
   const hexInput2 = document.getElementById("hexInput2");
   const utfInput = document.getElementById("utfInput");
@@ -352,6 +354,17 @@ const _crc16table = [
       });
     }
   });
+  initTextInput("decInput2", "", (value) => {
+    //console.log("hexInput value:", value);
+    visibleHexControlInputElement(value || selectFileBytes);
+    if (value) {
+      //debugger;
+      const bytes = new Uint8Array(hexStrToBytes(decimalStrToHex(value)));
+      selectFileBytes = bytes;
+      updateHexContentResult(bytes);
+      calcBytesOutput();
+    }
+  }, true);
   initTextInput("hexInput2", "", (value) => {
     //console.log("hexInput value:", value);
     visibleHexControlInputElement(value || selectFileBytes);
@@ -551,12 +564,12 @@ const _crc16table = [
 
   /**十进制字符串转换成十六进制字符串
    * [value] 数字字符串
-   * [numRadix] 数字字符串中的数字是几进制
-   * [radix] 需要输出几进制的字符串
+   * [fromNumRadix] 数字字符串中的数字是几进制, 默认10
+   * [toRadix] 需要输出几进制的字符串, 默认16
    * */
-  function decimalStrToHex(value, radix, numRadix) {
-    let rdx = radix || 16;
-    let numRdx = numRadix || 10;
+  function decimalStrToHex(value, toRadix, fromNumRadix) {
+    let rdx = toRadix || 16;
+    let numRdx = fromNumRadix || 10;
     if (value) {
       //使用空格分隔
       let hexStr = "";
