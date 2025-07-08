@@ -21,24 +21,27 @@
   <h1>{{title}}</h1>
 </div>
 
+<h2>进制转换:</h2>
+<p><strong>Big-endian(默认)</strong>: 大端序，指高位字节存储在低地址，低位字节存储在高地址。常用缩写为 <strong>BE</strong>。</p>
+<p><strong>Little-endian</strong>: 小端序，指低位字节存储在低地址，高位字节存储在高地址。常用缩写为 <strong>LE</strong>。</p>
 <div class="single-input-wrap">
-  <label for="binInput">二进制:</label>
-  <input id="binInput" type="text" placeholder="二进制内容"/>
+  <label for="binInput">二进制(Bin):</label>
+  <input id="binInput" type="text" placeholder="二进制内容(Binary)"/>
 </div>
 
 <div class="single-input-wrap">
-  <label for="octInput">八进制:</label>
-  <input id="octInput" type="text" placeholder="八进制内容"/>
+  <label for="octInput">八进制(Oct):</label>
+  <input id="octInput" type="text" placeholder="八进制内容(Octal)"/>
 </div>
 
 <div class="single-input-wrap">
-  <label for="decInput">十进制:</label>
-  <input id="decInput" type="text" placeholder="十进制内容"/>
+  <label for="decInput">十进制(Dec):</label>
+  <input id="decInput" type="text" placeholder="十进制内容(Decimal)"/>
 </div>
 
 <div class="single-input-wrap">
-  <label for="hexInput">十六进制:</label>
-  <input id="hexInput" type="text" placeholder="十六进制内容"/>
+  <label for="hexInput">十六进制(Hex):</label>
+  <input id="hexInput" type="text" placeholder="十六进制内容(Hexadecimal)"/>
 </div>
 
 <div class="single-input-wrap">
@@ -51,6 +54,8 @@
   <input id="uriInput" type="text" placeholder="uri编码内容"/>
 </div>
 
+<h2>字节转换:</h2>
+<label for="hexInput2"></label><input id="hexInput2" type="text" placeholder="HEX内容"/>
 <div class="hex-input-wrap">
   <input
     id="selectFile"
