@@ -4,6 +4,7 @@
 
 + hex to bytes
 + command
++ dec / hex 
 
 ## 2025-07-05
 
