@@ -5,6 +5,7 @@
 + hex to bytes
 + command
 + dec / hex 
++ base64
 
 ## 2025-07-05
 
