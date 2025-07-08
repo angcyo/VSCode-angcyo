@@ -2,7 +2,7 @@
   "name": "angcyo",
   "displayName": "angcyo",
   "description": "还能这么玩, `骚年`我在群里等你! 一个能把Idea写崩溃的蓝神.",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "license": "MIT",
   "publisher": "angcyo",
   "repository": {
@@ -33,6 +33,11 @@
         "category": "angcyo"
       },
       {
+        "command": "angcyo.angcyo",
+        "title": "你在这里还发现了什么?",
+        "category": "angcyo"
+      },
+      {
         "command": "angcyo.command.addQuotationMarkLaserPecker",
         "title": "LaserPecker 添加双引号",
         "category": "angcyo"
@@ -45,6 +50,16 @@
       {
         "command": "angcyo.binParse",
         "title": "lpbin文件创建和解析",
+        "category": "angcyo"
+      },
+      {
+        "command": "angcyo.jsTools",
+        "title": "JS工具",
+        "category": "angcyo"
+      },
+      {
+        "command": "angcyo.hexTools",
+        "title": "Hex分析工具",
         "category": "angcyo"
       }
     ],
