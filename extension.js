@@ -137,6 +137,26 @@ function activate(context) {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://visitarandomwebsite.com/`));
   });
 
+  //注册指令
+  vscode.commands.registerCommand("angcyo.ncviewer", () => {
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://ncviewer.com/`));
+  });
+  vscode.commands.registerCommand("angcyo.svg-path-editor", () => {
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://yqnn.github.io/svg-path-editor/`));
+  });
+  vscode.commands.registerCommand("angcyo.csdn", () => {
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://blog.csdn.net/angcyo`));
+  });
+  vscode.commands.registerCommand("angcyo.juejin", () => {
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://juejin.cn/user/1398234517866856`));
+  });
+  vscode.commands.registerCommand("angcyo.github", () => {
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://github.com/angcyo`));
+  });
+  vscode.commands.registerCommand("angcyo.qq", () => {
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`http://wpa.qq.com/msgrd?v=3&uin=664738095&site=qq&menu=yes`));
+  });
+
   //test
   /*vscode.window.showInputBox({
     title: "请输入...",

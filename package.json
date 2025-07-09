@@ -61,6 +61,36 @@
         "command": "angcyo.hexTools",
         "title": "Hex分析工具",
         "category": "angcyo"
+      },
+      {
+        "command": "angcyo.ncviewer",
+        "title": "ncviewer",
+        "category": "angcyo"
+      },
+      {
+        "command": "angcyo.svg-path-editor",
+        "title": "svg-path-editor",
+        "category": "angcyo"
+      },
+      {
+        "command": "angcyo.csdn",
+        "title": "Csdn",
+        "category": "angcyo"
+      },
+      {
+        "command": "angcyo.juejin",
+        "title": "掘金",
+        "category": "angcyo"
+      },
+      {
+        "command": "angcyo.qq",
+        "title": "QQ咨询",
+        "category": "angcyo"
+      },
+      {
+        "command": "angcyo.github",
+        "title": "Github",
+        "category": "angcyo"
       }
     ],
     "menus": {
