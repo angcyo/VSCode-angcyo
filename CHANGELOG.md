@@ -4,6 +4,7 @@
 
 * fix output
 * fix btoa exception
++ command
 
 ## 2025-07-08
 
