@@ -937,7 +937,12 @@ const _crc16table = [
 
   /**将文本字符数据使用base64进行加密*/
   function textToBase64(text) {
-    return btoa(text);
+    try {
+      return btoa(text);
+    } catch (e) {
+      //debugger;
+      return e.toString();
+    }
   }
 
   /**将字节数组数据使用md5进行加密*/
@@ -954,7 +959,7 @@ const _crc16table = [
       binaryString += String.fromCharCode(byteArray[i]);
     }
     // 使用 btoa() 将二进制字符串转换为 Base64
-    return btoa(binaryString);
+    return textToBase64(binaryString);
   }
 
   //--crc16
