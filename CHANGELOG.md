@@ -3,6 +3,7 @@
 ## 2025-07-09
 
 * fix output
+* fix btoa exception
 
 ## 2025-07-08
 
