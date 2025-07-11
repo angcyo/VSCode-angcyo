@@ -516,8 +516,8 @@ const _crc16table = [
     resultStr += "字节crc16校验和(Int32): " + crc16 + "  ";
     resultStr += "字节crc16校验和(Hex): " + decimalStrToHex(`${crc16}`) + "\n\n";
 
-    resultStr += "字节MD5:\n" + bytesToMd5(bytes) + "\n\n";
-    resultStr += "字节Base64:\n" + byteArrayToBase64(bytes);
+    resultStr += `(${bytes.length}B)字节MD5:\n` + bytesToMd5(bytes) + "\n\n";
+    resultStr += `(${bytes.length}B)字节Base64:\n` + byteArrayToBase64(bytes);
 
     //debugger;
     bytesToGzip(bytes, (gzip) => {
@@ -525,7 +525,8 @@ const _crc16table = [
       if (result.innerHTML?.includes("字节Gzip") === false) {
         //debugger;
         const gzipHex = bytesToDecimalStr(gzip, 16, "");
-        result.innerHTML = result.innerHTML + "字节Gzip(Hex):\n" + gzipHex;
+        result.innerHTML = result.innerHTML + `(${gzip.length}B)字节Gzip(Hex):
+` + gzipHex;
       }
     });
 
