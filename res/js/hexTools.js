@@ -519,6 +519,16 @@ const _crc16table = [
     resultStr += "字节MD5:\n" + bytesToMd5(bytes) + "\n\n";
     resultStr += "字节Base64:\n" + byteArrayToBase64(bytes);
 
+    //debugger;
+    bytesToGzip(bytes, (gzip) => {
+      //gzip
+      if (result.innerHTML?.includes("字节Gzip") === false) {
+        //debugger;
+        const gzipHex = bytesToDecimalStr(gzip, 16, "");
+        result.innerHTML = result.innerHTML + "字节Gzip(Hex):\n" + gzipHex;
+      }
+    });
+
     return resultStr;
   }
 
@@ -743,8 +753,12 @@ const _crc16table = [
   }
 
   /**字节数组转换成十进制数字字符串*/
-  function bytesToDecimalStr(bytes) {
-    return bytes.map((byte) => byte.toString()).join(" ");
+  function bytesToDecimalStr(bytes, radix, space) {
+    let result = "";
+    bytes.map((byte) => {
+      result = result + decimalToHex(byte, radix) + (space === undefined ? " " : space);
+    });
+    return result;
   }
 
   //--
@@ -961,6 +975,22 @@ const _crc16table = [
     }
     // 使用 btoa() 将二进制字符串转换为 Base64
     return textToBase64(binaryString);
+  }
+
+  /**将字节数组进行gzip压缩, 使用浏览器自带[CompressionStream]处理*/
+  function bytesToGzip(bytes, callback) {
+    // 将输入转换为流
+    const inputStream = new Response(bytes).body;
+    // 创建 Gzip 压缩流
+    const gzipStream = new CompressionStream('gzip');
+    // 管道输入流到压缩流
+    const compressedStream = inputStream.pipeThrough(gzipStream);
+
+    // 读取压缩后的数据
+    const compressedResponse = new Response(compressedStream);
+    compressedResponse.arrayBuffer().then(function (result) {
+      callback && callback(new Uint8Array(result));
+    }); // 返回 ArrayBuffer
   }
 
   //--crc16
