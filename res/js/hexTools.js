@@ -704,8 +704,8 @@ const _crc16table = [
     if (!decimalStr) {
       return [];
     }
-    let rdx = radix || 16;
-    const hex = decimalStrToHex(decimalStr, rdx, 16).replaceAll(" ", "").trim();
+    let rdx = radix || 10;
+    const hex = decimalStrToHex(decimalStr, 16, rdx).replaceAll(" ", "").trim();
     return hexStrToBytes(hex);
   }
 
@@ -716,6 +716,7 @@ const _crc16table = [
       return [];
     }
     const hex = hexStr.replaceAll(" ", "").trim();
+    //debugger;
     //每2个字符为一组, 转换成字节数组
     const bytes = [];
     for (let i = 0; i < hex.length; i += 2) {
