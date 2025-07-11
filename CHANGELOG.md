@@ -1,5 +1,10 @@
 # Change Log
 
+## 2025-07-11
+
++ gzip
+* fix hex to bytes
+
 ## 2025-07-09
 
 * fix output
