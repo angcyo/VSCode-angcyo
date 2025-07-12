@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-07-12
+
++ hex format output
+
 ## 2025-07-11
 
 + gzip
