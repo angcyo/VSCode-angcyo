@@ -354,6 +354,11 @@ select {
   width: auto;
 }
 
+.hex-input-wrap .last-input {
+  flex: 1!important;
+  width: 30rem;
+}
+
 .hex-span {
   width: 16rem;
 }

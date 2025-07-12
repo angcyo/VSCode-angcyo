@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8"/>
+    <meta charset="UTF-8"/>
 
-  <!-- <meta
-    http-equiv="Content-Security-Policy"
-    content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
-  /> -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-eval' {{cspSource}}; img-src 'self' https: http: data: {{cspSource}}; script-src 'nonce-{{nonce}}';"
+    /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <link href="{{reset}}" rel="stylesheet"/>
-  <link href="{{vscode}}" rel="stylesheet"/>
-  <link href="{{main}}" rel="stylesheet"/>
+    <link href="{{reset}}" rel="stylesheet"/>
+    <link href="{{vscode}}" rel="stylesheet"/>
+    <link href="{{main}}" rel="stylesheet"/>
 
-  <title>{{title}}</title>
+    <title>{{title}}</title>
 </head>
 <body>
 <div class="title-wrap">
-  <img src="{{angcyo}}" width="25" title="angcyo"/>
-  <h1>{{title}}</h1>
+    <img src="{{angcyo}}" width="25" title="angcyo"/>
+    <h1>{{title}}</h1>
 </div>
 
 <h2>进制转换:</h2>
@@ -27,87 +27,91 @@
 <p><strong>Little-endian</strong>: 小端序，指低位字节存储在低地址，高位字节存储在高地址。常用缩写为 <strong>LE</strong>。
 </p>
 <div class="single-input-wrap">
-  <label for="binInput">二进制(Bin):</label>
-  <input id="binInput" type="text" placeholder="二进制内容(Binary)"/>
+    <label for="binInput">二进制(Bin):</label>
+    <input id="binInput" type="text" placeholder="二进制内容(Binary)"/>
 </div>
 
 <div class="single-input-wrap">
-  <label for="octInput">八进制(Oct):</label>
-  <input id="octInput" type="text" placeholder="八进制内容(Octal)"/>
+    <label for="octInput">八进制(Oct):</label>
+    <input id="octInput" type="text" placeholder="八进制内容(Octal)"/>
 </div>
 
 <div class="single-input-wrap">
-  <label for="decInput">十进制(Dec):</label>
-  <input id="decInput" type="text" placeholder="十进制内容(Decimal)"/>
+    <label for="decInput">十进制(Dec):</label>
+    <input id="decInput" type="text" placeholder="十进制内容(Decimal)"/>
 </div>
 
 <div class="single-input-wrap">
-  <label for="hexInput">十六进制(Hex):</label>
-  <input id="hexInput" type="text" placeholder="十六进制内容(Hexadecimal)"/>
+    <label for="hexInput">十六进制(Hex):</label>
+    <input id="hexInput" type="text" placeholder="十六进制内容(Hexadecimal)"/>
 </div>
 
 <div class="single-input-wrap">
-  <label for="utfInput">utf8字符:</label>
-  <input id="utfInput" type="text" placeholder="utf8字符串内容"/>
+    <label for="utfInput">utf8字符:</label>
+    <input id="utfInput" type="text" placeholder="utf8字符串内容"/>
 </div>
 
 <div class="single-input-wrap">
-  <label for="uriInput">uri编码:</label>
-  <input id="uriInput" type="text" placeholder="uri编码内容"/>
+    <label for="uriInput">uri编码:</label>
+    <input id="uriInput" type="text" placeholder="uri编码内容"/>
 </div>
 
 <div class="single-input-wrap">
-  <label for="base64Input">Base64解码:</label>
-  <input id="base64Input" type="text" placeholder="Base64需要解码的内容"/>
+    <label for="base64Input">Base64解码:</label>
+    <input id="base64Input" type="text" placeholder="Base64需要解码的内容"/>
 </div>
 
 <h2>字节解析:</h2>
 <div class="single-input-wrap">
-  <label for="decInput2">Dec:</label>
-  <input id="decInput2" type="text" placeholder="十进制内容"/>
+    <label for="decInput2">Dec:</label>
+    <input id="decInput2" type="text" placeholder="十进制内容"/>
 </div>
 <div class="single-input-wrap">
-  <label for="hexInput2">Hex:</label>
-  <input id="hexInput2" type="text" placeholder="HEx内容"/>
+    <label for="hexInput2">Hex:</label>
+    <input id="hexInput2" type="text" placeholder="HEx内容"/>
 </div>
 <div class="hex-input-wrap">
-  <label for="selectFile">File:</label>
-  <input
-    id="selectFile"
-    type="file"
-    placeholder="请选择文件..."
-    accept="*"
-  />
-  <div id="bytesStartIndexWrap" class="hex-input-wrap ml" style="display: none">
-    <label for="bytesStartIndex">起始:</label>
-    <input id="bytesStartIndex" type="number" placeholder="读取字节的起始位置"/>
-  </div>
-  <div id="bytesEndIndexWrap" class="hex-input-wrap ml" style="display: none">
-    <label for="bytesEndIndex">结束:</label>
-    <input id="bytesEndIndex" type="number" placeholder="结束位置"/>
-  </div>
-  <div id="bytesReadCountWrap" class="hex-input-wrap ml" style="display: none">
-    <label for="bytesReadCount">个数:</label>
-    <input id="bytesReadCount" type="number" placeholder="读取字节个数"/>
-  </div>
+    <label for="selectFile">File:</label>
+    <input
+            id="selectFile"
+            type="file"
+            placeholder="请选择文件..."
+            accept="*"
+    />
+    <div id="bytesStartIndexWrap" class="hex-input-wrap ml" style="display: none">
+        <label for="bytesStartIndex">起始:</label>
+        <input id="bytesStartIndex" type="number" placeholder="读取字节的起始位置"/>
+    </div>
+    <div id="bytesEndIndexWrap" class="hex-input-wrap ml" style="display: none">
+        <label for="bytesEndIndex">结束:</label>
+        <input id="bytesEndIndex" type="number" placeholder="结束位置"/>
+    </div>
+    <div id="bytesReadCountWrap" class="hex-input-wrap ml" style="display: none">
+        <label for="bytesReadCount">个数:</label>
+        <input id="bytesReadCount" type="number" placeholder="读取字节个数"/>
+    </div>
+    <div id="bytesOutputFormatWrap" class="hex-input-wrap ml" style="display: none">
+        <label for="bytesOutputFormat">格式:</label>
+        <input id="bytesOutputFormat" type="text" placeholder="多少个字节一组 ..." class="last-input"/>
+    </div>
 </div>
 
 <div id="content" class="margin">
       <textarea
-        id="result"
-        name="result"
-        placeholder="结果输出..."
-        rows="24"
-        disabled></textarea>
+              id="result"
+              name="result"
+              placeholder="结果输出..."
+              rows="24"
+              disabled></textarea>
 </div>
 
 <div id="hexResultWrap" class="margin" style="display: none">
       <textarea
-        id="hexResult"
-        name="hexResult"
-        placeholder="字节HEX内容"
-        rows="20"
-        disabled></textarea>
+              id="hexResult"
+              name="hexResult"
+              placeholder="字节HEX内容"
+              rows="20"
+              disabled></textarea>
 </div>
 
 <script nonce="{{nonce}}" src="{{spark}}"></script>
