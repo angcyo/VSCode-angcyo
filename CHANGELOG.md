@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-07-15
+
++ bytes to utf8
+
 ## 2025-07-12
 
 + hex format output
