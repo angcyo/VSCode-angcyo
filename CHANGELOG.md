@@ -1,40 +1,46 @@
 # Change Log
 
-## 2025-07-15
+## 2025-07-17 `2.1.16`
+
++ bytes to ASCII
+
+## 2025-07-15 `2.1.15`
 
 + bytes to utf8
 
-## 2025-07-12
+## 2025-07-14 `2.1.13`
 
 + hex format output
 
-## 2025-07-14
+## 2025-07-12 `2.1.13`
 
 + label
 
-## 2025-07-11
+## 2025-07-11 `2.1.12`
 
 + gzip
+
 * fix hex to bytes
 
-## 2025-07-09
+## 2025-07-09 `2.1.9`
 
 * fix output
 * fix btoa exception
+
 + command
 
-## 2025-07-08
+## 2025-07-08 `2.1.5`
 
 + hex to bytes
 + command
-+ dec / hex 
++ dec / hex
 + base64
 
-## 2025-07-05
+## 2025-07-05 `2.1.3`
 
 + hex data view
 
-## 2025-07-03
+## 2025-07-03 `2.1.0`
 
 + bin / oct / uri encode / decode
 + md5
@@ -43,7 +49,7 @@
 
 + hex tools
 
-## 2025-06-23
+## 2025-06-23 `2.0.8`
 
 + command
 
@@ -103,7 +109,6 @@
 ## 2024-2-27
 
 + html parse
-
 
 ## 2024-1-18
 
