@@ -398,6 +398,14 @@ const _crc16table = [
     }
   }, true);
 
+  clickButton("selectFileLabel", (event) => {
+    vscode.postMessage({
+      command: "open",
+      url: "https://en.wikipedia.org/wiki/List_of_file_signatures",
+    });
+    event.preventDefault();
+  });
+
   /**控制字节输入相关元素的可见性*/
   function visibleHexControlInputElement(v) {
     visible("hexResultWrap", v)
@@ -523,6 +531,7 @@ const _crc16table = [
     resultStr += "字节crc16校验和(Hex): " + decimalStrToHex(`${crc16}`) + "\n\n";
 
     resultStr += `(${bytes.length}B)字节utf8:\n` + bytesToUtf8(bytes) + "\n\n";
+    resultStr += `(${bytes.length}B)字节ASCII:\n` + bytesToASCII(bytes) + "\n\n";
 
     resultStr += `(${bytes.length}B)字节MD5:\n` + bytesToMd5(bytes) + "\n\n";
     resultStr += `(${bytes.length}B)字节Base64:\n` + byteArrayToBase64(bytes);
@@ -798,6 +807,15 @@ const _crc16table = [
     return new TextDecoder().decode(new Uint8Array(bytes));
   }
 
+  /**字节数组转换成ASCII字符串*/
+  function bytesToASCII(bytes) {
+    let result = "";
+    bytes.map((byte) => {
+      result = result + byteToASCII(byte);
+    });
+    return result;
+  }
+
   /**字符串转换成字节数组*/
   function stringToBytes(str) {
     const encoder = new TextEncoder();
@@ -866,8 +884,8 @@ const _crc16table = [
    */
   function clickButton(id, action) {
     const element = document.getElementById(id);
-    element.addEventListener("click", () => {
-      action();
+    element.addEventListener("click", (event) => {
+      action && action(event);
     });
   }
 
@@ -1136,5 +1154,78 @@ const _crc16table = [
       }
     }
     return undefined;
+  }
+
+  function byteToASCII(byte) {
+    switch (byte) {
+      case 0x00:
+        return "␀";
+      case 0x01:
+        return "␁";
+      case 0x02:
+        return "␂";
+      case 0x03:
+        return "␃";
+      case 0x04:
+        return "␄";
+      case 0x05:
+        return "␅";
+      case 0x06:
+        return "␆";
+      case 0x07:
+        return "␇";
+      case 0x08:
+        return "␈";
+      case 0x09:
+        return "␉";
+      case 0x0A:
+        return "␊";
+      case 0x0B:
+        return "␋";
+      case 0x0C:
+        return "␌";
+      case 0x0D:
+        return "␍";
+      case 0x0E:
+        return "␎";
+      case 0x0F:
+        return "␏";
+      case 0x10:
+        return "␐";
+      case 0x11:
+        return "␑";
+      case 0x12:
+        return "␒";
+      case 0x13:
+        return "␓";
+      case 0x14:
+        return "␔";
+      case 0x15:
+        return "␕";
+      case 0x16:
+        return "␖";
+      case 0x17:
+        return "␗";
+      case 0x18:
+        return "␘";
+      case 0x19:
+        return "␙";
+      case 0x1a:
+        return "␚";
+      case 0x1b:
+        return "␛";
+      case 0x1c:
+        return "␜";
+      case 0x1d:
+        return "␝";
+      case 0x1e:
+        return "␞";
+      case 0x1f:
+        return "␟";
+      case 0x7f:
+        return "␡";
+      default:
+        return String.fromCharCode(byte);
+    }
   }
 })();
