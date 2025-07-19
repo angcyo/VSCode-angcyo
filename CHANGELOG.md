@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-07-19 `2.1.17`
+
++ svg parser
+
 ## 2025-07-17 `2.1.16`
 
 + bytes to ASCII
