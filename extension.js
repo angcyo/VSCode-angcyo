@@ -15,14 +15,19 @@ const {showInputBox} = require("vscode");
 
 /**指定命令, 跳转指定的web panel*/
 const webPanelConfig = require("./src/panel/web_panel_config.json");
-
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+const {statusBars} = require("./src/status-bar/StatusBars");
 
 /**
+ * 插件激活时, 框架触发的方法. 也是插件的入口方法
+ * this method is called when your extension is activated
+ * your extension is activated the very first time the command is executed
+ *
+ * https://code.visualstudio.com/api
+ * https://github.com/microsoft/vscode-extension-samples
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
+  //debugger;
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log("插件激活..." + context.extensionUri); //file:///e%3A/VSCodeProjects/angcyoJs
@@ -31,6 +36,7 @@ function activate(context) {
 
   //__filename
   console.log(__filename); //e:\VSCodeProjects\angcyoJs\extension.js
+  const subscriptions = context.subscriptions;
 
   //显示欢迎页
   vscode.commands.executeCommand("setContext", "angcyo.showWelcome", true);
@@ -50,15 +56,15 @@ function activate(context) {
 
   //
   const welcomeViewsProvider = new TreeDataProvider();
-  vscode.window.registerTreeDataProvider("welcomeViews", welcomeViewsProvider);
+  subscriptions.push(vscode.window.registerTreeDataProvider("welcomeViews", welcomeViewsProvider));
 
   //
   const angcyoViewsProvider = new AngcyoViewsProvider(`${host}/angcyoUrl.json`);
-  vscode.window.registerTreeDataProvider("angcyoViews", angcyoViewsProvider);
+  subscriptions.push(vscode.window.registerTreeDataProvider("angcyoViews", angcyoViewsProvider));
 
   //
   const httpViewsProvider = new TreeDataProvider(`${host}/recommendUrl.json`);
-  vscode.window.registerTreeDataProvider("httpViews", httpViewsProvider);
+  subscriptions.push(vscode.window.registerTreeDataProvider("httpViews", httpViewsProvider));
 
   //svg
   const parseSvgIconPath = path.join(__filename, "..", "res", "parse.svg");
@@ -74,34 +80,34 @@ function activate(context) {
   //
   const laserPeckerViewsProvider = new TreeDataProvider(`${host}/laserPeckerUrl.json`, []);
   //console.log(parseSvgIconPath);//e:\VSCodeProjects\angcyoJs\res\parse.svg
-  vscode.window.registerTreeDataProvider("laserPeckerViews", laserPeckerViewsProvider);
+  subscriptions.push(vscode.window.registerTreeDataProvider("laserPeckerViews", laserPeckerViewsProvider));
 
   //注册一个刷新数据的指令
-  vscode.commands.registerCommand("angcyo.refresh", () => {
+  subscriptions.push(vscode.commands.registerCommand("angcyo.refresh", () => {
     welcomeViewsProvider.refresh();
     angcyoViewsProvider.refresh();
     httpViewsProvider.refresh();
     /*laserABCViewsProvider.refresh();*/
     laserPeckerViewsProvider.refresh();
-  });
+  }));
 
   //单独刷新angcyo
-  vscode.commands.registerCommand("angcyo.refresh.angcyo", () => {
+  subscriptions.push(vscode.commands.registerCommand("angcyo.refresh.angcyo", () => {
     angcyoViewsProvider.refresh();
-  });
+  }));
 
   //打开网页
-  vscode.commands.registerCommand("angcyo.openUrl", async (url) => {
+  subscriptions.push(vscode.commands.registerCommand("angcyo.openUrl", async (url) => {
     console.log(`命令打开url:${url}`);
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`${url}`));
-  });
+  }));
 
   //httpServer
   const httpServerWebviewPanel = new HttpServerWebviewPanel();
-  vscode.commands.registerCommand("angcyo.httpServer", () => {
+  subscriptions.push(vscode.commands.registerCommand("angcyo.httpServer", () => {
     console.log(`httpServer`);
     httpServerWebviewPanel.createOrShow(context).then();
-  });
+  }));
 
   //angcyo.memo 备忘录
   const memoPanel = new MemoWebviewPanel();
@@ -113,9 +119,9 @@ function activate(context) {
   //Api.readFile(context, "res", "main.css");
 
   //注册一个指令, 用来给选中的文本添加引号, LaserPecker
-  vscode.commands.registerCommand("angcyo.command.addQuotationMarkLaserPecker", () => {
+  subscriptions.push(vscode.commands.registerCommand("angcyo.command.addQuotationMarkLaserPecker", () => {
     laserPeckerAddQuotationMark.addQuotationMark();
-  });
+  }));
 
   //--
 
@@ -126,36 +132,36 @@ function activate(context) {
       webviewPanel = new LpbinWebviewPanel();
     }
 
-    vscode.commands.registerCommand(panel.viewType, () => {
+    subscriptions.push(vscode.commands.registerCommand(panel.viewType, () => {
       console.log(panel.title);
       webviewPanel.createOrShow(context).then();
-    });
+    }));
   });
 
   //注册一个指令, 用来随机打开网页
-  vscode.commands.registerCommand("angcyo.angcyo", () => {
+  subscriptions.push(vscode.commands.registerCommand("angcyo.angcyo", () => {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://visitarandomwebsite.com/`));
-  });
+  }));
 
   //注册指令
-  vscode.commands.registerCommand("angcyo.ncviewer", () => {
+  subscriptions.push(vscode.commands.registerCommand("angcyo.ncviewer", () => {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://ncviewer.com/`));
-  });
-  vscode.commands.registerCommand("angcyo.svg-path-editor", () => {
+  }));
+  subscriptions.push(vscode.commands.registerCommand("angcyo.svg-path-editor", () => {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://yqnn.github.io/svg-path-editor/`));
-  });
-  vscode.commands.registerCommand("angcyo.csdn", () => {
+  }));
+  subscriptions.push(vscode.commands.registerCommand("angcyo.csdn", () => {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://blog.csdn.net/angcyo`));
-  });
-  vscode.commands.registerCommand("angcyo.juejin", () => {
+  }));
+  subscriptions.push(vscode.commands.registerCommand("angcyo.juejin", () => {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://juejin.cn/user/1398234517866856`));
-  });
-  vscode.commands.registerCommand("angcyo.github", () => {
+  }));
+  subscriptions.push(vscode.commands.registerCommand("angcyo.github", () => {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`https://github.com/angcyo`));
-  });
-  vscode.commands.registerCommand("angcyo.qq", () => {
+  }));
+  subscriptions.push(vscode.commands.registerCommand("angcyo.qq", () => {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`http://wpa.qq.com/msgrd?v=3&uin=664738095&site=qq&menu=yes`));
-  });
+  }));
 
   //test
   /*vscode.window.showInputBox({
@@ -166,13 +172,21 @@ function activate(context) {
   }).then(value => {
     console.log(value);
   });*/
+
+
+  //状态栏
+  statusBars.showActiveTextStatusBarItem(context);
 }
 
-// this method is called when your extension is deactivated
+/**
+ * 插件停用时, 框架触发的方法
+ * this method is called when your extension is deactivated
+ * */
 function deactivate() {
   vscode.window.showInformationMessage(`angcyo is deactivate~`);
 }
 
 module.exports = {
-  activate, deactivate,
+  activate,
+  deactivate,
 };
