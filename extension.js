@@ -22,6 +22,12 @@ const {statusBars} = require("./src/status-bar/StatusBars");
  * this method is called when your extension is activated
  * your extension is activated the very first time the command is executed
  *
+ * ## 内置命令
+ *
+ * https://code.visualstudio.com/api/references/commands
+ *
+ * ## 参考
+ *
  * https://code.visualstudio.com/api
  * https://github.com/microsoft/vscode-extension-samples
  * @param {vscode.ExtensionContext} context
