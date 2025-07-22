@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-07-22 `2.1.18`
+
++ status item
+
 ## 2025-07-19 `2.1.17`
 
 + svg parser
