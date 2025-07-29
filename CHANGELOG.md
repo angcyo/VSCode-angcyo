@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-07-29 `2.1.19`
+
++ signed output
+
 ## 2025-07-22 `2.1.18`
 
 + status item
