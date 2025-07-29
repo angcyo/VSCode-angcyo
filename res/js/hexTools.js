@@ -557,7 +557,7 @@ const _crc16table = [
    * */
   function bytesToLog(bytes, width, outputFormat = false) {
     let outputWidth = width || hexResult.clientWidth > 1520 ? 64 : 32;
-    let resultStr = "共->" + bytes.length + " B(字节)" + ` ${bytes.length * 8} Bit(位)\n\n`;
+    let resultStr = "共-> " + bytes.length + " B(字节)" + ` / ${bytes.length * 8} Bit(位)\n\n`;
 
     //二进制
     if (bytes.length <= 1024) {
@@ -637,7 +637,11 @@ const _crc16table = [
 
     debugger;*/
 
-    resultStr += "Uint8: " + buffer(1).getUint8(0) + "  ";
+    //无符号
+    resultStr += "无符号-> Uint8: " + buffer(1).getUint8(0) + "  ";
+
+    resultStr += "Uint16(BE): " + buffer(2).getUint16(0, false) + "  ";
+    resultStr += "Uint16(LE): " + buffer(2).getUint16(0, true) + "  ";
 
     resultStr += "Uint32(BE): " + buffer(4).getUint32(0, false) + "  ";
     resultStr += "Uint32(LE): " + buffer(4).getUint32(0, true) + "  ";
@@ -645,13 +649,20 @@ const _crc16table = [
     resultStr += "BigUint64(BE): " + buffer(8).getBigUint64(0, false) + "  ";
     resultStr += "BigUint64(LE): " + buffer(8).getBigUint64(0, true) + "\n\n";
 
+    //有符号
+    resultStr += "有符号-> Int8: " + buffer(1).getInt8(0) + "  ";
+
+    resultStr += "Int16(BE): " + buffer(2).getInt16(0, false) + "  ";
+    resultStr += "Int16(LE): " + buffer(2).getInt16(0, true) + "  ";
+
     resultStr += "Int32(BE): " + buffer(4).getInt32(0, false) + "  ";
     resultStr += "Int32(LE): " + buffer(4).getInt32(0, true) + "  ";
 
     resultStr += "BigInt64(BE): " + buffer(8).getBigInt64(0, false) + "  ";
     resultStr += "BigInt64(LE): " + buffer(8).getBigInt64(0, true) + "\n\n";
 
-    resultStr += "Float32(BE): " + buffer(4).getFloat32(0, false) + "  ";
+    //浮点
+    resultStr += "浮点-> Float32(BE): " + buffer(4).getFloat32(0, false) + "  ";
     resultStr += "Float32(LE): " + buffer(4).getFloat32(0, true) + "  ";
 
     resultStr += "Float64(BE): " + buffer(8).getFloat64(0, false) + "  ";
