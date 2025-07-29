@@ -445,7 +445,7 @@ const _crc16table = [
 
     if (!ignoreInput.includes(utfInput)) {
       const bytes = decimalStrToBytes(value);
-      onUtfInputChanged(bytesToUtf8(bytes), [decInput, ...ignoreInput])
+      onUtfInputChanged(bytesToUtf8(bytes), [decInput, hexInput, ...ignoreInput])
     }
 
     updateResult(value);
@@ -497,7 +497,7 @@ const _crc16table = [
   function updateResult(decimalStr) {
     const bytes = decimalStrToBytes(decimalStr);
 
-    let resultStr = "共->" + bytes.length + " B(字节)" + ` ${bytes.length * 8} Bit(位)\n\n`;
+    let resultStr = "共-> " + bytes.length + " B(字节)" + ` / ${bytes.length * 8} Bit(位)\n\n`;
 
     const littleHex = decimalStrToLittleEndianHex(decimalStr);
 
@@ -754,7 +754,7 @@ const _crc16table = [
   /**十进制转十六进制*/
   function decimalToHex(decimal, radix) {
     let rdx = radix || 16;
-    const hex = decimal.toString(rdx).toUpperCase();
+    const hex = (decimal < 0 ? decimal >>> 0 : decimal).toString(rdx).toUpperCase();
     if (rdx !== 16 || hex.length % 2 === 0) {
       return hex;
     }
