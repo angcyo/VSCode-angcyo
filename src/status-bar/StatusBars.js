@@ -56,7 +56,9 @@ function _updateActiveTextStatusBarItem() {
       const bytes = new TextEncoder().encode(text);
       activeTextStatusBarItem.text = `${text.length}[${_formatBytes(bytes.length)}]`;
     } else {
-      activeTextStatusBarItem.text = `$(heart) ${vscode.version}`;
+      //activeTextStatusBarItem.text = `$(heart) ${vscode.version}`;
+      activeTextStatusBarItem.text = `$(zap) ${vscode.version}`;
+      // activeTextStatusBarItem.text = `$(flame) ${vscode.version}`;
     }
     activeTextStatusBarItem.show();
   }
