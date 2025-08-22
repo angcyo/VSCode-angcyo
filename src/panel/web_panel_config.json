@@ -61,15 +61,21 @@
     "htmlPath": "res/html/lpBin.html"
   },
   {
+    "viewType": "angcyo.autoEngrave",
+    "title": "lp自动雕刻",
+    "scriptPath": "res/js/autoEngrave.js",
+    "htmlPath": "res/html/autoEngrave.html"
+  },
+  {
     "viewType": "angcyo.ydbParse",
     "title": "ydb文件创建及解析",
     "scriptPath": "res/js/ydb.js",
     "htmlPath": "res/html/ydb.html"
   },
   {
-    "viewType": "angcyo.autoEngrave",
-    "title": "lp自动雕刻",
-    "scriptPath": "res/js/autoEngrave.js",
-    "htmlPath": "res/html/autoEngrave.html"
+    "viewType": "angcyo.yddParse",
+    "title": "ydd文件解析",
+    "scriptPath": "res/js/ydd.js",
+    "htmlPath": "res/html/ydd.html"
   }
 ]

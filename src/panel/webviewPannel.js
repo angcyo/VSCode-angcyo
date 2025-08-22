@@ -128,6 +128,11 @@ class WebviewPanel {
     const extensionUri = context.extensionUri;
     const uri = vscode.Uri;
 
+    //common 的js
+    const commonPath = uri.joinPath(extensionUri, "res/js/common.js");
+    const commonUri = webview.asWebviewUri(commonPath);
+    htmlString = this.replaceHtmlString(htmlString, "common", commonUri);
+
     // Local path to main script run in the webview
     if (this.scriptPath) {
       const scriptPath = uri.joinPath(extensionUri, this.scriptPath);

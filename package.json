@@ -96,6 +96,11 @@
         "command": "angcyo.github",
         "title": "Github",
         "category": "angcyo"
+      },
+      {
+        "command": "angcyo.yddParse",
+        "title": "ydd文件解析",
+        "category": "angcyo"
       }
     ],
     "menus": {
