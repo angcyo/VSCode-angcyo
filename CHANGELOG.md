@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-08-22 `2.2.0`
+
++ ydd parser
+
 ## 2025-07-29 `2.1.20`
 
 + signed output
