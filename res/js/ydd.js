@@ -44,10 +44,11 @@
     }
   );
 
+  /**数字的精度*/
+  let precision = 100;
+
   /**解析数据*/
   function parseYdd(bytes) {
-    let precision = 100;
-
     let reader = new BytesReader(bytes);
 
     let result = "";
@@ -66,7 +67,7 @@
     result += " 数据总字节(Bytes):" + reader.readUint();
 
     for (let i = 0; i < elementCount; i++) {
-      result += "\n\n元素" + (i + 1) + "/" + elementCount + ":";
+      result += "\n\n元素[" + (i + 1) + "/" + elementCount + "]:";
       let desLength = reader.readUint8();
       let desBytes = reader.readBytes(desLength);
       let desReader = new BytesReader(desBytes);
@@ -78,10 +79,10 @@
       let paramsLength = reader.readUint8();
       let paramsBytes = reader.readBytes(paramsLength);
       let paramsReader = new BytesReader(paramsBytes);
-      result += "\n激光功率:" + paramsReader.readUint(2);
-      result += " 速度:" + paramsReader.readUint(4);
-      let type = paramsReader.readUint(1);
-      result += " 激光类型:" + (type === 1 ? "1064nm" : "450nm");
+      result += "\n激光功率:" + paramsReader.readUint(2, -1);
+      result += " 速度:" + paramsReader.readUint(4, -1);
+      let type = paramsReader.readUint(1, -1);
+      result += " 激光类型:" + (type === 1 ? "1064nm" : (type === 0 ? "450nm" : "-1"));
       result += " 激光频率:" + paramsReader.readUint(2);
       result += " 激光脉宽:" + paramsReader.readUint(2);
       result += " 重复次数:" + paramsReader.readUint(2);
@@ -89,20 +90,45 @@
 
       let dataLength = reader.readUint(4);
       let dataBytes = reader.readBytes(dataLength);
-      result += `\n内容 ${dataLength}(Bytes):\n` + (dataType === 0x20 ? bytesToUtf8(dataBytes) : bytesToHex(dataBytes, undefined, parseResult));
+      result += `\n内容 ${dataLength}(Bytes):` + (dataType === 0x20 ? "\n" + bytesToUtf8(dataBytes) : parseLinesData(dataBytes));
     }
 
     //--
     parseResult.innerHTML = result;
   }
 
+  /**解析0x10路径数据*/
+  function parseLinesData(bytes) {
+    let result = "";
+
+    let reader = new BytesReader(bytes);
+    while (!reader.isOutOfBounds()) {
+      let part1Reader = reader.readLengthBytes(1)
+      result += "\n激光功率:" + part1Reader.readUint(2, -1);
+      let type = part1Reader.readUint(1, -1);
+      result += " 激光类型:" + (type === 1 ? "1064nm" : (type === 0 ? "450nm" : "-1"));
+      result += " 速度:" + part1Reader.readUint(4, -1);
+
+      let points = reader.readUint(2)
+      result += `\n[${points}]`;
+      for (let i = 0; i < points; i++) {
+        let x = reader.readInt(2) / precision;
+        let y = reader.readInt(2) / precision;
+        //result += ` ${i + 1}/${points}: ${x}, ${y}`;
+        result += ` (${x}, ${y})`;
+      }
+    }
+
+    return result;
+  }
+
 })();
 
 class BytesReader {
-  constructor(bytes) {
+  constructor(bytes, littleEndian = true) {
     this.dataView = new DataView(Uint8Array.from(bytes).buffer);
     this.offset = 0;
-    this.littleEndian = true;
+    this.littleEndian = littleEndian;
   }
 
   //是否越界
@@ -111,9 +137,9 @@ class BytesReader {
   }
 
   // 读取任意字节数
-  readBytes(byteCount) {
+  readBytes(byteCount, def = []) {
     if (this.isOutOfBounds()) {
-      return [];
+      return def;
     }
     const bytes = new Uint8Array(this.dataView.buffer, this.offset, byteCount);
     this.offset += byteCount; // 更新偏移量
@@ -121,25 +147,25 @@ class BytesReader {
   }
 
   // 读取ASCII字符串
-  readAscii(byteCount) {
+  readAscii(byteCount, def = "") {
     if (this.isOutOfBounds()) {
-      return "";
+      return def;
     }
     return new TextDecoder().decode(this.readBytes(byteCount));
   }
 
   // 读取uint8
-  readUint8() {
+  readUint8(def = 0) {
     if (this.isOutOfBounds()) {
-      return 0;
+      return def;
     }
     return this.dataView.getUint8(this.offset++);
   }
 
   // 读取多少个字节的无符号整数
-  readUint(byteCount = 4) {
+  readUint(byteCount = 4, def = 0) {
     if (this.isOutOfBounds()) {
-      return 0;
+      return def;
     }
     let result = 0;
     if (byteCount === 1) {
@@ -159,9 +185,9 @@ class BytesReader {
   }
 
   // 读取多少个字节的有符号整数
-  readInt(byteCount = 4) {
+  readInt(byteCount = 4, def = 0) {
     if (this.isOutOfBounds()) {
-      return 0;
+      return def;
     }
     let result = 0;
     if (byteCount === 1) {
@@ -183,5 +209,13 @@ class BytesReader {
   // 跳过指定字节数
   skipBytes(byteCount) {
     this.offset += byteCount;
+  }
+
+  // 读取指定长度的长度表示的字节数据
+  // 返回[BytesReader]
+  readLengthBytes(length = 1) {
+    let byteCount = this.readInt(length)
+    let bytes = this.readBytes(byteCount);
+    return new BytesReader(bytes, this.littleEndian);
   }
 }
