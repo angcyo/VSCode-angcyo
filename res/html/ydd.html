@@ -27,11 +27,13 @@
   <input
     id="selectFile"
     type="file"
-    accept=".ydd"
+    accept=".ydd,.ild"
     placeholder="请选择文件..."
   />
   <label id="fileLabel" style="cursor: pointer"></label>
-  <button id="parse" class="ml">解析</button>
+  <button id="parse" class="ml">解析(ydd)</button>
+  <button id="parseIld" class="ml">解析(ild)</button>
+  <label class="ml"><input type="checkbox" id="wrapGCode"/>使用GCode坐标数据</label>
 </div>
 
 <label for="result">文件数据:</label>

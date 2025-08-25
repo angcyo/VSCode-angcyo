@@ -60,6 +60,29 @@ function initTextInput(id, def = "", onChanged = undefined, defNotify = undefine
   }
 }
 
+/**
+ * 自动持久化勾选控件
+ * @param {string} id 控件的id, 也是持久化的key
+ * @param {string} def 默认值
+ * @param {function} onChanged 当值改变时的回调函数
+ */
+function initCheckbox(id, def = false, onChanged = undefined, defNotify = undefined) {
+  const checkbox = document.getElementById(id);
+  checkbox.addEventListener("change", (event) => {
+    const value = checkbox.checked;
+    localStorage.setItem(id, value);
+    if (onChanged) {
+      onChanged(value);
+    }
+  });
+  checkbox.checked = localStorage.getItem(id) || def;
+  if (defNotify === true) {
+    if (onChanged) {
+      onChanged(checkbox.checked);
+    }
+  }
+}
+
 /**向指定的目标发送input事件*/
 function sendInputEvent(target) {
   // 创建事件对象
@@ -292,6 +315,16 @@ function bytesToHex(bytes, width, element) {
     }
   })
   return resultStr;
+}
+
+/**十进制转十六进制*/
+function decimalToHex(decimal, radix) {
+  let rdx = radix || 16;
+  const hex = (decimal < 0 ? decimal >>> 0 : decimal).toString(rdx).toUpperCase();
+  if (rdx !== 16 || hex.length % 2 === 0) {
+    return hex;
+  }
+  return hex.padStart(hex.length + 1, "0"); // 转换为十六进制
 }
 
 //--
