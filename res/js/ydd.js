@@ -114,18 +114,25 @@ function initColorInexTable() {
 
     let result = "";
     result += "数据头:" + reader.readAscii(4);
-    reader.skipBytes(1);
-    result += " 数据版本:" + reader.readUint8();
 
-    reader.skipBytes(1);
-    let elementCount = reader.readUint(2);
+    let byte_length = reader.readUint8()
+    let byte_length_bytes = reader.readBytes(byte_length);
+    let byte_length_bytes_reader = new BytesReader(byte_length_bytes, yddLittleEndian);
+    result += " 数据版本:" + byte_length_bytes_reader.readUint8();
+    result += " 限制级别:" + byte_length_bytes_reader.readUint8();
+
+    byte_length = reader.readUint8()
+    byte_length_bytes = reader.readBytes(byte_length);
+    byte_length_bytes_reader = new BytesReader(byte_length_bytes, yddLittleEndian);
+
+    let elementCount = byte_length_bytes_reader.readUint(2);
     result += "\n元素个数:" + elementCount;
-    let extendType = reader.readUint8();
+    let extendType = byte_length_bytes_reader.readUint8();
     result += " 模式:" + (extendType === 0x04 ? "平台式" :
       (extendType === 0x03 ? "滑台式" :
         (extendType === 0x02 ? "滚轴式" : (extendType === 0x01 ? "卡盘式" : "常规"))));
-    result += " 位置x,y,w,h(mm):" + reader.readUint(2) / yddPrecision + " " + reader.readUint(2) / yddPrecision + " " + reader.readUint(2) / yddPrecision + " " + reader.readUint(2) / yddPrecision;
-    result += " 数据总字节(Bytes):" + reader.readUint();
+    result += " 位置x,y,w,h(mm):" + byte_length_bytes_reader.readUint(2) / yddPrecision + " " + byte_length_bytes_reader.readUint(2) / yddPrecision + " " + byte_length_bytes_reader.readUint(2) / yddPrecision + " " + byte_length_bytes_reader.readUint(2) / yddPrecision;
+    result += " 数据总字节(Bytes):" + byte_length_bytes_reader.readUint();
 
     for (let i = 0; i < elementCount; i++) {
       result += "\n\n元素[" + (i + 1) + "/" + elementCount + "]:";
@@ -166,22 +173,24 @@ function initColorInexTable() {
     while (!reader.isOutOfBounds()) {
       let part1Reader = reader.readLengthBytes(1)
       let power = part1Reader.readUint(2, -1);
-      result += "\n激光功率:" + power;
+      result += "\n线段->激光功率:" + power;
       let type = part1Reader.readUint(1, -1);
       result += " 激光类型:" + (type === 1 ? "1064nm" : (type === 0 ? "450nm" : "-1"));
       result += " 速度:" + part1Reader.readUint(4, -1);
 
       let points = reader.readUint(2)
-      result += `\n[${points}]->`;
+      result += `\n[${points}个点]->`;
       for (let i = 0; i < points; i++) {
         let x = reader.readInt(2) / yddPrecision;
         let y = reader.readInt(2) / yddPrecision;
         if (wrapGCode.checked) {
           if (i === 0) {
             result += `\nG90\nG21`;
+            result += `\nG0 X${x} Y${y}` + (power === -1 ? "" : ` S0`);
           }
-          result += `\nG0 X${x} Y${y}` + (power === -1 ? "" : ` S0`);
-          result += `\nG1 X${x} Y${y}` + (power === -1 ? "" : ` S${power}`);
+          if (i !== 0 || i === points - 1) {
+            result += `\nG1 X${x} Y${y}` + (power === -1 ? "" : ` S${power}`);
+          }
         } else {
           //result += ` ${i + 1}/${points}: ${x}, ${y}`;
           result += ` (${x}, ${y})`;
