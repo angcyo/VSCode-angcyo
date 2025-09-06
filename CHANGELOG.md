@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-9-6 `2.2.4`
+
+- fix ydd parser
+
 ## 2025-09-04 `2.2.3`
 
 * fix ydd parser
