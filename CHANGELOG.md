@@ -1,8 +1,9 @@
 # Change Log
 
-## 2025-9-6 `2.2.4`
+## 2025-9-6 `2.2.5`
 
 - fix ydd parser
+- fix hex parser
 
 ## 2025-09-04 `2.2.3`
 
