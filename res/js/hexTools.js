@@ -489,6 +489,56 @@ const _crc16table = [
 
   //--
 
+  /**yd数据格式解析*/
+  clickButton("ydParser", () => {
+    let hex = hexInput2.value
+    if (hex) {
+      let bytes = hexStrToBytes(hex)
+      result.innerHTML = bytesToLog(bytes)
+
+      let resultStr = "\n\n"
+      if (hex.toUpperCase().startsWith("55AA")) {
+        let reader = new BytesReader(bytes, true)
+        reader.skipBytes(2)//
+        let dataLength = reader.readInt(4)
+        let offset = reader.offset
+        let dataBytes = reader.readBytes(dataLength)
+        reader.offset = offset
+
+        resultStr += "Custom: " + reader.readInt(1)
+        let func = reader.readInt(1)
+        resultStr += " 功能码: " + func + "(" + (func === 0x00 ? "查询指令" :
+          func === 0x01 ? "打印指令" :
+            func === 0x02 ? "预览指令" :
+              func === 0x03 ? "设置指令" :
+                func === 0x04 ? "文件传输指令" :
+                  func === 0x05 ? "WIFI配网指令" :
+                    func === 0x06 ? "外设定位指令" :
+                      func === 0x0f ? "出厂调试指令" :
+                        func === 0xdd ? "固件升级指令" :
+                          func === 0xff ? "退出指令" :
+                            "未知") + ")"
+        let state = reader.readInt(1)
+        resultStr += " 状态码: " + state
+
+        let subDataBytes = dataBytes.subarray(0, dataBytes.length - 2)
+        let rep = dataBytes.subarray(dataBytes.length - 2, dataBytes.length)
+        let crc16 = calcCrc16(subDataBytes)
+        resultStr += " 计算的校验码: " + decimalStrToHex(`${crc16}`)
+        resultStr += " 读取的校验码: " + bytesToHexLog(rep).replaceAll(" ", "")
+
+        resultStr += " \n有效数据长度: " + dataLength + " B(字节) / " + dataBytes.length + " B(字节)\n"
+        resultStr += bytesToHexLog(dataBytes)
+
+      } else {
+        resultStr += "无效的字节头"
+      }
+      result.innerHTML += resultStr
+    }
+
+  })
+  //--
+
   /*clickButton("clear", () => {
     result.innerHTML = "";
   });*/

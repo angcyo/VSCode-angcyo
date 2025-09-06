@@ -303,8 +303,19 @@ function bytesToLog(bytes, width, format, element) {
   return resultStr
 }
 
-/** - [bytesToLog]*/
-function bytesToHex(bytes, width, element) {
+function bytesToBinLog(bytes) {
+  let resultStr = ""
+  //二进制
+  if (bytes.length <= 1024) {
+    bytes.forEach((item, index) => {
+      resultStr += `${item.toString(2).toUpperCase()}  `
+    })
+    resultStr += "\n"
+  }
+  return resultStr
+}
+
+function bytesToHexLog(bytes, width, element) {
   let outputWidth = width || (element?.clientWidth || 0) > 1520 ? 64 : 32
   let resultStr = ""
   //十六进制
@@ -354,4 +365,107 @@ function formatDate(date, fmt) {
     }
   }
   return fmt
+}
+
+
+class BytesReader {
+  constructor(bytes, littleEndian = false) {
+    this.dataView = new DataView(Uint8Array.from(bytes).buffer)
+    this.offset = 0
+    this.littleEndian = littleEndian
+  }
+
+  //是否越界
+  isOutOfBounds() {
+    return this.offset >= this.dataView.byteLength
+  }
+
+  // 读取任意字节数
+  readBytes(byteCount, def = []) {
+    if (this.isOutOfBounds()) {
+      return def
+    }
+    //有效的剩余字节数
+    let count = Math.min(byteCount, this.dataView.byteLength - this.offset)
+    const bytes = new Uint8Array(this.dataView.buffer, this.offset, count)
+    this.offset += count // 更新偏移量
+    return bytes
+  }
+
+  // 读取ASCII字符串
+  readAscii(byteCount, def = "") {
+    if (this.isOutOfBounds()) {
+      return def
+    }
+    try {
+      return new TextDecoder().decode(this.readBytes(byteCount))
+    } catch (e) {
+      return def
+    }
+  }
+
+  // 读取uint8
+  readUint8(def = 0) {
+    if (this.isOutOfBounds()) {
+      return def
+    }
+    return this.dataView.getUint8(this.offset++)
+  }
+
+  // 读取多少个字节的无符号整数
+  readUint(byteCount = 4, def = 0) {
+    if (this.isOutOfBounds()) {
+      return def
+    }
+    let result = 0
+    if (byteCount === 1) {
+      result = this.dataView.getUint8(this.offset)
+    }
+    if (byteCount === 2) {
+      result = this.dataView.getUint16(this.offset, this.littleEndian)
+    }
+    if (byteCount === 4) {
+      result = this.dataView.getUint32(this.offset, this.littleEndian)
+    }
+    if (byteCount === 8) {
+      result = this.dataView.getBigUint64(this.offset, this.littleEndian)
+    }
+    this.offset += byteCount
+    return result
+  }
+
+  // 读取多少个字节的有符号整数
+  readInt(byteCount = 4, def = 0) {
+    if (this.isOutOfBounds()) {
+      return def
+    }
+    let result = 0
+    if (byteCount === 1) {
+      result = this.dataView.getInt8(this.offset)
+    }
+    if (byteCount === 2) {
+      result = this.dataView.getInt16(this.offset, this.littleEndian)
+    }
+    if (byteCount === 4) {
+      result = this.dataView.getInt32(this.offset, this.littleEndian)
+    }
+    if (byteCount === 8) {
+      result = this.dataView.getBigInt64(this.offset, this.littleEndian)
+    }
+    this.offset += byteCount
+    return result
+  }
+
+  // 跳过指定字节数
+  skipBytes(byteCount) {
+    this.offset += byteCount
+  }
+
+  // 读取指定长度的长度表示的字节数据
+  // 返回[BytesReader]
+  readLengthBytes(length = 1) {
+    let byteCount = this.readInt(length)
+    let bytes = this.readBytes(byteCount)
+    return new BytesReader(bytes, this.littleEndian)
+  }
 }
