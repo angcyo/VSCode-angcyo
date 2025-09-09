@@ -228,10 +228,13 @@ function initColorInexTable() {
     let isWrapGCode = wrapGCode.checked
 
     while (!reader.isOutOfBounds()) {
+      if (index === 1 && isWrapGCode) {
+        result += `; GCode数据, 数值缩放了 ${ildScaleFactor}倍!\n`
+      }
       if (index > 1) {
         result += `\n\n`
       }
-      result += `[${index}] `
+      result += `; [${index}] `
       result += "数据头:" + reader.readAscii(4)//1~4
       reader.skipBytes(3)//预留 5~7
 
@@ -268,6 +271,17 @@ function initColorInexTable() {
         return `#${r}${g}${b}`
       }
 
+      function readBGR() {
+        let b = reader.readUint(1)
+        let g = reader.readUint(1)
+        let r = reader.readUint(1)
+        //转成hex进制
+        r = decimalToHex(r, 16)
+        g = decimalToHex(g, 16)
+        b = decimalToHex(b, 16)
+        return `#${r}${g}${b}`
+      }
+
       //读取坐标数据 -32768~32767
       let dataIndex = 0
       let isMove = false //是否G0过
@@ -295,7 +309,8 @@ function initColorInexTable() {
           let colorIndex = undefined
           //颜色索引
           if (isTrueColor) {
-            color = readRGB()
+            //真彩颜色BGR
+            color = readBGR()
           } else {
             colorIndex = reader.readUint(1)
             let rgb = ColorIndexTable[colorIndex]
@@ -329,7 +344,7 @@ function initColorInexTable() {
             if (is3D) {
               result += ` Z${z}`
             }
-            result += ` # ${statusCode}`//后面的数据全部放注释
+            result += ` ;${statusCode}`//后面的数据全部放注释
             if (!isTrueColor) {
               result += ` ${colorIndex}`
             }
