@@ -118,7 +118,8 @@ function initColorInexTable() {
     let byte_length = reader.readUint8()
     let byte_length_bytes = reader.readBytes(byte_length)
     let byte_length_bytes_reader = new BytesReader(byte_length_bytes, yddLittleEndian)
-    result += " 数据版本:" + byte_length_bytes_reader.readUint8()
+    let data_version = byte_length_bytes_reader.readUint8()
+    result += " 数据版本:" + data_version
     result += " 限制级别:" + byte_length_bytes_reader.readUint8()
 
     byte_length = reader.readUint8()
@@ -131,7 +132,7 @@ function initColorInexTable() {
     result += " 模式:" + (extendType === 0x04 ? "平台式" :
       (extendType === 0x03 ? "滑台式" :
         (extendType === 0x02 ? "滚轴式" : (extendType === 0x01 ? "卡盘式" : "常规"))))
-    result += " 位置x,y,w,h(mm):" + byte_length_bytes_reader.readUint(2) / yddPrecision + " " + byte_length_bytes_reader.readUint(2) / yddPrecision + " " + byte_length_bytes_reader.readUint(2) / yddPrecision + " " + byte_length_bytes_reader.readUint(2) / yddPrecision
+    result += " 位置x,y,w,h(mm):" + byte_length_bytes_reader.readFloat() + " " + byte_length_bytes_reader.readFloat() + " " + byte_length_bytes_reader.readFloat() + " " + byte_length_bytes_reader.readFloat()
     result += " 数据总字节(Bytes):" + byte_length_bytes_reader.readUint()
 
     for (let i = 0; i < elementCount; i++) {
@@ -141,7 +142,7 @@ function initColorInexTable() {
       let desReader = new BytesReader(desBytes, yddLittleEndian)
       let dataType = desReader.readUint(2)
       result += "\n数据类型:" + (dataType === 0x20 ? "GCode" : (dataType === 0x10 ? "Lines" : dataType))
-      result += " 位置x,y,w,h(mm):" + desReader.readUint(2) / yddPrecision + " " + desReader.readUint(2) / yddPrecision + " " + desReader.readUint(2) / yddPrecision + " " + desReader.readUint(2) / yddPrecision
+      result += " 位置x,y,w,h(mm):" + desReader.readFloat() + " " + desReader.readFloat() + " " + desReader.readFloat() + " " + desReader.readFloat()
       result += " 填充密度:" + desReader.readUint(2)
 
       let paramsLength = reader.readUint8()
@@ -154,19 +155,24 @@ function initColorInexTable() {
       result += " 激光频率:" + paramsReader.readUint(2)
       result += " 激光脉宽:" + paramsReader.readUint(2)
       result += " 重复次数:" + paramsReader.readUint(2)
-      result += " 支架高度:" + paramsReader.readInt(2)
+      result += " 支架高度:" + paramsReader.readFloat()
 
       let dataLength = reader.readUint(4)
       let dataBytes = reader.readBytes(dataLength)
-      result += `\n内容 ${dataLength}(Bytes):` + (dataType === 0x20 ? "\n" + bytesToUtf8(dataBytes) : parseYddLinesData(dataBytes))
+      result += `\n内容 ${dataLength}(Bytes):` + (dataType === 0x20 ? "\n" + bytesToUtf8(dataBytes) : parseYddLinesData(dataBytes, data_version))
     }
 
     //--
     parseResult.innerHTML = result
   }
 
-  /**解析0x10路径数据*/
-  function parseYddLinesData(bytes) {
+  /**解析0x10路径数据
+   *
+   * - [dataVersion] 数据版本,默认1
+   *    - 0x01 :坐标使用u16类型数据
+   *    - 0x02 :坐标使用f32类型数据
+   * */
+  function parseYddLinesData(bytes, dataVersion) {
     let result = ""
     let isFirst = true
 
@@ -185,8 +191,8 @@ function initColorInexTable() {
       let points = reader.readUint(2)
       result += `\n;[${points}个点]->`
       for (let i = 0; i < points; i++) {
-        let x = reader.readInt(2) / yddPrecision
-        let y = reader.readInt(2) / yddPrecision
+        let x = dataVersion === 2 ? reader.readFloat() : reader.readInt(2) / yddPrecision
+        let y = dataVersion === 2 ? reader.readFloat() : reader.readInt(2) / yddPrecision
         if (wrapGCode.checked) {
           if (i === 0) {
             if (isFirst) {

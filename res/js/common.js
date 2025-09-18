@@ -375,12 +375,12 @@ class BytesReader {
     this.littleEndian = littleEndian
   }
 
-  //是否越界
+  /**是否越界*/
   isOutOfBounds() {
     return this.offset >= this.dataView.byteLength
   }
 
-  // 读取任意字节数
+  /**读取任意字节数*/
   readBytes(byteCount, def = []) {
     if (this.isOutOfBounds()) {
       return def
@@ -392,7 +392,7 @@ class BytesReader {
     return bytes
   }
 
-  // 读取ASCII字符串
+  /**读取ASCII字符串*/
   readAscii(byteCount, def = "") {
     if (this.isOutOfBounds()) {
       return def
@@ -404,7 +404,7 @@ class BytesReader {
     }
   }
 
-  // 读取uint8
+  /**读取uint8*/
   readUint8(def = 0) {
     if (this.isOutOfBounds()) {
       return def
@@ -412,7 +412,7 @@ class BytesReader {
     return this.dataView.getUint8(this.offset++)
   }
 
-  // 读取多少个字节的无符号整数
+  /**读取多少个字节的无符号整数*/
   readUint(byteCount = 4, def = 0) {
     if (this.isOutOfBounds()) {
       return def
@@ -434,7 +434,7 @@ class BytesReader {
     return result
   }
 
-  // 读取多少个字节的有符号整数
+  /**读取多少个字节的有符号整数*/
   readInt(byteCount = 4, def = 0) {
     if (this.isOutOfBounds()) {
       return def
@@ -456,13 +456,24 @@ class BytesReader {
     return result
   }
 
-  // 跳过指定字节数
+  /**读取f32浮点数*/
+  readFloat(def = 0) {
+    if (this.isOutOfBounds()) {
+      return def
+    }
+    let result = this.dataView.getFloat32(this.offset, this.littleEndian)
+    this.offset += 4
+    return result
+  }
+
+  /**跳过指定字节数*/
   skipBytes(byteCount) {
     this.offset += byteCount
   }
 
-  // 读取指定长度的长度表示的字节数据
-  // 返回[BytesReader]
+  /** 读取指定长度的长度表示的字节数据
+   * 返回[BytesReader]
+   * */
   readLengthBytes(length = 1) {
     let byteCount = this.readInt(length)
     let bytes = this.readBytes(byteCount)
