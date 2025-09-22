@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-09-22 `2.2.8`
+
+* fix ydb
+
 ## 2025-09-18 `2.2.7`
 
 * fix ydd parser
