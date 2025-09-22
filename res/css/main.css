@@ -355,7 +355,7 @@ select {
 }
 
 .hex-input-wrap .last-input {
-  flex: 1!important;
+  flex: 1 !important;
   width: 30rem;
 }
 
@@ -363,3 +363,15 @@ select {
   width: 16rem;
 }
 
+/*---*/
+
+.firmware-input-wrap {
+  display: flex;
+  flex-flow: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.firmware-input-wrap input {
+  width: 12rem;
+}

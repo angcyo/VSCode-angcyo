@@ -52,7 +52,13 @@ function initTextInput(id, def = "", onChanged = undefined, defNotify = undefine
       onChanged(value)
     }
   })
-  input.value = localStorage.getItem(id) || def
+  const value = localStorage.getItem(id) || def
+  if (input.type === 'number') {
+    input.value = parseInt(value || 0)
+  } else {
+    input.value = value
+  }
+
   if (defNotify === true) {
     if (onChanged) {
       onChanged(input.value)
@@ -336,6 +342,14 @@ function decimalToHex(decimal, radix) {
     return hex
   }
   return hex.padStart(hex.length + 1, "0") // 转换为十六进制
+}
+
+/**在[value]中从[startBit]位开始取[count]个位的数值*/
+function bits(value, startBit, count) {
+  if (startBit < 0 || count < 1) {
+    return 0;
+  }
+  return (value >> startBit) & ((1 << count) - 1);
 }
 
 //--
