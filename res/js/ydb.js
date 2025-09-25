@@ -127,6 +127,14 @@
     dataElement.value = JSON.stringify(json, null, 4)
   }
 
+  function dataObj() {
+    try {
+      return JSON.parse(dataElement.value)
+    } catch (e) {
+      return undefined
+    }
+  }
+
   //--
 
   //接收来自vscode的数据
