@@ -6,5 +6,5 @@ vsce package
 
 rem 插件发布地址
 
-rem https://marketplace.visualstudio.com/manage/publishers/angcyo
-rem https://open-vsx.org/user-settings/extensions
+cmd /c start "" "https://marketplace.visualstudio.com/manage/publishers/angcyo"
+cmd /c start "" "https://open-vsx.org/user-settings/extensions"
