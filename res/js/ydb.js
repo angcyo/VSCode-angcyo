@@ -31,6 +31,7 @@
 
   //2个路径
   let selectPath = ""
+  let selectPathName = ""
   let targetPath = localStorage.getItem("ydBinTargetPath") || ""
   let createVerifyCode = undefined
 
@@ -101,7 +102,7 @@
     version.number = parseInt(productNumberFlag.value || "0")
     version.version = semVerToInt(versionInput.value || "0")
     const v = version.toRaw()
-    const versionStr = `v${versionInput.value}`
+    const versionStr = versionInput.value ? `v${versionInput.value}` : ""
 
     const ranges = (versionRangeInput.value || "0~0").split("~")
     version.version = semVerToInt(ranges[0])
@@ -125,14 +126,27 @@
       },
     }
     dataElement.value = JSON.stringify(json, null, 4)
+
+    //更新生成的文件名路径
+    updateFileLabel()
   }
 
+  /**数据对象中*/
   function dataObj() {
     try {
       return JSON.parse(dataElement.value)
     } catch (e) {
       return undefined
     }
+  }
+
+  /**数据对象中的版本名称*/
+  function dataObjName() {
+    const obj = dataObj()
+    if (obj?.v === undefined || !obj?.v) {
+      return undefined;
+    }
+    return obj?.n || undefined;
   }
 
   //--
@@ -200,18 +214,11 @@
       console.log(selectPath)
 
       const name = file.path || file.name
-      const newName = name.substring(0, name.lastIndexOf("."))
-      targetPath = `${newName}.ydb`
-      console.log(targetPath)
+      selectPathName = name
 
       readFileMd5(file, (md5) => {
         console.log(md5)
-
-        if (selectPath) {
-          fileLabel.innerHTML = `文件路径: ${selectPath}<br>生成路径: ${targetPath} (会覆盖同名文件)`
-        } else {
-          fileLabel.innerHTML = `文件名: ${name}<br>生成名: ${targetPath}`
-        }
+        updateFileLabel()
 
         try {
           updateCustomJsonInput()
@@ -232,6 +239,22 @@
       fileLabel.textContent = ""
     }
   })
+
+  function updateFileLabel() {
+    const name = selectPathName
+    if (!name) {
+      return
+    }
+    const newName = name.substring(0, name.lastIndexOf("."))
+    targetPath = `${dataObjName() || newName}.ydb`
+    console.log(targetPath)
+
+    if (selectPath) {
+      fileLabel.innerHTML = `文件路径: ${selectPath}<br>生成路径: ${targetPath} (会覆盖同名文件)`
+    } else {
+      fileLabel.innerHTML = `文件名: ${name}<br>生成名: ${targetPath}`
+    }
+  }
 
   //生成ydb文件
   create.addEventListener("click", (event) => {
