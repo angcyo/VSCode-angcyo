@@ -18,6 +18,7 @@
 
   //--
   const rawVersionInput = document.getElementById("rawVersionInput");
+  const rawVersionInputHex = document.getElementById("rawVersionInputHex");
   const testVersionInput = document.getElementById("testVersionInput");
   const testVersionResultInput = document.getElementById("testVersionResultInput");
   //--
@@ -38,15 +39,20 @@
   dataElement.value = jsonStr;
 
   //--
-  initTextInput("rawVersionInput", "");
+  initTextInput("rawVersionInput", "", (value) => {
+    rawVersionInputHex.value = decimalToHex(value);
+  });
+  initTextInput("rawVersionInputHex", "", (value) => {
+    rawVersionInput.value = hexToDecimal(value);
+  });
   clickButton("parseRawVersion", () => {
     const version = new FirmwareVersion(rawVersionInput.value);
     result.value = `${nowTimeString()}\n` +
-      `固件类型: ${version.test}\n` +
-      `产品型号: ${version.product}\n` +
-      `产品编号: ${version.number}\n` +
-      `版本号: ${version.version}\n` +
-      `语义版本: ${version.versionStr()}\n`;
+      `固件类型->Dec: ${version.test} / Hex: ${decimalToHex(version.test)}\n` +
+      `产品型号->Dec: ${version.product} / Hex: ${decimalToHex(version.product)}\n` +
+      `产品编号->Dec: ${version.number} / Hex: ${decimalToHex(version.number)}\n` +
+      `版本号->Dec: ${version.version} / Hex: ${decimalToHex(version.version)}\n` +
+      `语义版本->Dec: ${version.versionStr()} / Hex: ${version.versionHexStr()}\n`;
   });
   initTextInput("testVersionInput", "", (value) => {
     testVersionResultInput.value = semVerToInt(value);
@@ -563,6 +569,10 @@ class FirmwareVersion {
 
   versionStr() {
     return `${this.major}.${this.minor}.${this.patch}`;
+  }
+
+  versionHexStr() {
+    return `${decimalToHex(this.major)}.${decimalToHex(this.minor)}.${decimalToHex(this.patch)}`;
   }
 
   /**反向转成4字节int*/

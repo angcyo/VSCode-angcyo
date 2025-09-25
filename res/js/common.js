@@ -336,12 +336,26 @@ function bytesToHexLog(bytes, width, element) {
 
 /**十进制转十六进制*/
 function decimalToHex(decimal, radix) {
+  //判断[decimal]是否是字符串
+  if (typeof decimal === "string") {
+    decimal = parseInt(decimal)
+    if (isNaN(decimal)) {
+      return ""
+    }
+  }
   let rdx = radix || 16
   const hex = (decimal < 0 ? decimal >>> 0 : decimal).toString(rdx).toUpperCase()
   if (rdx !== 16 || hex.length % 2 === 0) {
     return hex
   }
   return hex.padStart(hex.length + 1, "0") // 转换为十六进制
+}
+
+/**十六进制转十进制*/
+function hexToDecimal(hex, radix) {
+  let rdx = radix || 16
+  let decimal = parseInt(hex, rdx)
+  return decimal;
 }
 
 /**在[value]中从[startBit]位开始取[count]个位的数值*/
