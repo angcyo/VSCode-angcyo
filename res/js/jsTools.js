@@ -482,6 +482,25 @@
     });
   });
 
+  //--
+
+  /**计算利息*/
+  clickButton("rDay", () => {
+    calcRate(getContentNumber());
+  });
+  clickButton("r7Day", () => {
+    calcRate(getContentNumber() / 7);
+  });
+  clickButton("r7DayYear", () => {
+    calcRate(getContentNumber() / 365);
+  });
+  clickButton("rMonth", () => {
+    calcRate(getContentNumber() / 30);
+  });
+  clickButton("rYear", () => {
+    calcRate(getContentNumber() / 365);
+  });
+
   //---
 
   window.addEventListener("message", (event) => {
@@ -617,8 +636,11 @@
     return fmt;
   }
 
-  /**拼接返回值 */
-  function appendResult(text) {
+  /**拼接返回值*/
+  function appendResult(text, append) {
+    if (append === false) {
+      result.innerHTML = "";
+    }
     if (result.innerHTML) {
       result.innerHTML =
         result.innerHTML + "\n" + "\n" + nowTimeString() + "\n" + text;
@@ -1105,9 +1127,85 @@
     }
     return paths;
   }
-  
+
   /**将文本字符数据使用md5进行加密*/
   function md5(data) {
     return SparkMD5.hash(data);
+  }
+
+  /**从日利率计算出
+   * 7日利率
+   * 7日复利率
+   * 7日年化
+   * 7日年化复利率
+   * 月利率
+   * 月复利率
+   * 年利率
+   * 年复利率
+   *
+   * @param rateDay 日利率, 比如 0.0003
+   * */
+  function calcRate(rateDay) {
+    let result = '';
+    result += `\n1万元每日利息: ${rateToStr(rateDay * 10_000, 0)}元`;
+    result += `\n10万元每日利息: ${rateToStr(rateDay * 100_000, 0)}元`;
+    result += `\n100万元每日利息: ${rateToStr(rateDay * 1_000_000, 0, 2)}元`;
+    result += `\n1000万元每日利息: ${rateToStr(rateDay * 10_000_000, 0, 2)}元`;
+    result += `\n1亿元每日利息: ${rateToStr(rateDay * 100_000_000, 0, 2)}元\n\n`;
+
+    result += `日利率: ${rateToStr(rateDay, 0)} ${rateToStr(rateDay)}\n\n`;
+
+    //7日利率
+    let rate7 = rateDay * 7;
+    result += `7日利率: ${rateToStr(rate7, 0)} ${rateToStr(rate7)}\n`;
+    //7日复利率
+    let rate7_ = Math.pow(1 + rateDay, 7) - 1;
+    result += `7日复利率: ${rateToStr(rate7_, 0)} ${rateToStr(rate7_)}\n\n`;
+
+    //7日年化
+    let rate7Y = rate7 * 365 / 7;
+    result += `7日年化利率: ${rateToStr(rate7Y, 0)} ${rateToStr(rate7Y)}\n`;
+    //7日年化复利率
+    let rate7Y_ = Math.pow(1 + rate7, 365 / 7) - 1;
+    result += `7日年化复利率: ${rateToStr(rate7Y_, 0)} ${rateToStr(rate7Y_)}\n\n`;
+
+    //月利率
+    let rateMonth = rateDay * 30;
+    result += `月利率: ${rateToStr(rateMonth, 0)} ${rateToStr(rateMonth)}\n`;
+    //月复利率
+    let rateMonth_ = Math.pow(1 + rateDay, 30) - 1;
+    result += `月复利率: ${rateToStr(rateMonth_, 0)} ${rateToStr(rateMonth_)}\n\n`;
+
+    //年利率
+    let rateYear = rateDay * 365;
+    result += `年利率: ${rateToStr(rateYear, 0)} ${rateToStr(rateYear)}\n`;
+    //年复利率
+    let rateYear_ = Math.pow(1 + rateDay, 365) - 1;
+    result += `年复利率: ${rateToStr(rateYear_, 0)} ${rateToStr(rateYear_)}\n\n`;
+
+    appendResult(result, false);
+  }
+
+  /**从输入框获取数字数值*/
+  function getContentNumber() {
+    const text = content.value.toString();
+    let value = 0
+    if (text.includes("%")) {
+      //移除%并且/100
+      value = parseFloat(text.replace("%", "").replace(" ", "")) / 100;
+    } else {
+      //否则直接转成数字, 失败则提示
+      value = parseFloat(text);
+    }
+    return value;
+  }
+
+  /**将 0.0003 转换成 0.03% 字符串*/
+  function rateToStr(rate, precision = 2, fractionDigits = 4) {
+    let result = (rate * Math.pow(10, precision)).toFixed(fractionDigits).replace(/\.?0+$/, "");
+    if (precision === 0) {
+      return result;
+    }
+    return result + '%';
   }
 })();
