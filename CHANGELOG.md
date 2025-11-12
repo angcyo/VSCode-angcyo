@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-11-12 `2.2.13`
+
++ unicode decode
+
 ## 2025-11-07 `2.2.12`
 
 + calc rate
