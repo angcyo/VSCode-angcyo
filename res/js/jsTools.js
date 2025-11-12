@@ -73,6 +73,20 @@
     const text = content.value;
     appendResult(md5(text));
   });
+  clickButton("unicodeDecode", () => {
+    //Unicode解码
+    let text = content.value;
+    /*
+    //String.fromCharCode()
+    if (!text.startsWith("\"")) {
+      text = "\"" + text;
+    }
+    if (!text.endsWith("\"")) {
+      text += "\"";
+    }
+    appendResult(JSON.parse(text));*/
+    appendResult(unescape(text.replace(/\\(u[0-9a-fA-F]{4})/gm, '%$1')));
+  });
   clickButton("createFile", () => {
     //创建指定kb大小的文件
     const size = sendSize.value || 1;
