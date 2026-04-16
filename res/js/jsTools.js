@@ -55,7 +55,7 @@
   });
   clickButton("base64Encode", () => {
     const text = content.value;
-    appendResult(btoa(text))
+    appendResult(btoa(text));
     //result.innerHTML = nowTimeString() + "\n" + btoa(text); //加密
   });
   clickButton("base642String", () => {
@@ -85,7 +85,7 @@
       text += "\"";
     }
     appendResult(JSON.parse(text));*/
-    appendResult(unescape(text.replace(/\\(u[0-9a-fA-F]{4})/gm, '%$1')));
+    appendResult(unescape(text.replace(/\\(u[0-9a-fA-F]{4})/gm, "%$1")));
   });
   clickButton("createFile", () => {
     //创建指定kb大小的文件
@@ -326,7 +326,12 @@
     } else {
       const date1 = new Date(dateTextArray[0]);
       const date2 = new Date(dateTextArray[1]);
-      const diff = date2.getTime() - date1.getTime();
+      let diff = date2.getTime() - date1.getTime();
+      if (diff < 0) {
+        //date2 + 1年
+        date2.setFullYear(date2.getFullYear() + 1);
+        diff = date2.getTime() - date1.getTime();
+      }
       appendResult("时间差:" + diff + "ms");
       //计算天数
       const day = diff / (1000 * 60 * 60 * 24);
@@ -380,8 +385,8 @@
       readFile(selectFileObj, (data) => {
         const count = headerSize.value;
         const bytes = new Uint8Array(data);
-        let hexResult = '';
-        let asciiResult = '';
+        let hexResult = "";
+        let asciiResult = "";
         for (let i = 0; i < Math.min(count, bytes.length); i++) {
           const byte = bytes[i];
           const ascii = String.fromCharCode(bytes[i]);
@@ -389,7 +394,9 @@
           hexResult += hex + " ";
           asciiResult += ascii + " ";
         }
-        appendResult(`[${count}/${bytes.length}]↓\n${hexResult}\n${asciiResult}`);
+        appendResult(
+          `[${count}/${bytes.length}]↓\n${hexResult}\n${asciiResult}`,
+        );
       });
     } else {
       vscode.postMessage({
@@ -409,7 +416,7 @@
           const figfonts = document.getElementById("figfonts");
           figfonts.innerHTML = event.data.data.map(function (item) {
             return `<option value="${item}">${item}</option>`;
-          })
+          });
           const font = localStorage.getItem("figfonts") || "Standard";
           figfonts.value = font;
         }
@@ -533,7 +540,7 @@
   function listenerOnce(command, type, callback) {
     const listener = function (event) {
       if (event.data?.command === command) {
-        if (type === undefined || type && event.data.type === type) {
+        if (type === undefined || (type && event.data.type === type)) {
           const data = event.data.data;
           callback(data);
         }
@@ -632,7 +639,7 @@
     if (/(y+)/.test(fmt)) {
       fmt = fmt.replace(
         RegExp.$1,
-        (date.getFullYear() + "").substring(4 - RegExp.$1.length)
+        (date.getFullYear() + "").substring(4 - RegExp.$1.length),
       );
     }
     for (var k in o) {
@@ -643,7 +650,7 @@
             ? o[k]
             : k === "S+"
               ? ("000" + o[k]).substring(3)
-              : ("00" + o[k]).substring(("" + o[k]).length)
+              : ("00" + o[k]).substring(("" + o[k]).length),
         );
       }
     }
@@ -723,7 +730,7 @@
 
             const pdfPage = await pdfDocument.getPage(i);
             // Display page on the existing canvas with 100% scale.
-            const viewport = pdfPage.getViewport({scale: 2.0});
+            const viewport = pdfPage.getViewport({ scale: 2.0 });
             //创建Canvas元素
             const canvas = document.createElement("canvas");
             canvas.width = viewport.width;
@@ -946,7 +953,7 @@
       doc = null;
       parser = null;
     } else {
-      vscode.postMessage({text: "no data"});
+      vscode.postMessage({ text: "no data" });
     }
   }
 
@@ -1086,9 +1093,12 @@
       if (rx && ry) {
         const r = x + width;
         const b = y + height;
-        pathSvg = `android:pathData="M${x + rx},${y}h${width - rx * 2
-        }Q${r},${y} ${r},${y + ry}v${height - ry * 2}Q${r},${b} ${r - rx
-        },${b}h-${width - rx * 2}Q${x},${b} ${x},${b - ry}v-${height - ry * 2
+        pathSvg = `android:pathData="M${x + rx},${y}h${
+          width - rx * 2
+        }Q${r},${y} ${r},${y + ry}v${height - ry * 2}Q${r},${b} ${
+          r - rx
+        },${b}h-${width - rx * 2}Q${x},${b} ${x},${b - ry}v-${
+          height - ry * 2
         }Q${x},${y} ${x + rx},${y}z"`;
       } else {
         pathSvg = `android:pathData="M${x},${y}h${width}v${height}h-${width}z"`;
@@ -1115,10 +1125,14 @@
       }
 
       pathSvg = "";
-      pathSvg = `android:pathData="M${cx - width / 2},${cy}C${cx - width / 2},${cy - oy
-      } ${cx - ox},${cy - height / 2} ${cx},${cy - height / 2}C${cx + ox},${cy - height / 2
-      } ${cx + width / 2},${cy - oy} ${cx + width / 2},${cy}C${cx + width / 2
-      },${cy + oy} ${cx + ox},${cy + height / 2} ${cx},${cy + height / 2}C${cx - ox
+      pathSvg = `android:pathData="M${cx - width / 2},${cy}C${cx - width / 2},${
+        cy - oy
+      } ${cx - ox},${cy - height / 2} ${cx},${cy - height / 2}C${cx + ox},${
+        cy - height / 2
+      } ${cx + width / 2},${cy - oy} ${cx + width / 2},${cy}C${
+        cx + width / 2
+      },${cy + oy} ${cx + ox},${cy + height / 2} ${cx},${cy + height / 2}C${
+        cx - ox
       },${cy + height / 2} ${cx - width / 2},${cy + oy} ${cx - width / 2},${cy}"
               `;
 
@@ -1137,7 +1151,7 @@
     } else {
       const msg = "不支持的SVG标签: " + child.tagName;
       console.log(msg);
-      vscode.postMessage({text: msg});
+      vscode.postMessage({ text: msg });
     }
     return paths;
   }
@@ -1160,7 +1174,7 @@
    * @param rateDay 日利率, 比如 0.0003
    * */
   function calcRate(rateDay) {
-    let result = '';
+    let result = "";
     result += `\n1万元每日利息: ${rateToStr(rateDay * 10_000, 0)}元`;
     result += `\n10万元每日利息: ${rateToStr(rateDay * 100_000, 0)}元`;
     result += `\n100万元每日利息: ${rateToStr(rateDay * 1_000_000, 0, 2)}元`;
@@ -1177,7 +1191,7 @@
     result += `7日复利率: ${rateToStr(rate7_, 0)} ${rateToStr(rate7_)}\n\n`;
 
     //7日年化
-    let rate7Y = rate7 * 365 / 7;
+    let rate7Y = (rate7 * 365) / 7;
     result += `7日年化利率: ${rateToStr(rate7Y, 0)} ${rateToStr(rate7Y)}\n`;
     //7日年化复利率
     let rate7Y_ = Math.pow(1 + rate7, 365 / 7) - 1;
@@ -1203,7 +1217,7 @@
   /**从输入框获取数字数值*/
   function getContentNumber() {
     const text = content.value.toString();
-    let value = 0
+    let value = 0;
     if (text.includes("%")) {
       //移除%并且/100
       value = parseFloat(text.replace("%", "").replace(" ", "")) / 100;
@@ -1216,10 +1230,12 @@
 
   /**将 0.0003 转换成 0.03% 字符串*/
   function rateToStr(rate, precision = 2, fractionDigits = 4) {
-    let result = (rate * Math.pow(10, precision)).toFixed(fractionDigits).replace(/\.?0+$/, "");
+    let result = (rate * Math.pow(10, precision))
+      .toFixed(fractionDigits)
+      .replace(/\.?0+$/, "");
     if (precision === 0) {
       return result;
     }
-    return result + '%';
+    return result + "%";
   }
 })();

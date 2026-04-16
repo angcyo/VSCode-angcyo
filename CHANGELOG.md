@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-4-7 `2.2.14`
+
+* fix js tools
+
 ## 2025-11-12 `2.2.13`
 
 + unicode decode
