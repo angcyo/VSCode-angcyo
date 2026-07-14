@@ -52,7 +52,8 @@ function activate(context) {
   console.log("配置↓");
   console.log(config);
   //const defHost = "https://gitcode.net/angcyo/json/-/raw/master";
-  const defHost = "https://gitlab.com/angcyo/json/-/raw/master";
+  //const defHost = "https://gitlab.com/angcyo/json/-/raw/master";
+  const defHost = "https://codeberg.org/angcyo/json/raw/branch/master/";
   let host = config.get("host", defHost);
   //如果host为空或空字符串, 则使用默认值
   if (!host || host.length === 0) {

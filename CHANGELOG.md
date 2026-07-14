@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-7-14 `2.2.15`
+
+* fix select style
+
 ## 2026-4-7 `2.2.14`
 
 * fix js tools
