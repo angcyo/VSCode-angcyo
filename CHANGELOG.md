@@ -1,5 +1,9 @@
 # Change Log
 
+## `2.2.16`
+
+* fix .vscodeignore
+
 ## 2026-7-14 `2.2.15`
 
 * fix select style
